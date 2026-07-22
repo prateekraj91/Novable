@@ -348,6 +348,56 @@ export default function PublishedSite({
         </div>
       </section>
 
+      {/* Work with a developer */}
+      <Reveal>
+        <section className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <p
+              className="text-sm font-semibold uppercase tracking-wider"
+              style={{ color: accent }}
+            >
+              Make it yours
+            </p>
+            <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+              Want to customize this further? Work with a developer
+            </h2>
+            <p className="mt-4 text-neutral-600">
+              Get hands-on help tailoring this site — message one of our
+              developers directly on WhatsApp.
+            </p>
+          </div>
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-3">
+            {[
+              { name: "Prateek", phone: "919142250799" },
+              { name: "Prakhar", phone: "919696427822" },
+              { name: "Rudransh", phone: "916375908635" },
+            ].map((dev) => (
+              <div
+                key={dev.name}
+                className="flex flex-col items-center rounded-2xl border border-neutral-200 bg-white p-7 text-center"
+              >
+                <span
+                  className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white"
+                  style={{ backgroundColor: accent }}
+                >
+                  {dev.name.slice(0, 1)}
+                </span>
+                <h3 className="mt-4 text-xl font-semibold">{dev.name}</h3>
+                <a
+                  href={`https://wa.me/${dev.phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 rounded-full px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: accent }}
+                >
+                  WhatsApp
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
       {/* Footer */}
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-sm text-neutral-500 sm:flex-row">

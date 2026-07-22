@@ -234,9 +234,9 @@ export default function ResultPage() {
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {[
-              { name: "Prateek", phone: "91XXXXXXXXXX" },
-              { name: "Prakhar", phone: "91XXXXXXXXXX" },
-              { name: "Rudransh", phone: "91XXXXXXXXXX" },
+              { name: "Prateek", phone: "919142250799" },
+              { name: "Prakhar", phone: "919696427822" },
+              { name: "Rudransh", phone: "916375908635" },
             ].map((dev) => (
               <Card key={dev.name} className="flex flex-col items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface/40 font-display text-lg text-cream">
