@@ -24,7 +24,7 @@ export default function HeroSection() {
   return (
     <Section className="relative overflow-hidden text-[var(--color-cream)]">
       <Container>
-        <div className="grid grid-cols-2 items-center gap-16">
+        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
 
             
           {/* LEFT SIDE */}

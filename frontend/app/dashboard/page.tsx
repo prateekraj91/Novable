@@ -76,7 +76,7 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-base text-cream">
+    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
       <Sidebar />
       <main className="flex-1">
         <div className="px-6 pt-8 pb-16 md:px-10">
@@ -132,9 +132,9 @@ export default async function DashboardPage() {
                   {sites.map((s) => (
                     <div
                       key={s.id}
-                      className="flex items-center justify-between gap-4 rounded-md border border-hairline bg-surface/40 p-5"
+                      className="flex flex-col items-start gap-3 rounded-md border border-hairline bg-surface/40 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                     >
-                      <div className="min-w-0">
+                      <div className="w-full min-w-0 sm:w-auto">
                         <p className="truncate text-cream">
                           {s.content?.hero_title ?? "Generated site"}
                         </p>
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                           /site/{s.slug} · {timeAgo(s.created_at)}
                         </p>
                       </div>
-                      <div className="flex shrink-0 gap-2">
+                      <div className="flex flex-wrap gap-2 sm:shrink-0">
                         <CopyButton
                           path={`/site/${s.slug}`}
                           className="rounded-sm border border-hairline px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-muted transition hover:border-amber hover:text-amber"

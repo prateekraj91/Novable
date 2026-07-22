@@ -80,7 +80,7 @@ export default function PublishedSite({
             >
               {biz.city ? `${biz.city} · ` : ""}Now open
             </span>
-            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
               {content.hero_title}
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-neutral-600">
@@ -358,7 +358,7 @@ export default function PublishedSite({
             >
               Make it yours
             </p>
-            <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+            <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Want to customize this further? Work with a developer
             </h2>
             <p className="mt-4 text-neutral-600">

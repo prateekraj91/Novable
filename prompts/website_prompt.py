@@ -103,9 +103,62 @@ The business owner has requested this change:
 
 "{instruction}"
 
-Apply ONLY what the request implies. Return the COMPLETE updated website as JSON
-with the same fields and structure. Keep every other field exactly as it was
-unless the change clearly requires touching it. If the request asks for a colour
-change, update primary_color to a valid hex code (e.g. "#1E88E5"). Do not add
-explanations — return only the website JSON.
+Apply ONLY the requested change and return the COMPLETE updated website as JSON
+with exactly the same fields and structure as the input. Preserve every field the
+instruction does not touch, unchanged. Do not add, rename, or drop fields. Return
+only the website JSON — no markdown, no explanations.
+
+GROUNDING (always applies):
+- Never invent business facts that are not already present in the current
+  content: no new hours, prices, phone numbers, addresses, awards, credentials,
+  named real people, or statistics. You may only rephrase, restructure, or
+  restyle information that is already there.
+- If a request would require a fact you don't have, make the smallest truthful
+  change you can and leave the rest untouched.
+
+HOW TO HANDLE EACH KIND OF REQUEST:
+
+1. Text / copy edits ("change the hero heading", "rewrite the about section",
+   "make the CTA say Book Now"):
+   - Edit only the specific field named: hero_title, hero_subtitle, about, cta,
+     a service's title/description, a faq question/answer, etc.
+   - Respect the original length guidance: hero_title under 8 words,
+     hero_subtitle under 20 words, about 80-120 words.
+   - Leave every other field unchanged.
+
+2. Tone changes ("make it more professional", "sound more casual and friendly"):
+   - Rewrite the wording of the text fields (hero_title, hero_subtitle, about,
+     service descriptions, why_choose_us, cta, faq answers, meta_description) to
+     match the new tone.
+   - Keep the same underlying facts and meaning — only the voice changes.
+   - Do not change primary_color unless the instruction also asks for it.
+
+3. Adding a section ("add testimonials", "add a few FAQs", "add more services"):
+   - Populate the matching array: testimonials, faq, services, why_choose_us.
+   - Testimonials are illustrative and fictional: they must read as plausible
+     customer sentiment and must NOT reference specific facts (real names,
+     prices, hours, locations) that are not already in the content.
+   - FAQs and services must be grounded only in facts already present; do not
+     invent new offerings, pricing, or policies.
+
+4. Removing a section ("remove the FAQ", "drop the testimonials"):
+   - Set that field to an empty list ([]) — the site hides any section whose
+     list is empty. Applies to: services, faq, testimonials, why_choose_us.
+   - Never blank out hero_title, hero_subtitle, cta, about, meta_title,
+     meta_description, or primary_color — those are required and always shown.
+
+5. Theme / colour changes ("make it blue", "use a warmer colour"):
+   - Update primary_color to a single valid hex code (e.g. "#1E88E5"). Never
+     return a colour name. Change nothing else.
+
+WHAT YOU CANNOT DO (return the content unchanged rather than guess):
+- The available fields are fixed: hero_title, hero_subtitle, about, services,
+  faq, testimonials, cta, primary_color, why_choose_us, meta_title,
+  meta_description. You cannot reorder sections or create section types that are
+  not fields in this schema (for example a pricing table or a contact form). If
+  the instruction asks for something outside these fields, apply the closest
+  valid change if one clearly exists; otherwise return the content exactly as
+  given.
+
+Return only the updated website JSON.
 """

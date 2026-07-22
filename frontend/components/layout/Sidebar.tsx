@@ -150,6 +150,26 @@ export default function Sidebar() {
     })();
   }, []);
 
+  // Close the drawer on Escape and lock body scroll while it's open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  // Navigate and always dismiss the mobile drawer.
+  const go = (href: string) => {
+    setOpen(false);
+    router.push(href);
+  };
+
   const content = (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-6 py-6">
@@ -172,7 +192,7 @@ export default function Sidebar() {
         {section.items.map((item) => (
           <li key={item.label}>
             <button
-              onClick={() => router.push(item.href)}
+              onClick={() => go(item.href)}
               className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 font-mono text-xs uppercase tracking-[0.1em] transition-all ${
                 pathname === item.href
                   ? "bg-amber/10 text-amber border border-amber/20"
@@ -216,7 +236,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="flex items-center justify-between border-b border-hairline bg-base px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-hairline bg-base px-4 py-3 md:hidden">
         <div className="flex items-center gap-2.5">
           <Logo className="h-5 w-5" />
           <span className="font-mono text-sm text-cream">
@@ -224,8 +244,9 @@ export default function Sidebar() {
           </span>
         </div>
         <button
-          onClick={() => setOpen(true)}
-          aria-label="Open menu"
+          onClick={() => setOpen((o) => !o)}
+          aria-label="Toggle menu"
+          aria-expanded={open}
           className="flex h-9 w-9 items-center justify-center rounded-sm border border-hairline text-cream"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">

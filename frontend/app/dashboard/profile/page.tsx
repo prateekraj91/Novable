@@ -32,7 +32,7 @@ export default async function BusinessProfilePage() {
     .maybeSingle<Business>();
 
   return (
-    <div className="flex min-h-screen bg-base text-cream">
+    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
       <Sidebar />
       <main className="flex-1">
         <div className="px-6 pt-8 pb-16 md:px-10">
