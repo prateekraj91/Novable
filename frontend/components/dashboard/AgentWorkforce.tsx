@@ -57,15 +57,17 @@ function RunButton({
   loading,
   onClick,
   children,
+  disabled = false,
 }: {
   loading: boolean;
   onClick: () => void;
   children: ReactNode;
+  disabled?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
-      disabled={loading}
+      disabled={loading || disabled}
       className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
     >
       {loading ? "Working…" : children}
@@ -141,10 +143,15 @@ function AskCatalyst({ business }: { business: WorkforceBusiness }) {
         placeholder="e.g. How do I get more weekend customers?"
         className="w-full rounded-sm border border-hairline bg-base/60 px-4 py-3 text-sm text-cream placeholder:text-muted/60 outline-none focus:border-amber"
       />
-      <div className="mt-3">
-        <RunButton loading={loading} onClick={run}>
+      <div className="mt-3 flex items-center gap-3">
+        <RunButton loading={loading} disabled={!question.trim()} onClick={run}>
           Ask
         </RunButton>
+        {!question.trim() && (
+          <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted/70">
+            Type a question first
+          </span>
+        )}
       </div>
       {error && <ErrorNote msg={error} />}
       {out && (

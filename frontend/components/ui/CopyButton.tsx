@@ -18,7 +18,7 @@ export default function CopyButton({
     try {
       await navigator.clipboard.writeText(window.location.origin + path);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard blocked — ignore */
     }

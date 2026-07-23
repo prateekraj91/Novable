@@ -14,10 +14,41 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "error" | "sent">(
-    "idle"
-  );
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "error" | "sent" | "reset-sent"
+  >("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [forgot, setForgot] = useState(false);
+
+  async function handleReset(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!email) {
+      setStatus("error");
+      setErrorMsg("Enter your email to reset your password.");
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/login`,
+    });
+    if (error) {
+      setStatus("error");
+      setErrorMsg(error.message);
+      return;
+    }
+    setStatus("reset-sent");
+  }
+
+  function backToSignIn() {
+    setForgot(false);
+    setStatus("idle");
+    setErrorMsg("");
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,6 +99,80 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
     router.refresh();
   }
 
+  if (forgot) {
+    if (status === "reset-sent") {
+      return (
+        <div className="w-full max-w-sm">
+          <p className="rounded-sm border border-sage/30 bg-sage/10 px-4 py-3 text-sm text-cream">
+            If an account exists for{" "}
+            <span className="text-sage">{email}</span>, we&apos;ve sent a
+            password reset link. Check your inbox.
+          </p>
+          <button
+            type="button"
+            onClick={backToSignIn}
+            className="mt-5 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-amber transition-colors hover:text-sage"
+          >
+            ← Back to sign in
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <form onSubmit={handleReset} className="w-full max-w-sm">
+        <h2 className="font-display text-xl text-cream">Reset your password</h2>
+        <p className="mt-1 text-sm text-muted">
+          Enter your email and we&apos;ll send you a reset link.
+        </p>
+
+        <div className="mt-5">
+          <label
+            htmlFor="reset-email"
+            className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted"
+          >
+            Email
+          </label>
+          <input
+            id="reset-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@company.com"
+            className="mt-2 w-full rounded-sm border border-hairline bg-surface/60 px-4 py-3 text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-amber"
+          />
+        </div>
+
+        {status === "error" && (
+          <p
+            role="alert"
+            className="mt-4 rounded-sm border border-amber/30 bg-amber/10 px-4 py-2.5 font-mono text-xs text-amber"
+          >
+            {errorMsg}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-sm bg-amber px-6 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
+        >
+          {status === "loading" ? "Sending…" : "Send reset link"}
+        </button>
+
+        <button
+          type="button"
+          onClick={backToSignIn}
+          className="mt-4 block w-full text-center font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted transition-colors hover:text-amber"
+        >
+          ← Back to sign in
+        </button>
+      </form>
+    );
+  }
+
   if (status === "sent") {
     return (
       <div className="w-full max-w-sm">
@@ -113,12 +218,17 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
             Password
           </label>
           {mode === "signin" && (
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={() => {
+                setForgot(true);
+                setStatus("idle");
+                setErrorMsg("");
+              }}
               className="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted transition-colors hover:text-amber"
             >
               Forgot?
-            </a>
+            </button>
           )}
         </div>
 

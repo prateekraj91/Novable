@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Step1 from "./step1";
@@ -20,6 +20,12 @@ import { saveGeneratedSite } from "@/lib/sites";
 import { createClient } from "@/lib/supabase/client";
 
 const TOTAL_STEPS = 4;
+
+const GENERATING_MESSAGES = [
+  "Writing your content…",
+  "Choosing your colours…",
+  "Almost done…",
+];
 
 const stepTitles = [
   "Business",
@@ -47,6 +53,21 @@ export default function OnboardingForm() {
 
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  // Rotate the status messages while the site is generating (~14s), holding on
+  // the final "Almost done…" until the request resolves.
+  useEffect(() => {
+    if (!loading) {
+      setMsgIndex(0);
+      return;
+    }
+    const id = setInterval(() => {
+      setMsgIndex((i) => Math.min(i + 1, GENERATING_MESSAGES.length - 1));
+    }, 4500);
+    return () => clearInterval(id);
+  }, [loading]);
 
   async function uploadImages(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -228,6 +249,40 @@ export default function OnboardingForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
+        <svg
+          className="h-10 w-10 animate-spin text-amber"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeOpacity="0.25"
+          />
+          <path
+            d="M21 12a9 9 0 00-9-9"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+        </svg>
+        <div aria-live="polite">
+          <p className="font-display text-xl text-cream">Generating your site</p>
+          <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-sage">
+            {GENERATING_MESSAGES[msgIndex]}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
