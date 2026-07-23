@@ -14,14 +14,7 @@ export default function OnboardingPage() {
       </header>
 
       <div className="mx-auto max-w-2xl px-6 py-16">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-sage">
-            Step 1 of 1
-          </span>
-          <span className="h-px flex-1 bg-hairline" />
-        </div>
-
-        <p className="eyebrow text-amber mb-3 mt-6">Pre-flight checklist</p>
+        <p className="eyebrow text-amber mb-3">Pre-flight checklist</p>
         <h1 className="font-display text-3xl leading-tight text-cream md:text-4xl">
           Tell us about your business.
         </h1>

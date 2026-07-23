@@ -58,7 +58,7 @@ export default function Navbar() {
             href="#pricing"
             className="rounded-md border border-amber bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
-            Get Started
+            See pricing
           </a>
         </div>
 
@@ -103,13 +103,23 @@ export default function Navbar() {
               </li>
             ))}
 
+            <li>
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="font-mono text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:text-cream"
+              >
+                Sign In
+              </Link>
+            </li>
+
             <li className="pt-2">
               <a
                 href="#pricing"
                 onClick={() => setOpen(false)}
                 className="inline-block rounded-md border border-amber bg-amber px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base"
               >
-                Get Started
+                See pricing
               </a>
             </li>
           </ul>
