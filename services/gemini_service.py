@@ -8,9 +8,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed, before_sleep_log
 logger=logging.getLogger(__name__)
 
 client = genai.Client(
-    vertexai=True,
-    project=os.getenv("GOOGLE_CLOUD_PROJECT"),
-    location=os.getenv("GOOGLE_CLOUD_LOCATION")
+    api_key=os.getenv("GEMINI_API_KEY")
 )
 
 @retry(
