@@ -250,30 +250,24 @@ export default function ResultPage() {
             align="center"
           />
           <p className="mx-auto mt-4 max-w-xl text-muted">
-            Get hands-on help tailoring your site — reach out to one of our
-            developers directly on WhatsApp.
+            Get hands-on help tailoring your site — reach out to our developer
+            directly on WhatsApp.
           </p>
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {[
-              { name: "Prateek", phone: "919142250799" },
-              { name: "Prakhar", phone: "919696427822" },
-              { name: "Rudransh", phone: "916375908635" },
-            ].map((dev) => (
-              <Card key={dev.name} className="flex flex-col items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface/40 font-display text-lg text-cream">
-                  {dev.name.slice(0, 1)}
-                </div>
-                <h3 className="font-display text-xl text-cream">{dev.name}</h3>
-                <a
-                  href={`https://wa.me/${dev.phone}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
-                >
-                  WhatsApp
-                </a>
-              </Card>
-            ))}
+          <div className="mx-auto mt-10 max-w-sm">
+            <Card className="flex flex-col items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface/40 font-display text-lg text-cream">
+                P
+              </div>
+              <h3 className="font-display text-xl text-cream">Prateek</h3>
+              <a
+                href="https://wa.me/919142250799"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
+              >
+                WhatsApp
+              </a>
+            </Card>
           </div>
         </Container>
       </Section>

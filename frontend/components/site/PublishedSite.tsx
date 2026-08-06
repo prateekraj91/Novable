@@ -362,38 +362,27 @@ export default function PublishedSite({
               Want to customize this further? Work with a developer
             </h2>
             <p className="mt-4 text-neutral-600">
-              Get hands-on help tailoring this site — message one of our
-              developers directly on WhatsApp.
+              Get hands-on help tailoring this site — message our developer
+              directly on WhatsApp.
             </p>
           </div>
-          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-3">
-            {[
-              { name: "Prateek", phone: "919142250799" },
-              { name: "Prakhar", phone: "919696427822" },
-              { name: "Rudransh", phone: "916375908635" },
-            ].map((dev) => (
-              <div
-                key={dev.name}
-                className="flex flex-col items-center rounded-2xl border border-neutral-200 bg-white p-7 text-center"
-              >
-                <span
-                  className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white"
-                  style={{ backgroundColor: accent }}
-                >
-                  {dev.name.slice(0, 1)}
-                </span>
-                <h3 className="mt-4 text-xl font-semibold">{dev.name}</h3>
-                <a
-                  href={`https://wa.me/${dev.phone}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 rounded-full px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
-                  style={{ backgroundColor: accent }}
-                >
-                  WhatsApp
-                </a>
-              </div>
-            ))}
+          <div className="mx-auto mt-12 flex max-w-sm flex-col items-center rounded-2xl border border-neutral-200 bg-white p-7 text-center">
+            <span
+              className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white"
+              style={{ backgroundColor: accent }}
+            >
+              P
+            </span>
+            <h3 className="mt-4 text-xl font-semibold">Prateek</h3>
+            <a
+              href="https://wa.me/919142250799"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 rounded-full px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+              style={{ backgroundColor: accent }}
+            >
+              WhatsApp
+            </a>
           </div>
         </section>
       </Reveal>
