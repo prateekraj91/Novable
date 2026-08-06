@@ -30,7 +30,7 @@ export default function Footer() {
             <div className="group flex items-center gap-2.5">
               <Logo className="h-6 w-6" />
               <span className="font-mono text-sm text-cream">
-                Catalyst
+                Novable
               </span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
@@ -59,7 +59,7 @@ export default function Footer() {
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-hairline pt-8 md:flex-row">
           <p className="font-mono text-[0.65rem] text-muted">
-            © {new Date().getFullYear()} Catalyst. All systems nominal.
+            © {new Date().getFullYear()} Novable. All systems nominal.
           </p>
           <div className="flex gap-6 font-mono text-[0.65rem] text-muted">
             <a href="/privacy" className="transition-colors hover:text-amber">

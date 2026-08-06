@@ -23,9 +23,9 @@ const jbmono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Catalyst — Your AI Co-pilot for Growth",
+  title: "Novable — Your AI Co-pilot for Growth",
   description:
-    "Catalyst reads your funnel, finds your highest-leverage growth moves, and automates them across every channel — so your team flies, not guesses.",
+    "Novable reads your funnel, finds your highest-leverage growth moves, and automates them across every channel — so your team flies, not guesses.",
 };
 
 export default function RootLayout({

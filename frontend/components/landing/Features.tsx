@@ -3,25 +3,25 @@ const phases = [
     code: "STEP 01",
     name: "Connect",
     title: "Connect your business in minutes",
-    body: "Securely connect your CRM, website, payment platform, analytics, and marketing tools. Catalyst automatically builds a unified view of your business so nothing gets missed.",
+    body: "Securely connect your CRM, website, payment platform, analytics, and marketing tools. Novable automatically builds a unified view of your business so nothing gets missed.",
   },
   {
     code: "STEP 02",
     name: "Diagnose",
     title: "Discover your biggest growth opportunities",
-    body: "Catalyst continuously analyzes your business to identify bottlenecks, customer drop-offs, underperforming campaigns, and hidden opportunities ranked by business impact.",
+    body: "Novable continuously analyzes your business to identify bottlenecks, customer drop-offs, underperforming campaigns, and hidden opportunities ranked by business impact.",
   },
   {
     code: "STEP 03",
     name: "Launch",
     title: "Turn insights into action",
-    body: "Approve AI-powered recommendations with a click. Whether it's improving customer retention, optimizing marketing, or streamlining operations, Catalyst helps you execute faster.",
+    body: "Approve AI-powered recommendations with a click. Whether it's improving customer retention, optimizing marketing, or streamlining operations, Novable helps you execute faster.",
   },
   {
     code: "STEP 04",
     name: "Automate",
     title: "Keep improving while you focus on growth",
-    body: "Monitor performance through a live dashboard while Catalyst continuously tracks results, refines strategies, and automates repetitive business workflows.",
+    body: "Monitor performance through a live dashboard while Novable continuously tracks results, refines strategies, and automates repetitive business workflows.",
   },
 ];
 
@@ -30,7 +30,7 @@ export default function Features() {
     <section id="features" className="border-t border-hairline px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <p className="eyebrow text-amber mb-4">
-          How Catalyst Works
+          How Novable Works
         </p>
 
         <h2 className="font-display max-w-2xl text-3xl leading-tight text-cream md:text-[2.5rem]">
@@ -40,7 +40,7 @@ export default function Features() {
         </h2>
 
         <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-          Catalyst brings together your business data, identifies what matters
+          Novable brings together your business data, identifies what matters
           most, recommends high-impact actions, and helps you automate the work
           that drives sustainable growth.
         </p>

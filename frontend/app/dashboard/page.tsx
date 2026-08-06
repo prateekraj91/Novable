@@ -4,7 +4,7 @@ import CopyButton from "@/components/ui/CopyButton";
 import { createClient } from "@/lib/supabase/server";
 
 const AGENT_LABEL: Record<string, string> = {
-  chat: "Ask Catalyst",
+  chat: "Ask Novable",
   social: "Social calendar",
   campaign: "WhatsApp campaign",
   reviews: "Review replies",

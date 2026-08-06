@@ -8,13 +8,13 @@ export const CONTACT_EMAIL = "prateekrajcric18@gmail.com";
 export const CONTACT_WHATSAPP = "919142250799";
 
 export function contactLink(planName: string): string {
-  const msg = `Hi! I'd like to get started with Catalyst (${planName} plan).`;
+  const msg = `Hi! I'd like to get started with Novable (${planName} plan).`;
 
   if (CONTACT_WHATSAPP) {
     return `https://wa.me/${CONTACT_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   }
 
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    `Catalyst — ${planName} plan`
+    `Novable — ${planName} plan`
   )}&body=${encodeURIComponent(msg)}`;
 }

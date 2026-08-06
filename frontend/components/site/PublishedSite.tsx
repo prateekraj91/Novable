@@ -394,7 +394,7 @@ export default function PublishedSite({
             © {new Date().getFullYear()} {name}
           </span>
           <a href="/" className="transition-colors hover:text-neutral-800">
-            Made with Catalyst
+            Made with Novable
           </a>
         </div>
       </footer>

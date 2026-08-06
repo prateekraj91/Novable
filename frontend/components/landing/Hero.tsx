@@ -29,7 +29,7 @@ export default function HeroSection() {
             
           {/* LEFT SIDE */}
           <div>
-            <Badge>Catalyst</Badge>
+            <Badge>Novable</Badge>
 
             <div className="mt-6">
               <Heading

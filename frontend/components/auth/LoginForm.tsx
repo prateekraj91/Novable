@@ -314,7 +314,7 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
           </>
         ) : (
           <>
-            New to Catalyst?{" "}
+            New to Novable?{" "}
             <Link href="/signup" className="text-amber transition-colors hover:text-sage">
               Start your trial
             </Link>

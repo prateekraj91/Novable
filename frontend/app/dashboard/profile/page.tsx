@@ -40,7 +40,7 @@ export default async function BusinessProfilePage() {
             <p className="eyebrow text-amber mb-3">Business Profile</p>
             <h1 className="font-display text-4xl text-cream">Your business.</h1>
             <p className="mt-3 max-w-xl text-muted">
-              Everything Catalyst knows about your business. Every AI agent uses
+              Everything Novable knows about your business. Every AI agent uses
               these details to make better decisions.
             </p>
 

@@ -63,7 +63,7 @@ export default function ExistingBusinessPage() {
       <header className="border-b border-hairline px-6 py-5">
         <Link href="/" className="mx-auto flex max-w-2xl items-center gap-2.5">
           <Logo className="h-5 w-5" />
-          <span className="font-mono text-sm text-cream">Catalyst</span>
+          <span className="font-mono text-sm text-cream">Novable</span>
         </Link>
       </header>
 

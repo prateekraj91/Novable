@@ -15,7 +15,7 @@ export default function Freelancers() {
           </h2>
 
           <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-            Designers and developers join the Catalyst marketplace for
+            Designers and developers join the Novable marketplace for
             ₹299/month — a fraction of Upwork&apos;s 20% cut — and get matched to
             real local projects.
           </p>

@@ -1,4 +1,4 @@
-const columns = ["Capability", "Wix / Squarespace", "Traditional Agency", "Catalyst"];
+const columns = ["Capability", "Wix / Squarespace", "Traditional Agency", "Novable"];
 
 const rows = [
   ["Website creation", "DIY templates", "4–6 weeks", "AI in 2 min"],
@@ -15,7 +15,7 @@ export default function Comparison() {
   return (
     <section id="compare" className="border-t border-hairline px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <p className="eyebrow text-amber mb-4">Why Catalyst Wins</p>
+        <p className="eyebrow text-amber mb-4">Why Novable Wins</p>
 
         <h2 className="font-display max-w-2xl text-3xl leading-tight text-cream md:text-[2.5rem]">
           More than a website. More than an agency.

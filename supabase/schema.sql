@@ -1,4 +1,4 @@
--- Catalyst — Supabase schema
+-- Novable — Supabase schema
 -- Run this in your Supabase project: SQL Editor → paste → Run.
 -- Safe to re-run (idempotent).
 

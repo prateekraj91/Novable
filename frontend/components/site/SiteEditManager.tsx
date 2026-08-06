@@ -70,7 +70,7 @@ export default function SiteEditManager({
         <p className="eyebrow text-amber mb-2">Refine with AI</p>
         <h2 className="font-display text-xl text-cream">Describe a change</h2>
         <p className="mt-1 text-sm text-muted">
-          Tell Catalyst what to change and it rewrites your site.
+          Tell Novable what to change and it rewrites your site.
         </p>
 
         <textarea

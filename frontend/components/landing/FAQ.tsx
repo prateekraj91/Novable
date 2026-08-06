@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: "How do WhatsApp and Google integrations work?",
-    a: "Today Catalyst writes everything for you — ready-to-send WhatsApp campaigns, social posts, and drafted replies to reviews you paste in — and you post them. Direct Google Business and WhatsApp connections that publish automatically are coming soon.",
+    a: "Today Novable writes everything for you — ready-to-send WhatsApp campaigns, social posts, and drafted replies to reviews you paste in — and you post them. Direct Google Business and WhatsApp connections that publish automatically are coming soon.",
   },
   {
     q: "What does pricing look like?",

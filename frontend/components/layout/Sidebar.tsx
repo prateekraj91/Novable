@@ -175,7 +175,7 @@ export default function Sidebar() {
       <div className="flex items-center gap-2.5 px-6 py-6">
         <Logo className="h-6 w-6" />
         <span className="font-mono text-sm text-cream">
-          Catalyst
+          Novable
         </span>
       </div>
 
@@ -240,7 +240,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-2.5">
           <Logo className="h-5 w-5" />
           <span className="font-mono text-sm text-cream">
-            Catalyst
+            Novable
           </span>
         </div>
         <button

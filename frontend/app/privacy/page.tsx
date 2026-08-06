@@ -3,7 +3,7 @@ import Logo from "@/components/ui/Logo";
 import Footer from "@/components/layout/Footer";
 
 export const metadata = {
-  title: "Privacy Policy — Catalyst",
+  title: "Privacy Policy — Novable",
 };
 
 export default function PrivacyPage() {
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <header className="border-b border-hairline px-6 py-5">
         <Link href="/" className="mx-auto flex max-w-3xl items-center gap-2.5">
           <Logo className="h-6 w-6" />
-          <span className="font-mono text-sm text-cream">Catalyst</span>
+          <span className="font-mono text-sm text-cream">Novable</span>
         </Link>
       </header>
 
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
             <h2 className="font-display text-xl text-cream">What we collect</h2>
             <p className="mt-3">
               When you create an account we collect your email address. When you
-              use Catalyst you provide details about your business (name,
+              use Novable you provide details about your business (name,
               category, location, contact information, and description), which we
               store to generate your website and power your AI agents.
             </p>
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="font-display text-xl text-cream">Third parties</h2>
             <p className="mt-3">
-              Catalyst uses trusted infrastructure providers to operate — including
+              Novable uses trusted infrastructure providers to operate — including
               Google Vertex AI for content generation, Supabase for authentication
               and data storage, and Razorpay for payments. Your data is processed
               by these providers only as needed to deliver the service.
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
             <h2 className="font-display text-xl text-cream">Contact</h2>
             <p className="mt-3">
               Questions about this policy? Reach us at{" "}
-              <span className="text-cream">hello@catalyst.example</span>.
+              <span className="text-cream">hello@novable.example</span>.
             </p>
           </section>
 

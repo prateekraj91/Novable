@@ -27,7 +27,7 @@ export default function Navbar() {
           <Logo className="h-9 w-9" />
 
           <span className="font-display text-xl tracking-tight text-cream">
-            Catalyst
+            Novable
           </span>
         </a>
 

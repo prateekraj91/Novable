@@ -3,7 +3,7 @@ import Logo from "@/components/ui/Logo";
 import Footer from "@/components/layout/Footer";
 
 export const metadata = {
-  title: "Terms of Service — Catalyst",
+  title: "Terms of Service — Novable",
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
       <header className="border-b border-hairline px-6 py-5">
         <Link href="/" className="mx-auto flex max-w-3xl items-center gap-2.5">
           <Logo className="h-6 w-6" />
-          <span className="font-mono text-sm text-cream">Catalyst</span>
+          <span className="font-mono text-sm text-cream">Novable</span>
         </Link>
       </header>
 
@@ -25,7 +25,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-display text-xl text-cream">The service</h2>
             <p className="mt-3">
-              Catalyst generates websites and marketing content for your business
+              Novable generates websites and marketing content for your business
               using AI, and provides a set of AI agents to help you grow. You are
               responsible for reviewing and approving anything generated before
               you publish or send it.
@@ -62,7 +62,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-display text-xl text-cream">Liability</h2>
             <p className="mt-3">
-              Catalyst is provided &ldquo;as is.&rdquo; We work hard to keep it
+              Novable is provided &ldquo;as is.&rdquo; We work hard to keep it
               reliable, but we are not liable for indirect or consequential damages
               arising from your use of the service.
             </p>

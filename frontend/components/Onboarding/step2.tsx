@@ -154,7 +154,7 @@ export default function Step2({
         )}
 
         <p className="mt-3 text-sm text-muted">
-          Catalyst uses this to generate marketing content, customer
+          Novable uses this to generate marketing content, customer
           communication, and recommendations that match your brand.
         </p>
       </div>

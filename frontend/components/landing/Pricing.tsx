@@ -27,7 +27,7 @@ const tiers = [
       "WhatsApp campaign generator",
       "Review reply drafting",
       "Weekly analytics reports",
-      "Ask Catalyst — your AI chief of staff",
+      "Ask Novable — your AI chief of staff",
       "Priority support",
     ],
     cta: "Get started",

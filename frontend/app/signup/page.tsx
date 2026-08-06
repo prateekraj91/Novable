@@ -9,7 +9,7 @@ export default function SignupPage() {
         <a href="/" className="flex items-center gap-2.5">
           <Logo className="h-6 w-6" />
           <span className="font-mono text-sm tracking-wide text-cream">
-            Catalyst
+            Novable
           </span>
         </a>
 
@@ -30,7 +30,7 @@ export default function SignupPage() {
         <div className="w-full max-w-sm">
           <a href="/" className="mb-10 flex items-center gap-2.5 md:hidden">
             <Logo className="h-5 w-5" />
-            <span className="font-mono text-sm text-cream">Catalyst</span>
+            <span className="font-mono text-sm text-cream">Novable</span>
           </a>
 
           <p className="eyebrow text-amber mb-3">Create account</p>
@@ -38,7 +38,7 @@ export default function SignupPage() {
             Start your trial.
           </h1>
           <p className="mt-3 text-sm text-muted">
-            Create your Catalyst account — no card required.
+            Create your Novable account — no card required.
           </p>
 
           <div className="mt-8">

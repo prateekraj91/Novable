@@ -21,7 +21,7 @@ export default function DashboardHeader() {
           </h1>
 
           <p className="mt-3 max-w-2xl text-muted leading-relaxed">
-            Catalyst coordinated your AI workforce. Review recent activity, monitor your agents,
+            Novable coordinated your AI workforce. Review recent activity, monitor your agents,
             and approve recommendations before they go live.
           </p>
         </div>

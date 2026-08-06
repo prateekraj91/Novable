@@ -57,7 +57,7 @@ export default function Step4({ data }: Props) {
 
         <p className="mt-2 text-muted max-w-lg">
           You're almost there. Review your business information before
-          Catalyst creates your workspace.
+          Novable creates your workspace.
         </p>
 
       </div>
@@ -147,7 +147,7 @@ export default function Step4({ data }: Props) {
       <div className="rounded-md border border-amber/20 bg-amber/5 p-5">
 
         <p className="text-sm text-muted leading-relaxed">
-          By creating your workspace, Catalyst will use this information to
+          By creating your workspace, Novable will use this information to
           personalize your dashboard, generate AI recommendations, and connect
           future integrations. You can edit everything later from Settings.
         </p>

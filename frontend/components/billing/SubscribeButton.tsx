@@ -47,7 +47,7 @@ export default function SubscribeButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount,
-          business_name: business?.name ?? "Catalyst customer",
+          business_name: business?.name ?? "Novable customer",
           phone: business?.phone ?? "",
         }),
       });

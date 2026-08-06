@@ -1,4 +1,4 @@
-// Catalyst mark. Cream by default; if placed inside a `group`, it swaps to
+// Novable mark. Cream by default; if placed inside a `group`, it swaps to
 // amber on hover. Extracted + recoloured from the source logo.
 export default function Logo({ className = "h-8 w-8" }: { className?: string }) {
   return (
@@ -6,7 +6,7 @@ export default function Logo({ className = "h-8 w-8" }: { className?: string }) 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/logo-cream.png"
-        alt="Catalyst"
+        alt="Novable"
         className="h-full w-full object-contain transition-opacity duration-300 group-hover:opacity-0"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}

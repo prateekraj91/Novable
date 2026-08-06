@@ -8,7 +8,7 @@ export default function OnboardingPage() {
         <a href="/" className="mx-auto flex max-w-2xl items-center gap-2.5">
           <Logo className="h-5 w-5" />
           <span className="font-mono text-sm text-cream">
-            Catalyst
+            Novable
           </span>
         </a>
       </header>
@@ -19,7 +19,7 @@ export default function OnboardingPage() {
           Tell us about your business.
         </h1>
         <p className="mt-3 max-w-md text-muted">
-          This sets up your workspace and lets Catalyst tailor its first
+          This sets up your workspace and lets Novable tailor its first
           recommendations to your business.
         </p>
 

@@ -10,7 +10,7 @@ export default function LoginPage() {
         <a href="/" className="flex items-center gap-2.5">
           <Logo className="h-6 w-6" />
           <span className="font-mono text-sm tracking-wide text-cream">
-            Catalyst
+            Novable
           </span>
         </a>
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
           <a href="/" className="mb-10 flex items-center gap-2.5 md:hidden">
             <Logo className="h-5 w-5" />
             <span className="font-mono text-sm text-cream">
-              Catalyst
+              Novable
             </span>
           </a>
 

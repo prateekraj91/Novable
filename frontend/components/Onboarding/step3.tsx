@@ -41,7 +41,7 @@ export default function Step3({
         </h3>
 
         <p className="mt-1 text-sm text-muted">
-          This helps Catalyst connect your workspace and contact you when
+          This helps Novable connect your workspace and contact you when
           needed.
         </p>
       </div>

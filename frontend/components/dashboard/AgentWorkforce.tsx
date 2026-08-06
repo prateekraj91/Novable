@@ -133,7 +133,7 @@ function AskCatalyst({ business }: { business: WorkforceBusiness }) {
   return (
     <Panel
       eyebrow="Account Manager"
-      title="Ask Catalyst"
+      title="Ask Novable"
       desc="Your AI chief of staff — ask anything about growing the business."
     >
       <textarea
@@ -384,7 +384,7 @@ function ReviewAgent({ business }: { business: WorkforceBusiness }) {
     <Panel
       eyebrow="Review Agent"
       title="Draft review replies"
-      desc="Paste customer reviews (one per line, optionally start with a 1–5 rating). Catalyst drafts personalised replies."
+      desc="Paste customer reviews (one per line, optionally start with a 1–5 rating). Novable drafts personalised replies."
     >
       <textarea
         value={text}
