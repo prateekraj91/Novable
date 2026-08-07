@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Caprasimo, Figtree, Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Ambient from "@/components/layout/Ambient";
 
@@ -22,6 +22,20 @@ const jbmono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+// The Organic design system's pairing, used by the landing page (see
+// styles/organic.css). Caprasimo is the only display voice; Figtree is body.
+const caprasimo = Caprasimo({
+  subsets: ["latin"],
+  variable: "--font-caprasimo",
+  weight: "400",
+});
+
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  weight: ["400", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Novable — Your AI Co-pilot for Growth",
   description:
@@ -34,7 +48,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${inter.variable} ${jbmono.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${fraunces.variable} ${inter.variable} ${jbmono.variable} ${caprasimo.variable} ${figtree.variable}`}
+    >
       <body className="font-body antialiased">
         <Ambient />
         {children}

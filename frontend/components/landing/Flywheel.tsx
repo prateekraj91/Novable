@@ -1,4 +1,4 @@
-const steps = [
+const flywheel = [
   "Business joins & AI builds the site",
   "AI improves visibility & rankings",
   "More leads & enquiries flow in",
@@ -11,38 +11,91 @@ const steps = [
 
 export default function Flywheel() {
   return (
-    <section id="flywheel" className="border-t border-hairline px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <p className="eyebrow text-amber mb-4">Growth Flywheel</p>
+    <section
+      id="flywheel"
+      style={{
+        background: "var(--color-accent-2-900)",
+        color: "var(--color-bg)",
+        padding: "80px 0",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        className="nb-dot"
+        style={{
+          width: 280,
+          height: 280,
+          background: "color-mix(in srgb, var(--color-bg) 8%, transparent)",
+          top: -100,
+          left: -80,
+        }}
+      />
 
-        <h2 className="font-display max-w-2xl text-3xl leading-tight text-cream md:text-[2.5rem]">
+      <div className="nb-edge">
+        <span className="nb-kicker" style={{ color: "var(--color-accent-2-200)" }}>
+          Growth Flywheel
+        </span>
+
+        <h2 className="nb-h2" style={{ maxWidth: "28ch" }}>
           Every customer makes the next one easier.
         </h2>
 
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, i) => (
-            <div
-              key={step}
-              className="glass lift flex items-start gap-4 rounded-md p-6"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-hairline bg-base font-mono text-xs text-amber">
-                {i + 1}
-              </span>
-              <p className="leading-relaxed text-cream">{step}</p>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 14,
+            marginTop: 36,
+            alignItems: "center",
+          }}
+        >
+          {flywheel.map((text, i) => (
+            <div key={text} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  borderRadius: 999,
+                  background: "color-mix(in srgb, var(--color-bg) 10%, transparent)",
+                  padding: "12px 18px",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 400,
+                    fontSize: 15,
+                    color: "var(--color-accent-2-200)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span style={{ fontSize: 14, lineHeight: 1.3, maxWidth: "20ch" }}>
+                  {text}
+                </span>
+              </div>
+
+              {i < flywheel.length - 1 && (
+                <span
+                  aria-hidden
+                  style={{ color: "var(--color-accent-2-200)", fontSize: 16 }}
+                >
+                  →
+                </span>
+              )}
             </div>
           ))}
         </div>
 
-        <p className="mt-8 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-muted">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0">
-            <path
-              d="M4 9a8 8 0 0 1 14-3m2-3v6h-6M20 15a8 8 0 0 1-14 3m-2 3v-6h6"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <p
+          style={{
+            margin: "28px 0 0",
+            fontSize: 14,
+            color: "var(--color-accent-2-200)",
+          }}
+        >
           Loops back to the start — every cycle strengthens the platform.
         </p>
       </div>

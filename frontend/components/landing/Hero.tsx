@@ -1,144 +1,184 @@
-"use client";
-import {
-  Badge,
-  Button,
-  Card,
-  Container,
-  Heading,
-  Section,
-} from "@/components/common";
 import Link from "next/link";
 
-import Agent from "@/components/dashboard/AgentCard";
-import TiltCard from "@/components/ui/TiltCard";
+const dashboardAgents = [
+  { name: "Website Agent", status: "Generated" },
+  { name: "Review Agent", status: "Running" },
+  { name: "WhatsApp Agent", status: "Scheduled" },
+  { name: "Analytics Agent", status: "Updated" },
+];
 
-import {
-  Globe,
-  MessageSquare,
-  Megaphone,
-  BarChart3,
-  Bot,
-} from "lucide-react";
-
-export default function HeroSection() {
+export default function Hero() {
   return (
-    <Section className="relative overflow-hidden text-[var(--color-cream)]">
-      <Container>
-        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
+    // Only the block padding is set here — the `padding` shorthand would
+    // wipe out .nb-edge's horizontal gutter.
+    <section className="nb-edge" style={{ paddingTop: 48, paddingBottom: 96 }}>
+      <div
+        className="nb-dot"
+        style={{
+          width: 220,
+          height: 220,
+          background: "var(--color-accent-2-100)",
+          top: -40,
+          right: 60,
+        }}
+      />
+      <div
+        className="nb-dot"
+        style={{
+          width: 90,
+          height: 90,
+          background: "var(--color-accent-100)",
+          top: 280,
+          right: 340,
+        }}
+      />
 
-            
-          {/* LEFT SIDE */}
-          <div>
-            <Badge>Novable</Badge>
+      <div className="nb-hero-grid">
+        <div>
+          <span className="nb-kicker">
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "var(--color-accent-2)",
+              }}
+            />
+            AI co-pilot for growth
+          </span>
 
-            <div className="mt-6">
-              <Heading
-                title="Where insights become action."
-                subtitle="The AI operating system that transforms business data into actionable insights, intelligent recommendations, and measurable growth."
-              />
-            </div>
+          <h1 className="nb-h1">
+            Where insights
+            <br />
+            become action.
+          </h1>
 
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link href="/signup">
-              <Button>
-                 Get started
-              </Button>
-              </Link>
-              <Link href="/onboarding">
-                <Button variant="secondary">Try it free</Button>
-              </Link>
-              
-            </div>
+          <p className="nb-sub">
+            The AI operating system that turns your business data into insights,
+            recommendations, and measurable growth — for the price of a single
+            agency invoice.
+          </p>
 
-          
-          </div>
-
-          {/* RIGHT SIDE DASHBOARD */}
-          <div>
-            <TiltCard>
-            <Card className="glass-strong rounded-3xl p-6">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold">
-                    ABC Salon Dashboard
-                  </h3>
-                  <p className="text-sm text-zinc-400">
-                    AI Agents Active
-                  </p>
-                </div>
-
-                <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-sm text-emerald-400">
-                  Live
-                </span>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <AgentCard
-                  icon={<Globe size={20} />}
-                  title="Website Agent"
-                  status="Generated"
-                />
-
-                <AgentCard
-                  icon={<MessageSquare size={20} />}
-                  title="Review Agent"
-                  status="Running"
-                />
-
-                <AgentCard
-                  icon={<Megaphone size={20} />}
-                  title="WhatsApp Agent"
-                  status="Scheduled"
-                />
-
-                <AgentCard
-                  icon={<BarChart3 size={20} />}
-                  title="Analytics Agent"
-                  status="Updated"
-                />
-              </div>
-
-              <div className="mt-6 rounded-2xl bg-[#0F1C1B] p-5">
-                <div className="mb-3 flex items-center gap-2">
-                  <Bot size={18} className="text-emerald-400" />
-                  <span className="font-medium">Account Manager AI</span>
-                </div>
-
-                <div className="rounded-xl border border-zinc-800 p-3 text-sm text-zinc-300">
-                  Revenue increased 18% this month.
-                  WhatsApp campaign generated 42 leads.
-                  Recommend launching a festive offer next week.
-                </div>
-              </div>
-            </Card>
-            </TiltCard>
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              marginTop: 32,
+              flexWrap: "wrap",
+            }}
+          >
+            <Link
+              href="/signup"
+              className="btn btn-primary"
+              style={{ padding: "14px 28px", fontSize: 15 }}
+            >
+              Get started
+            </Link>
+            <Link
+              href="/onboarding"
+              className="btn btn-secondary"
+              style={{ padding: "14px 28px", fontSize: 15 }}
+            >
+              Try it free
+            </Link>
           </div>
         </div>
-      </Container>
-    </Section>
-  );
-}
 
-function AgentCard({
-  icon,
-  title,
-  status,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  status: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-[#0F1C1B] p-4">
-      <div className="mb-3 flex items-center gap-2 text-emerald-400">
-        {icon}
+        <div
+          className="card elev-lg"
+          style={{
+            padding: 0,
+            overflow: "hidden",
+            background: "var(--color-bg)",
+            border: "1px solid var(--color-divider)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "16px 20px",
+              background: "var(--color-surface)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 400,
+                fontSize: 17,
+              }}
+            >
+              ABC Salon Dashboard
+            </span>
+            <span className="tag tag-accent-2">Live</span>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", padding: "6px 12px" }}>
+            {dashboardAgents.map((row) => (
+              <div
+                key={row.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 8px",
+                  borderBottom: "1px solid var(--color-divider)",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 400,
+                    fontSize: 15,
+                  }}
+                >
+                  {row.name}
+                </span>
+                <span className="tag tag-outline">{row.status}</span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              padding: "16px 20px",
+              display: "flex",
+              gap: 12,
+              background: "var(--color-accent-100)",
+            }}
+          >
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                flex: "none",
+                borderRadius: "50%",
+                background: "var(--color-accent)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: "var(--font-heading)",
+                fontSize: 13,
+                color: "var(--color-bg)",
+              }}
+            >
+              AI
+            </div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 13,
+                lineHeight: 1.5,
+                color: "var(--color-accent-800)",
+              }}
+            >
+              Revenue increased 18% this month. WhatsApp campaign generated 42
+              leads. Recommend launching a festive offer next week.
+            </p>
+          </div>
+        </div>
       </div>
-
-      <h4 className="font-medium">{title}</h4>
-
-      <p className="mt-1 text-sm text-zinc-400">
-        {status}
-      </p>
-    </div>
+    </section>
   );
 }

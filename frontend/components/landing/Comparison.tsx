@@ -1,64 +1,61 @@
-const columns = ["Capability", "Wix / Squarespace", "Traditional Agency", "Novable"];
-
 const rows = [
-  ["Website creation", "DIY templates", "4–6 weeks", "AI in 2 min"],
-  ["Edit your site", "Manual editing", "Email the agency", "Just describe it"],
-  ["On-page SEO", "Manual", "Monthly retainer", "Built in"],
-  ["Review replies", "Not included", "Manual replies", "AI drafted"],
-  ["WhatsApp campaigns", "Not included", "Extra service", "AI generated"],
-  ["Social content", "Not included", "Extra service", "AI generated"],
-  ["Performance reports", "Basic", "Monthly PDF", "AI summaries"],
-  ["Cost", "₹500–2,000/mo", "₹10,000–50,000/mo", "₹1,500–3,000 one-time"],
+  { cap: "Website creation", wix: "DIY templates", agency: "4–6 weeks", novable: "AI in 2 min" },
+  { cap: "Edit your site", wix: "Manual editing", agency: "Email the agency", novable: "Just describe it" },
+  { cap: "On-page SEO", wix: "Manual", agency: "Monthly retainer", novable: "Built in" },
+  { cap: "Review replies", wix: "Not included", agency: "Manual replies", novable: "AI drafted" },
+  { cap: "WhatsApp campaigns", wix: "Not included", agency: "Extra service", novable: "AI generated" },
+  { cap: "Social content", wix: "Not included", agency: "Extra service", novable: "AI generated" },
+  { cap: "Performance reports", wix: "Basic", agency: "Monthly PDF", novable: "AI summaries" },
+  { cap: "Cost", wix: "₹500–2,000/mo", agency: "₹10,000–50,000/mo", novable: "₹1,500–3,000 one-time" },
 ];
 
 export default function Comparison() {
   return (
-    <section id="compare" className="border-t border-hairline px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <p className="eyebrow text-amber mb-4">Why Novable Wins</p>
+    <section
+      id="compare"
+      className="nb-edge"
+      style={{ paddingTop: 96, paddingBottom: 96 }}
+    >
+      <span className="nb-kicker">Why Novable Wins</span>
 
-        <h2 className="font-display max-w-2xl text-3xl leading-tight text-cream md:text-[2.5rem]">
-          More than a website. More than an agency.
-        </h2>
+      <h2 className="nb-h2" style={{ maxWidth: "26ch" }}>
+        More than a website. More than an agency.
+      </h2>
 
-        <div className="glass mt-14 overflow-x-auto rounded-md">
-          <table className="w-full min-w-[640px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-hairline">
-                {columns.map((col, i) => (
-                  <th
-                    key={col}
-                    className={`px-5 py-4 font-mono text-[0.65rem] uppercase tracking-[0.16em] ${
-                      i === 3 ? "bg-amber/10 text-amber" : "text-muted"
-                    }`}
-                  >
-                    {col}
-                  </th>
-                ))}
+      <div
+        className="card elev-sm"
+        style={{ marginTop: 36, padding: "8px 20px 4px", overflowX: "auto" }}
+      >
+        <table className="table" style={{ tableLayout: "fixed", minWidth: 640 }}>
+          <colgroup>
+            <col style={{ width: "28%" }} />
+            <col style={{ width: "24%" }} />
+            <col style={{ width: "24%" }} />
+            <col style={{ width: "24%" }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Capability</th>
+              <th scope="col">Wix / Squarespace</th>
+              <th scope="col">Traditional Agency</th>
+              <th scope="col" style={{ color: "var(--color-accent-700)" }}>
+                Novable
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.cap}>
+                <td style={{ fontWeight: 700 }}>{r.cap}</td>
+                <td className="nb-quiet">{r.wix}</td>
+                <td className="nb-quiet">{r.agency}</td>
+                <td style={{ color: "var(--color-accent-700)", fontWeight: 700 }}>
+                  {r.novable}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row[0]} className="border-b border-hairline last:border-0">
-                  {row.map((cell, i) => (
-                    <td
-                      key={i}
-                      className={`px-5 py-4 text-sm ${
-                        i === 0
-                          ? "font-medium text-cream"
-                          : i === 3
-                          ? "bg-amber/5 font-medium text-cream"
-                          : "text-muted"
-                      }`}
-                    >
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );

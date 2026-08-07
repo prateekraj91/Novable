@@ -1,0 +1,377 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Organic — the design system behind the Novable landing redesign.
+
+   Ported from the Claude Design project "Novable redesign concepts"
+   (_ds/organic-…/styles.css). Scoped to `.organic` instead of `:root` so the
+   dark app shell (dashboard, auth, legal pages) keeps its own tokens in
+   styles/theme.css — the two systems share variable names like
+   --color-surface and would otherwise collide.
+
+   Take every color, font, spacing, radius and shadow from the variables
+   below; don't hard-code a hex or a px value a token already carries.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.organic {
+  --color-bg: #f5ead8;
+  --color-surface: #ebddc5;
+  --color-text: #201e1d;
+  --color-accent: #c67139;
+  --color-accent-2: #7a8a5e;
+  --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
+
+  /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
+     same step of any role matches the others in visual value. */
+  --color-neutral-100: #f9f4ed;
+  --color-neutral-200: #eee7db;
+  --color-neutral-300: #dcd3c4;
+  --color-neutral-400: #c0b6a5;
+  --color-neutral-500: #a19786;
+  --color-neutral-600: #82796a;
+  --color-neutral-700: #645c50;
+  --color-neutral-800: #474238;
+  --color-neutral-900: #2e2b25;
+
+  --color-accent-100: #fff2eb;
+  --color-accent-200: #ffe1d0;
+  --color-accent-300: #ffc6a5;
+  --color-accent-400: #f6a06b;
+  --color-accent-500: #d67f48;
+  --color-accent-600: #b2622d;
+  --color-accent-700: #8c491a;
+  --color-accent-800: #643312;
+  --color-accent-900: #402310;
+
+  --color-accent-2-100: #f0fae1;
+  --color-accent-2-200: #e1eecc;
+  --color-accent-2-300: #ccdbb2;
+  --color-accent-2-400: #aebf92;
+  --color-accent-2-500: #8fa073;
+  --color-accent-2-600: #728157;
+  --color-accent-2-700: #56633f;
+  --color-accent-2-800: #3d472b;
+  --color-accent-2-900: #272e1b;
+
+  --font-heading: var(--font-caprasimo), system-ui, sans-serif;
+  --font-heading-weight: 400;
+  --font-body: var(--font-figtree), system-ui, sans-serif;
+
+  --space-1: 4.4px;
+  --space-2: 8.8px;
+  --space-3: 13.2px;
+  --space-4: 17.6px;
+  --space-6: 26.4px;
+  --space-8: 35.2px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+
+  /* Elevation — soft ink-tinted shadows tuned to the warm ground. */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2e2b25 22%, transparent);
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+/* ── base type ─────────────────────────────────────────────────────────── */
+
+.organic h1,
+.organic h2,
+.organic h3,
+.organic h4,
+.organic h5,
+.organic h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-2);
+}
+.organic h1 { font-size: 42px; }
+.organic h2 { font-size: 32px; }
+.organic h3 { font-size: 25px; }
+.organic h4 { font-size: 20px; }
+.organic h5 { font-size: 16px; }
+.organic h6 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.organic p { margin: 0 0 var(--space-3); }
+.organic a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.organic a:hover { color: var(--color-accent-900); }
+.organic img { display: block; max-width: 100%; }
+.organic figure { margin: 0; }
+.organic .text-muted { color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.organic :focus { outline: none; }
+.organic :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.organic ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+
+/* Photographs are washed so they sit back into the warm page. */
+.organic .washed { filter: saturate(0.6) contrast(0.85) brightness(1.1) opacity(0.94); }
+
+/* ── buttons ───────────────────────────────────────────────────────────── */
+
+.organic .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; text-decoration: none;
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 14px; line-height: 1.2; color: var(--color-text);
+  background: transparent; border: 1px solid transparent;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: 999px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.organic .btn svg { display: block; }
+.organic .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.organic .btn-primary { background: var(--color-accent); color: var(--color-bg); }
+.organic .btn-primary:hover { background: var(--color-accent-600); color: var(--color-bg); }
+.organic .btn-primary:active { background: var(--color-accent-700); }
+.organic .btn-secondary { border-color: var(--color-divider); color: var(--color-text); }
+.organic .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); color: var(--color-text); }
+.organic .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.organic .btn-ghost { color: var(--color-accent); padding-inline: var(--space-1); }
+.organic .btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.organic .btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.organic .btn-icon { width: 36px; height: 36px; padding: 0; }
+.organic .btn-block { width: 100%; margin-top: var(--space-2); }
+
+/* ── segmented control (the agent filter) ──────────────────────────────── */
+
+.organic .seg {
+  display: inline-flex; overflow: hidden;
+  border: 1px solid var(--color-divider); border-radius: 999px;
+}
+.organic .seg-opt {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; font-size: 13px; cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.organic .seg-opt input {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+.organic .seg-opt + .seg-opt { border-left: 1px solid var(--color-divider); }
+.organic .seg-opt:has(input:checked) { background: var(--color-accent); color: var(--color-bg); }
+.organic .seg-opt:not(:has(input:checked)):hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.organic .seg-opt:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+/* ── cards ─────────────────────────────────────────────────────────────── */
+
+.organic .card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: calc(var(--radius-lg) * 1.15);
+  background: var(--color-surface);
+}
+.organic .elev-sm { box-shadow: var(--shadow-sm); }
+.organic .elev-md { box-shadow: var(--shadow-md); }
+.organic .elev-lg { box-shadow: var(--shadow-lg); }
+
+/* ── tags ──────────────────────────────────────────────────────────────── */
+
+.organic .tag {
+  display: inline-flex; align-items: center; font-size: 11px;
+  letter-spacing: 0.02em; padding: 3px 10px; border-radius: 999px;
+}
+.organic .tag-accent { background: var(--color-accent-100); color: var(--color-accent-800); }
+.organic .tag-accent-2 { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
+.organic .tag-neutral { background: var(--color-neutral-100); color: var(--color-neutral-800); }
+.organic .tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+/* ── tables ────────────────────────────────────────────────────────────── */
+
+.organic .table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.organic .table th {
+  text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  padding: var(--space-2); border-bottom: 1px solid var(--color-divider);
+}
+.organic .table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+.organic .table tbody tr:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Page layer — the landing-specific helpers from the design file.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.nb-edge {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 72px);
+  position: relative;
+}
+
+.nb-kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-body); font-size: 13px; letter-spacing: 0.03em;
+  font-weight: 700; color: var(--color-accent-700);
+  margin: 0 0 14px;
+}
+
+.nb-h1 {
+  font-family: var(--font-heading); font-weight: 400;
+  font-size: clamp(38px, 5.4vw, 64px); line-height: 1.06;
+  letter-spacing: -0.015em; margin: 0;
+}
+
+.nb-h2 {
+  font-family: var(--font-heading); font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1;
+  letter-spacing: -0.015em; margin: 0;
+}
+
+.nb-sub {
+  font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  max-width: 56ch; margin: 16px 0 0;
+}
+
+.nb-quiet { color: color-mix(in srgb, var(--color-text) 78%, transparent); }
+
+/* Soft circular decoration. Purely presentational — hidden where the
+   viewport is too narrow for it to read as air rather than clutter. */
+.nb-dot { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+
+/* ── responsive grids ──────────────────────────────────────────────────── */
+
+.nb-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: 56px; align-items: center;
+  position: relative; z-index: 1;
+}
+
+.nb-split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 56px; align-items: center;
+}
+
+.nb-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px; }
+
+.nb-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.nb-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+.nb-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+
+@media (max-width: 1000px) {
+  .nb-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nb-grid-3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .nb-hero-grid,
+  .nb-split { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .nb-dot { display: none; }
+}
+
+@media (max-width: 700px) {
+  .nb-footer-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
+
+@media (max-width: 620px) {
+  .nb-grid-2,
+  .nb-grid-4 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── header ────────────────────────────────────────────────────────────── */
+
+/* The design's nav carries a scroll-spy active state, so it stays in view. */
+.nb-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.nb-nav {
+  display: flex; align-items: center; gap: 32px;
+  padding-top: 24px; padding-bottom: 24px;
+}
+
+.nb-brand {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-heading); font-weight: 400; font-size: 22px;
+  color: var(--color-text); text-decoration: none; margin-right: auto;
+}
+.nb-brand:hover { color: var(--color-text); }
+
+.nb-brand-mark {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--color-accent); display: inline-block; flex: none;
+}
+
+.nb-navlink { font-size: 14px; text-decoration: none; }
+.nb-navlink[data-active="false"] { color: var(--color-text); font-weight: 400; }
+.nb-navlink[data-active="true"] { color: var(--color-accent-700); font-weight: 700; }
+.nb-navlink:hover { color: var(--color-accent-700); }
+
+.nb-burger {
+  display: none; flex-direction: column; gap: 5px; cursor: pointer;
+  background: none; border: 0; padding: 6px; margin-left: auto;
+}
+.nb-burger span { display: block; width: 22px; height: 2px; border-radius: 2px; background: var(--color-text); }
+
+.nb-mobile-menu { display: none; }
+
+@media (max-width: 940px) {
+  .nb-nav > .nb-navlink,
+  .nb-nav > .nb-nav-actions { display: none; }
+  .nb-burger { display: flex; }
+  .nb-mobile-menu {
+    display: flex; flex-direction: column; gap: 18px;
+    padding: 8px 0 28px;
+    border-top: 1px solid var(--color-divider);
+  }
+  .nb-mobile-menu .nb-navlink { padding: 4px 0; }
+}
+
+.nb-nav-actions { display: flex; align-items: center; gap: 8px; }
+
+/* ── pricing ───────────────────────────────────────────────────────────── */
+
+/* The featured tier fills with the accent, so its outlined CTA and dividers
+   have to be drawn from the ground colour to stay legible. */
+.nb-tier-featured .btn-secondary {
+  border-color: color-mix(in srgb, var(--color-bg) 55%, transparent);
+  color: var(--color-bg);
+}
+.nb-tier-featured .btn-secondary:hover {
+  background: color-mix(in srgb, var(--color-bg) 16%, transparent);
+  color: var(--color-bg);
+}
+
+/* ── freelancer figure ─────────────────────────────────────────────────── */
+
+/* Stands in for the design's `image-slot` until real photography lands:
+   a soft blob composition in the accent ramps, washed like a photograph. */
+.nb-figure {
+  position: relative; width: 100%; aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg); overflow: hidden;
+  background:
+    radial-gradient(circle at 28% 32%, var(--color-accent-200), transparent 55%),
+    radial-gradient(circle at 74% 70%, var(--color-accent-2-200), transparent 55%),
+    var(--color-surface);
+  display: grid; place-items: center;
+}
+.nb-figure::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 70% 26%, var(--color-accent-2-300) 0 60px, transparent 61px),
+    radial-gradient(circle at 22% 74%, var(--color-accent-300) 0 38px, transparent 39px);
+  opacity: 0.75;
+}
+.nb-figure span {
+  position: relative; z-index: 1;
+  font-family: var(--font-heading); font-size: 18px;
+  color: var(--color-accent-800);
+}
+
+/* ── motion ────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .organic * { transition-duration: 0.01ms !important; }
+}
