@@ -1,6 +1,7 @@
 "use client";
 
 import { OnboardingData } from "@/types/onboarding";
+import { SITE_THEME_OPTIONS } from "@/components/site/themes";
 
 type Props = {
   data: OnboardingData;
@@ -94,6 +95,12 @@ export default function Step4({ data }: Props) {
         <Row label="Description" value={data.description} />
         <Row label="Target Audience" value={data.target_audience} />
         <Row label="Brand Tone" value={data.tone} />
+        <Row
+          label="Site Theme"
+          value={
+            SITE_THEME_OPTIONS.find((o) => o.key === data.theme)?.label ?? ""
+          }
+        />
       </ReviewCard>
 
       <ReviewCard title="Contact Details">

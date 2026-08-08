@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 import type { GenerateWebsitePayload, GeneratedWebsite } from "@/types/website";
+import { DEFAULT_SITE_THEME } from "@/components/site/themes";
 
 export type BusinessInput = {
   business_name: string;
@@ -56,7 +57,12 @@ function slugify(name: string): string {
  */
 export async function saveGeneratedSite(
   input: GenerateWebsitePayload,
-  content: GeneratedWebsite
+  content: GeneratedWebsite,
+  /**
+   * Visual theme key chosen during onboarding. Omitted or unknown values fall
+   * back to the original design when the published site renders.
+   */
+  theme?: string
 ): Promise<{ id: string; slug: string } | null> {
   const supabase = createClient();
   const {
@@ -102,6 +108,7 @@ export async function saveGeneratedSite(
       description: input.description,
     },
     _images: input.reference_images ?? [],
+    _theme: theme || DEFAULT_SITE_THEME,
   };
 
   const { data: site, error: siteErr } = await supabase

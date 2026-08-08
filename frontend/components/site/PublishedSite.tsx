@@ -1,5 +1,6 @@
 import type { GeneratedWebsite } from "@/types/website";
 import Reveal from "@/components/ui/Reveal";
+import { cx, resolveSiteTheme, type SiteThemeKey } from "./themes";
 
 type Business = {
   name?: string;
@@ -14,6 +15,11 @@ type Business = {
 export type PublishedContent = GeneratedWebsite & {
   _business?: Business;
   _images?: string[];
+  /**
+   * Visual theme picked during onboarding. Absent on every site generated
+   * before themes existed, which resolves to the original "classic" design.
+   */
+  _theme?: SiteThemeKey | string;
 };
 
 function isHex(v: string) {
@@ -45,9 +51,10 @@ export default function PublishedSite({
 }: {
   content: PublishedContent;
 }) {
+  const t = resolveSiteTheme(content._theme);
   const accent = isHex(content.primary_color || "")
     ? content.primary_color.trim()
-    : "#16a34a";
+    : t.fallbackAccent;
   const biz = content._business ?? {};
   const images = content._images ?? [];
   const name = biz.name || content.hero_title;
@@ -61,16 +68,27 @@ export default function PublishedSite({
   }, I found your website and wanted to get in touch.`;
 
   return (
-    <div className="min-h-screen bg-white text-neutral-900 antialiased [font-feature-settings:'ss01']">
+    <div
+      className={cx(
+        "min-h-screen",
+        t.page,
+        "antialiased",
+        "[font-feature-settings:'ss01']",
+        t.bodyFont
+      )}
+    >
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-neutral-200/60 bg-white/80 backdrop-blur-xl">
+      <header className={cx("sticky top-0 z-40", t.header)}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="font-display text-xl font-semibold tracking-tight">
+          <span className={cx(t.heading, "text-xl", t.headingWeight, "tracking-tight")}>
             {name}
           </span>
           <a
             href="#contact"
-            className="rounded-full px-5 py-2 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+            className={cx(
+              t.pill,
+              "px-5 py-2 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+            )}
             style={{ backgroundColor: accent }}
           >
             {content.cta || "Get in touch"}
@@ -94,28 +112,45 @@ export default function PublishedSite({
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-2 md:py-32">
           <div>
             <span
-              className="inline-block rounded-full px-3 py-1 text-xs font-medium"
+              className={cx("inline-block", t.pill, "px-3 py-1 text-xs font-medium")}
               style={{ backgroundColor: tint(accent, 0.12), color: accent }}
             >
               {biz.city ? `${biz.city} · ` : ""}Now open
             </span>
-            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+            <h1
+              className={cx(
+                "mt-6",
+                t.heading,
+                "text-4xl",
+                t.headingWeight,
+                "leading-[1.05] tracking-tight sm:text-5xl md:text-6xl"
+              )}
+            >
               {content.hero_title}
             </h1>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-neutral-600">
+            <p className={cx("mt-6 max-w-md text-lg leading-relaxed", t.muted)}>
               {content.hero_subtitle}
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a
                 href="#contact"
-                className="rounded-full px-7 py-3.5 font-medium text-white shadow-lg transition-transform hover:-translate-y-0.5"
+                className={cx(
+                  t.pill,
+                  "px-7 py-3.5 font-medium text-white shadow-lg transition-transform hover:-translate-y-0.5"
+                )}
                 style={{ backgroundColor: accent }}
               >
                 {content.cta || "Get in touch"}
               </a>
               <a
                 href="#services"
-                className="rounded-full border border-neutral-300 px-7 py-3.5 font-medium text-neutral-800 transition-colors hover:border-neutral-900"
+                className={cx(
+                  t.pill,
+                  t.outlineBorder,
+                  "px-7 py-3.5 font-medium",
+                  t.bodyStrong,
+                  t.outlineHover
+                )}
               >
                 Explore
               </a>
@@ -128,11 +163,15 @@ export default function PublishedSite({
               <img
                 src={hero}
                 alt={name}
-                className="aspect-[4/5] w-full rounded-3xl object-cover shadow-2xl"
+                className={cx(
+                  "aspect-[4/5] w-full",
+                  t.radiusXl,
+                  "object-cover shadow-2xl"
+                )}
               />
             ) : (
               <div
-                className="aspect-[4/5] w-full rounded-3xl shadow-2xl"
+                className={cx("aspect-[4/5] w-full", t.radiusXl, "shadow-2xl")}
                 style={{
                   background: `linear-gradient(150deg, ${accent}, ${tint(
                     accent,
@@ -140,7 +179,15 @@ export default function PublishedSite({
                   )})`,
                 }}
               >
-                <div className="flex h-full items-center justify-center font-display text-8xl font-semibold text-white/90">
+                <div
+                  className={cx(
+                    "flex h-full items-center justify-center",
+                    t.heading,
+                    "text-8xl",
+                    t.headingWeight,
+                    "text-white/90"
+                  )}
+                >
                   {initials}
                 </div>
               </div>
@@ -153,7 +200,14 @@ export default function PublishedSite({
       {content.about && (
         <Reveal>
           <section className="mx-auto max-w-3xl px-6 py-24 text-center">
-            <p className="font-display text-2xl leading-relaxed text-neutral-800 md:text-3xl">
+            <p
+              className={cx(
+                t.heading,
+                "text-2xl leading-relaxed",
+                t.bodyStrong,
+                "md:text-3xl"
+              )}
+            >
               {content.about}
             </p>
           </section>
@@ -163,7 +217,7 @@ export default function PublishedSite({
       {/* Services */}
       {content.services?.length > 0 && (
         <Reveal>
-          <section id="services" className="bg-neutral-50/70 py-24">
+          <section id="services" className={cx(t.band, "py-24")}>
             <div className="mx-auto max-w-6xl px-6">
               <p
                 className="text-sm font-semibold uppercase tracking-wider"
@@ -171,23 +225,42 @@ export default function PublishedSite({
               >
                 What we offer
               </p>
-              <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+              <h2
+                className={cx(
+                  "mt-2",
+                  t.heading,
+                  "text-4xl",
+                  t.headingWeight,
+                  "tracking-tight"
+                )}
+              >
                 Services
               </h2>
               <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {content.services.map((s, i) => (
                   <div
                     key={i}
-                    className="group rounded-2xl border border-neutral-200 bg-white p-7 transition-all hover:-translate-y-1 hover:shadow-xl"
+                    className={cx(
+                      "group",
+                      t.radiusLg,
+                      t.card,
+                      "p-7 transition-all hover:-translate-y-1 hover:shadow-xl"
+                    )}
                   >
                     <div
-                      className="flex h-11 w-11 items-center justify-center rounded-xl font-display text-lg font-semibold"
+                      className={cx(
+                        "flex h-11 w-11 items-center justify-center",
+                        t.radiusMd,
+                        t.heading,
+                        "text-lg",
+                        t.headingWeight
+                      )}
                       style={{ backgroundColor: tint(accent, 0.12), color: accent }}
                     >
                       {String(i + 1).padStart(2, "0")}
                     </div>
                     <h3 className="mt-5 text-xl font-semibold">{s.title}</h3>
-                    <p className="mt-2 leading-relaxed text-neutral-600">
+                    <p className={cx("mt-2 leading-relaxed", t.muted)}>
                       {s.description}
                     </p>
                   </div>
@@ -210,7 +283,15 @@ export default function PublishedSite({
                 >
                   Why us
                 </p>
-                <h2 className="mt-2 font-display text-4xl font-semibold leading-tight tracking-tight">
+                <h2
+                  className={cx(
+                    "mt-2",
+                    t.heading,
+                    "text-4xl",
+                    t.headingWeight,
+                    "leading-tight tracking-tight"
+                  )}
+                >
                   Reasons people keep coming back.
                 </h2>
               </div>
@@ -225,7 +306,7 @@ export default function PublishedSite({
                         <path d="M3 8.5L6.2 11.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>
-                    <span className="text-neutral-700">{w}</span>
+                    <span className={t.body}>{w}</span>
                   </li>
                 ))}
               </ul>
@@ -237,7 +318,7 @@ export default function PublishedSite({
       {/* Gallery */}
       {gallery.length > 0 && (
         <Reveal>
-          <section className="bg-neutral-50/70 py-24">
+          <section className={cx(t.band, "py-24")}>
             <div className="mx-auto max-w-6xl px-6">
               <p
                 className="text-sm font-semibold uppercase tracking-wider"
@@ -245,7 +326,15 @@ export default function PublishedSite({
               >
                 A look inside
               </p>
-              <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+              <h2
+                className={cx(
+                  "mt-2",
+                  t.heading,
+                  "text-4xl",
+                  t.headingWeight,
+                  "tracking-tight"
+                )}
+              >
                 Gallery
               </h2>
               <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -255,7 +344,11 @@ export default function PublishedSite({
                     key={i}
                     src={src}
                     alt=""
-                    className="aspect-square w-full rounded-2xl object-cover shadow-sm"
+                    className={cx(
+                      "aspect-square w-full",
+                      t.radiusLg,
+                      "object-cover shadow-sm"
+                    )}
                   />
                 ))}
               </div>
@@ -274,31 +367,43 @@ export default function PublishedSite({
             >
               Kind words
             </p>
-            <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+            <h2
+              className={cx(
+                "mt-2",
+                t.heading,
+                "text-4xl",
+                t.headingWeight,
+                "tracking-tight"
+              )}
+            >
               What people say
             </h2>
             <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {content.testimonials.map((t, i) => (
+              {content.testimonials.map((t2, i) => (
                 <figure
                   key={i}
-                  className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-7"
+                  className={cx("flex flex-col", t.radiusLg, t.card, "p-7")}
                 >
                   <div className="mb-4 flex gap-0.5" style={{ color: accent }}>
                     {"★★★★★".split("").map((s, j) => (
                       <span key={j}>{s}</span>
                     ))}
                   </div>
-                  <blockquote className="flex-1 text-neutral-700">
-                    “{t.review}”
+                  <blockquote className={cx("flex-1", t.body)}>
+                    “{t2.review}”
                   </blockquote>
                   <figcaption className="mt-5 flex items-center gap-3">
                     <span
-                      className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      className={cx(
+                        "flex h-9 w-9 items-center justify-center",
+                        t.pill,
+                        "text-sm font-semibold text-white"
+                      )}
                       style={{ backgroundColor: accent }}
                     >
-                      {(t.name || "?").slice(0, 1).toUpperCase()}
+                      {(t2.name || "?").slice(0, 1).toUpperCase()}
                     </span>
-                    <span className="text-sm font-medium">{t.name}</span>
+                    <span className="text-sm font-medium">{t2.name}</span>
                   </figcaption>
                 </figure>
               ))}
@@ -310,12 +415,16 @@ export default function PublishedSite({
       {/* FAQ */}
       {content.faq?.length > 0 && (
         <Reveal>
-          <section className="bg-neutral-50/70 py-24">
+          <section className={cx(t.band, "py-24")}>
             <div className="mx-auto max-w-3xl px-6">
-              <h2 className="font-display text-4xl font-semibold tracking-tight">
+              <h2
+                className={cx(t.heading, "text-4xl", t.headingWeight, "tracking-tight")}
+              >
                 Frequently asked
               </h2>
-              <div className="mt-8 divide-y divide-neutral-200 border-t border-neutral-200">
+              <div
+                className={cx("mt-8 divide-y", t.divide, "border-t", t.hairline)}
+              >
                 {content.faq.map((f, i) => (
                   <details key={i} className="group py-5">
                     <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-medium">
@@ -327,7 +436,7 @@ export default function PublishedSite({
                         +
                       </span>
                     </summary>
-                    <p className="mt-3 leading-relaxed text-neutral-600">
+                    <p className={cx("mt-3 leading-relaxed", t.muted)}>
                       {f.answer}
                     </p>
                   </details>
@@ -341,12 +450,23 @@ export default function PublishedSite({
       {/* Contact CTA */}
       <section id="contact" className="px-6 py-24">
         <div
-          className="mx-auto max-w-5xl overflow-hidden rounded-3xl px-8 py-16 text-center text-white md:px-16"
+          className={cx(
+            "mx-auto max-w-5xl overflow-hidden",
+            t.radiusXl,
+            "px-8 py-16 text-center text-white md:px-16"
+          )}
           style={{
             background: `linear-gradient(135deg, ${accent}, ${tint(accent, 0.55)})`,
           }}
         >
-          <h2 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          <h2
+            className={cx(
+              t.heading,
+              "text-4xl",
+              t.headingWeight,
+              "tracking-tight md:text-5xl"
+            )}
+          >
             {content.cta || "Come visit us"}
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4 text-white/90">
@@ -372,7 +492,11 @@ export default function PublishedSite({
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-9 inline-flex items-center gap-2.5 rounded-full bg-[#25D366] px-7 py-3.5 font-medium text-white shadow-lg transition-transform hover:-translate-y-0.5"
+              className={cx(
+                "mt-9 inline-flex items-center gap-2.5",
+                t.pill,
+                "bg-[#25D366] px-7 py-3.5 font-medium text-white shadow-lg transition-transform hover:-translate-y-0.5"
+              )}
             >
               <svg
                 width="19"
@@ -389,7 +513,15 @@ export default function PublishedSite({
         </div>
 
         {mapAddress && (
-          <div className="mx-auto mt-6 max-w-5xl overflow-hidden rounded-3xl border border-neutral-200 shadow-sm">
+          <div
+            className={cx(
+              "mx-auto mt-6 max-w-5xl overflow-hidden",
+              t.radiusXl,
+              "border",
+              t.hairline,
+              "shadow-sm"
+            )}
+          >
             <iframe
               src={`https://www.google.com/maps?q=${encodeURIComponent(
                 mapAddress
@@ -413,17 +545,36 @@ export default function PublishedSite({
             >
               Make it yours
             </p>
-            <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h2
+              className={cx(
+                "mt-2",
+                t.heading,
+                "text-3xl",
+                t.headingWeight,
+                "tracking-tight sm:text-4xl"
+              )}
+            >
               Want to customize this further? Work with a developer
             </h2>
-            <p className="mt-4 text-neutral-600">
+            <p className={cx("mt-4", t.muted)}>
               Get hands-on help tailoring this site — message our developer
               directly on WhatsApp.
             </p>
           </div>
-          <div className="mx-auto mt-12 flex max-w-sm flex-col items-center rounded-2xl border border-neutral-200 bg-white p-7 text-center">
+          <div
+            className={cx(
+              "mx-auto mt-12 flex max-w-sm flex-col items-center",
+              t.radiusLg,
+              t.card,
+              "p-7 text-center"
+            )}
+          >
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white"
+              className={cx(
+                "flex h-12 w-12 items-center justify-center",
+                t.pill,
+                "text-lg font-semibold text-white"
+              )}
               style={{ backgroundColor: accent }}
             >
               P
@@ -433,7 +584,11 @@ export default function PublishedSite({
               href="https://wa.me/919142250799"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 rounded-full px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+              className={cx(
+                "mt-5",
+                t.pill,
+                "px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-transform hover:-translate-y-0.5"
+              )}
               style={{ backgroundColor: accent }}
             >
               WhatsApp
@@ -443,12 +598,18 @@ export default function PublishedSite({
       </Reveal>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-200">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-sm text-neutral-500 sm:flex-row">
+      <footer className={cx("border-t", t.hairline)}>
+        <div
+          className={cx(
+            "mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-sm",
+            t.faint,
+            "sm:flex-row"
+          )}
+        >
           <span>
             © {new Date().getFullYear()} {name}
           </span>
-          <a href="/" className="transition-colors hover:text-neutral-800">
+          <a href="/" className={cx("transition-colors", t.faintHover)}>
             Made with Novable
           </a>
         </div>

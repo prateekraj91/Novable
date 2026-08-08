@@ -8,6 +8,7 @@ import Step2 from "./step2";
 import Step3 from "./step3";
 import Step4 from "./step4";
 import ProgressBar from "./ProgressBar";
+import ThemePicker from "./ThemePicker";
 
 import {
   OnboardingData,
@@ -226,7 +227,7 @@ export default function OnboardingForm() {
 
       // Persist to the user's account if signed in; otherwise just preview.
       try {
-        const saved = await saveGeneratedSite(payload, site);
+        const saved = await saveGeneratedSite(payload, site, form.theme);
         if (saved) {
           router.push(`/result?slug=${saved.slug}`);
           return;
@@ -351,6 +352,15 @@ export default function OnboardingForm() {
           }}
           update={update}
         />
+      )}
+
+      {step === 2 && (
+        <div style={{ marginTop: 28 }}>
+          <ThemePicker
+            value={form.theme}
+            onChange={(theme) => update("theme", theme)}
+          />
+        </div>
       )}
 
       {step === 2 && (

@@ -1,5 +1,7 @@
 // types/onboarding.ts
 
+import { DEFAULT_SITE_THEME } from "@/components/site/themes";
+
 export type OnboardingData = {
   business_name: string;
   category: string;
@@ -9,6 +11,8 @@ export type OnboardingData = {
   description: string;
   target_audience: string;
   tone: string;
+  /** Visual theme key for the generated site. "classic" is the original look. */
+  theme: string;
 
   email: string;
   phone: string;
@@ -29,6 +33,7 @@ export const initialOnboardingData: OnboardingData = {
   description: "",
   target_audience: "",
   tone: "",
+  theme: DEFAULT_SITE_THEME,
 
   email: "",
   phone: "",
