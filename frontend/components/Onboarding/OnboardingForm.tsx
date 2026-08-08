@@ -57,12 +57,10 @@ export default function OnboardingForm() {
   const [msgIndex, setMsgIndex] = useState(0);
 
   // Rotate the status messages while the site is generating (~14s), holding on
-  // the final "Almost done…" until the request resolves.
+  // the final "Almost done…" until the request resolves. The index is reset by
+  // handleSubmit rather than here, so this effect only drives the timer.
   useEffect(() => {
-    if (!loading) {
-      setMsgIndex(0);
-      return;
-    }
+    if (!loading) return;
     const id = setInterval(() => {
       setMsgIndex((i) => Math.min(i + 1, GENERATING_MESSAGES.length - 1));
     }, 4500);
@@ -193,6 +191,7 @@ export default function OnboardingForm() {
 
   async function handleSubmit() {
     setSubmitError(null);
+    setMsgIndex(0);
     setLoading(true);
 
     try {
@@ -253,31 +252,58 @@ export default function OnboardingForm() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 22,
+          padding: "64px 0",
+          textAlign: "center",
+        }}
+      >
         <svg
-          className="h-10 w-10 animate-spin text-amber"
+          className="nb-spin"
+          width="40"
+          height="40"
           viewBox="0 0 24 24"
           fill="none"
           aria-hidden="true"
+          style={{ color: "var(--color-accent)" }}
         >
           <circle
             cx="12"
             cy="12"
             r="9"
             stroke="currentColor"
-            strokeWidth="2.5"
+            strokeWidth="2.75"
             strokeOpacity="0.25"
           />
           <path
             d="M21 12a9 9 0 00-9-9"
             stroke="currentColor"
-            strokeWidth="2.5"
+            strokeWidth="2.75"
             strokeLinecap="round"
           />
         </svg>
         <div aria-live="polite">
-          <p className="font-display text-xl text-cream">Generating your site</p>
-          <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-sage">
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-heading)",
+              fontSize: 22,
+            }}
+          >
+            Generating your site
+          </p>
+          <p
+            style={{
+              margin: "8px 0 0",
+              fontSize: 14,
+              color: "var(--color-accent-2-700)",
+            }}
+          >
             {GENERATING_MESSAGES[msgIndex]}
           </p>
         </div>
@@ -328,41 +354,37 @@ export default function OnboardingForm() {
       )}
 
       {step === 2 && (
-        <div className="mt-8">
-          <p className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-            Reference images (optional)
-          </p>
-          <p className="mt-1 text-xs text-muted/70">
+        <div style={{ marginTop: 28 }}>
+          <p className="nb-info-label">Reference images (optional)</p>
+          <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 13, lineHeight: 1.5 }}>
             Add up to 4 photos of your space, logo, or products — the AI matches
             your look &amp; colours.
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+
+          <div className="nb-upload-row">
             {images.map((src, i) => (
-              <div
-                key={i}
-                className="relative h-16 w-16 overflow-hidden rounded-md border border-hairline"
-              >
+              <div key={i} className="nb-thumb">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="" className="h-full w-full object-cover" />
+                <img src={src} alt="" />
                 <button
                   type="button"
-                  onClick={() =>
-                    setImages((p) => p.filter((_, j) => j !== i))
-                  }
-                  className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center bg-base/80 text-xs text-cream"
+                  aria-label="Remove image"
+                  onClick={() => setImages((p) => p.filter((_, j) => j !== i))}
+                  className="nb-thumb-remove"
                 >
                   ×
                 </button>
               </div>
             ))}
+
             {images.length < 4 && (
-              <label className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-md border border-dashed border-hairline text-2xl text-muted transition hover:border-amber hover:text-amber">
+              <label className="nb-upload-add">
                 {uploading ? "…" : "+"}
                 <input
                   type="file"
                   accept="image/*"
                   multiple
-                  className="hidden"
+                  style={{ display: "none" }}
                   onChange={(e) => uploadImages(e.target.files)}
                 />
               </label>
@@ -392,17 +414,18 @@ export default function OnboardingForm() {
       )}
 
       {submitError && (
-        <div className="mt-6 rounded-md border border-amber/30 bg-amber/5 p-4 text-sm text-amber">
+        <p role="alert" className="nb-note nb-note-error">
           {submitError}
-        </div>
+        </p>
       )}
 
-      <div className="mt-10 flex items-center justify-between">
+      <div className="nb-onb-nav">
         {step > 1 ? (
           <button
             type="button"
             onClick={previousStep}
-            className="rounded-sm border border-hairline px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-cream transition hover:border-muted"
+            className="btn btn-secondary"
+            style={{ padding: "12px 24px" }}
           >
             Back
           </button>
@@ -414,7 +437,8 @@ export default function OnboardingForm() {
           <button
             type="button"
             onClick={nextStep}
-            className="rounded-sm bg-amber px-6 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
+            className="btn btn-primary"
+            style={{ padding: "12px 26px", fontSize: 15 }}
           >
             Continue
           </button>
@@ -423,9 +447,10 @@ export default function OnboardingForm() {
             type="button"
             disabled={loading}
             onClick={handleSubmit}
-            className="rounded-sm bg-amber px-6 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            className="btn btn-primary"
+            style={{ padding: "12px 26px", fontSize: 15 }}
           >
-            {loading ? "Generating your site..." : "Create Workspace"}
+            {loading ? "Generating your site…" : "Create Workspace"}
           </button>
         )}
       </div>

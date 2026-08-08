@@ -6,154 +6,110 @@ type Props = {
   data: OnboardingData;
 };
 
-function Row({
-  label,
-  value,
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="nb-review-row">
+      <p className="nb-info-label">{label}</p>
+      <p className="nb-review-value">{value || "—"}</p>
+    </div>
+  );
+}
+
+function ReviewCard({
+  title,
+  children,
 }: {
-  label: string;
-  value: string;
+  title: string;
+  children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 border-b border-hairline py-4 md:flex-row md:items-start md:justify-between">
-      <p className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-        {label}
-      </p>
-
-      <p className="max-w-md text-right text-cream whitespace-pre-wrap">
-        {value || "-"}
-      </p>
-    </div>
+    <section
+      style={{
+        borderRadius: "var(--radius-lg)",
+        border: "1px solid var(--color-divider)",
+        background: "var(--color-bg)",
+        padding: "0 22px",
+      }}
+    >
+      <h3
+        className="nb-h3"
+        style={{
+          padding: "18px 0",
+          borderBottom: "1px solid var(--color-divider)",
+          fontSize: 19,
+        }}
+      >
+        {title}
+      </h3>
+      {children}
+    </section>
   );
 }
 
 export default function Step4({ data }: Props) {
   return (
-    <div className="space-y-8">
-
-      {/* Header */}
-
+    <div style={{ display: "grid", gap: 22 }}>
       <div>
-
-        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-sage/10 border border-sage/20">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 46,
+            height: 46,
+            borderRadius: "50%",
+            background: "var(--color-accent-2-100)",
+            marginBottom: 18,
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
               d="M7 12.5L10.2 15.5L17 8.5"
-              stroke="#6FCF97"
-              strokeWidth="1.8"
+              stroke="var(--color-accent-2-700)"
+              strokeWidth="2.75"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
         </div>
 
-        <h2 className="font-display text-3xl text-cream">
+        <h2 className="nb-h2" style={{ fontSize: "clamp(26px, 3vw, 32px)" }}>
           Review your workspace
         </h2>
 
-        <p className="mt-2 text-muted max-w-lg">
-          You're almost there. Review your business information before
+        <p className="nb-sub" style={{ fontSize: 15 }}>
+          You&apos;re almost there. Review your business information before
           Novable creates your workspace.
         </p>
-
       </div>
 
-      {/* Business */}
+      <ReviewCard title="Business Information">
+        <Row label="Business Name" value={data.business_name} />
+        <Row label="Category" value={data.category} />
+        <Row label="City" value={data.city} />
+        <Row label="Address" value={data.address} />
+      </ReviewCard>
 
-      <div className="rounded-md border border-hairline bg-surface/40 px-6">
+      <ReviewCard title="Brand Profile">
+        <Row label="Description" value={data.description} />
+        <Row label="Target Audience" value={data.target_audience} />
+        <Row label="Brand Tone" value={data.tone} />
+      </ReviewCard>
 
-        <h3 className="border-b border-hairline py-5 font-display text-xl text-cream">
-          Business Information
-        </h3>
+      <ReviewCard title="Contact Details">
+        <Row label="Email" value={data.email} />
+        <Row label="Phone" value={data.phone} />
+        <Row label="Primary Link" value={data.social_link} />
+      </ReviewCard>
 
-        <Row
-          label="Business Name"
-          value={data.business_name}
-        />
-
-        <Row
-          label="Category"
-          value={data.category}
-        />
-
-        <Row
-          label="City"
-          value={data.city}
-        />
-
-        <Row
-          label="Address"
-          value={data.address}
-        />
-
-      </div>
-
-      {/* Brand */}
-
-      <div className="rounded-md border border-hairline bg-surface/40 px-6">
-
-        <h3 className="border-b border-hairline py-5 font-display text-xl text-cream">
-          Brand Profile
-        </h3>
-
-        <Row
-          label="Description"
-          value={data.description}
-        />
-
-        <Row
-          label="Target Audience"
-          value={data.target_audience}
-        />
-
-        <Row
-          label="Brand Tone"
-          value={data.tone}
-        />
-
-      </div>
-
-      {/* Contact */}
-
-      <div className="rounded-md border border-hairline bg-surface/40 px-6">
-
-        <h3 className="border-b border-hairline py-5 font-display text-xl text-cream">
-          Contact Details
-        </h3>
-
-        <Row
-          label="Email"
-          value={data.email}
-        />
-
-        <Row
-          label="Phone"
-          value={data.phone}
-        />
-
-        <Row
-          label="Primary Link"
-          value={data.social_link}
-        />
-
-      </div>
-
-      {/* Notice */}
-
-      <div className="rounded-md border border-amber/20 bg-amber/5 p-5">
-
-        <p className="text-sm text-muted leading-relaxed">
-          By creating your workspace, Novable will use this information to
-          personalize your dashboard, generate AI recommendations, and connect
-          future integrations. You can edit everything later from Settings.
-        </p>
-
-      </div>
-
+      <p
+        className="nb-note nb-note-ok"
+        style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}
+      >
+        By creating your workspace, Novable will use this information to
+        personalize your dashboard, generate AI recommendations, and connect
+        future integrations. You can edit everything later from Settings.
+      </p>
     </div>
   );
 }

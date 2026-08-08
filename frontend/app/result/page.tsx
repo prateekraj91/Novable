@@ -2,12 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-import Container from "@/components/common/Container";
-import Section from "@/components/common/Section";
-import Heading from "@/components/common/Heading";
-import Card from "@/components/common/Card";
-import Button from "@/components/common/Button";
+import BrandMark from "@/components/ui/BrandMark";
 import CopyButton from "@/components/ui/CopyButton";
 import { GeneratedWebsite } from "@/types/website";
 
@@ -36,79 +33,105 @@ export default function ResultPage() {
 
   if (notFound) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-base text-cream">
-        <p className="text-muted">No generated site found for this session.</p>
-        <Button onClick={() => router.push("/onboarding")}>
+      <main
+        className="organic"
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 18,
+        }}
+      >
+        <p className="nb-quiet" style={{ margin: 0 }}>
+          No generated site found for this session.
+        </p>
+        <button
+          type="button"
+          className="btn btn-primary"
+          style={{ padding: "12px 24px" }}
+          onClick={() => router.push("/onboarding")}
+        >
           Start onboarding
-        </Button>
+        </button>
       </main>
     );
   }
 
   if (!site) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-base text-cream">
-        <p className="eyebrow text-sage">Loading your site...</p>
+      <main
+        className="organic"
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <p className="nb-kicker" style={{ margin: 0 }}>
+          Loading your site…
+        </p>
       </main>
     );
   }
 
   // primary_color should be a hex code, but the model sometimes returns a name
-  // like "Warm Amber". Only trust valid hex; otherwise fall back to the default.
+  // like "Warm Amber". Only trust valid hex; otherwise fall back to the
+  // system's own accent.
   const isHex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(
     (site.primary_color || "").trim()
   );
-  const accent = isHex ? site.primary_color.trim() : "#FF8A3D";
+  const accent = isHex ? site.primary_color.trim() : "var(--color-accent)";
 
   return (
-    <main className="min-h-screen bg-base text-cream bg-grain">
-      <header className="border-b border-hairline px-6 py-5">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5">
-            <span className="font-mono text-sm text-cream">
-              Novable
-            </span>
-          </a>
-          <Button
-            variant="secondary"
+    <main className="organic" style={{ minHeight: "100vh" }}>
+      <header className="nb-onb-head">
+        <div
+          className="nb-row"
+          style={{ maxWidth: 1000, margin: "0 auto", gap: 16 }}
+        >
+          <BrandMark size={20} />
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={() => router.push("/onboarding")}
           >
             Start over
-          </Button>
+          </button>
         </div>
       </header>
 
       {slug && (
-        <div className="border-b border-hairline bg-surface/40 px-6 py-4">
-          <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-sm text-cream">
-              <span className="text-sage">✓ Saved &amp; published.</span> Your
-              live site:{" "}
-              <a
-                href={`/site/${slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber underline-offset-2 hover:text-sage hover:underline"
-              >
+        <div
+          style={{
+            background: "var(--color-accent-2-100)",
+            borderBottom: "1px solid var(--color-divider)",
+            padding: "16px clamp(20px, 5vw, 40px)",
+          }}
+        >
+          <div className="nb-row" style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <p style={{ margin: 0, fontSize: 14 }}>
+              <strong style={{ color: "var(--color-accent-2-800)" }}>
+                ✓ Saved &amp; published.
+              </strong>{" "}
+              Your live site:{" "}
+              <a href={`/site/${slug}`} target="_blank" rel="noopener noreferrer">
                 /site/{slug}
               </a>
             </p>
-            <div className="flex flex-wrap gap-2">
-              <CopyButton
-                path={`/site/${slug}`}
-                className="rounded-sm border border-hairline px-4 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-cream transition hover:border-amber hover:text-amber"
-              />
-              <a
-                href={`/dashboard/edit/${slug}`}
-                className="rounded-sm border border-hairline px-4 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-cream transition hover:border-amber hover:text-amber"
-              >
+
+            <div className="nb-row-actions">
+              <CopyButton path={`/site/${slug}`} className="btn btn-secondary" />
+              <Link href={`/dashboard/edit/${slug}`} className="btn btn-secondary">
                 Refine with AI
-              </a>
+              </Link>
               <a
                 href={`/site/${slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
+                className="btn btn-primary"
               >
                 View live site →
               </a>
@@ -117,163 +140,191 @@ export default function ResultPage() {
         </div>
       )}
 
-      <Section className="text-center">
-        <Container>
-          <p className="eyebrow mb-3" style={{ color: accent }}>
-            Your generated site
-          </p>
-          <h1 className="font-display text-4xl leading-tight text-cream md:text-6xl">
-            {site.hero_title}
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted">
-            {site.hero_subtitle}
-          </p>
-          <div className="mt-8">
-            <Button
-              style={{ backgroundColor: accent }}
-              onClick={() =>
-                contactRef.current?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              {site.cta}
-            </Button>
-          </div>
-        </Container>
-      </Section>
+      <div className="nb-edge" style={{ padding: "72px 0", textAlign: "center" }}>
+        <span className="nb-kicker" style={{ color: accent }}>
+          Your generated site
+        </span>
+        <h1 className="nb-h1" style={{ maxWidth: "18ch", margin: "0 auto" }}>
+          {site.hero_title}
+        </h1>
+        <p className="nb-sub" style={{ margin: "18px auto 0" }}>
+          {site.hero_subtitle}
+        </p>
+        <div style={{ marginTop: 30 }}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ background: accent, padding: "14px 28px", fontSize: 15 }}
+            onClick={() =>
+              contactRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            {site.cta}
+          </button>
+        </div>
+      </div>
 
-      <Section className="border-t border-hairline">
-        <Container className="max-w-3xl">
-          <Heading title="About" />
-          <p className="mt-4 leading-relaxed text-muted">{site.about}</p>
-        </Container>
-      </Section>
+      <section className="nb-edge" style={{ paddingBottom: 72, maxWidth: 820 }}>
+        <h2 className="nb-h2">About</h2>
+        <p className="nb-sub" style={{ maxWidth: "none" }}>
+          {site.about}
+        </p>
+      </section>
 
       {site.services?.length > 0 && (
-        <Section className="border-t border-hairline">
-          <Container>
-            <Heading title="Services" align="center" />
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {site.services.map((s, i) => (
-                <Card key={i}>
-                  <p className="eyebrow mb-2" style={{ color: accent }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="font-display text-xl text-cream">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted">{s.description}</p>
-                </Card>
-              ))}
-            </div>
-          </Container>
-        </Section>
+        <section className="nb-edge" style={{ paddingBottom: 72 }}>
+          <h2 className="nb-h2">Services</h2>
+          <div className="nb-grid-3" style={{ marginTop: 28 }}>
+            {site.services.map((s, i) => (
+              <div key={i} className="card elev-sm" style={{ padding: 24 }}>
+                <span
+                  className="nb-kicker"
+                  style={{ color: accent, margin: "0 0 8px" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="nb-h3">{s.title}</h3>
+                <p className="nb-quiet" style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.55 }}>
+                  {s.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {site.why_choose_us?.length > 0 && (
-        <Section className="border-t border-hairline">
-          <Container className="max-w-3xl">
-            <Heading title="Why choose us" align="center" />
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {site.why_choose_us.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-3 rounded-md border border-hairline bg-surface/40 p-4"
-                >
-                  <span
-                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center"
-                    style={{ color: accent }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M3 8.5L6.2 11.5L13 4.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <span className="text-sm text-cream">{item}</span>
-                </div>
-              ))}
-            </div>
-          </Container>
-        </Section>
+        <section className="nb-edge" style={{ paddingBottom: 72, maxWidth: 900 }}>
+          <h2 className="nb-h2">Why choose us</h2>
+          <div className="nb-grid-2" style={{ marginTop: 28 }}>
+            {site.why_choose_us.map((item, i) => (
+              <div
+                key={i}
+                className="card elev-sm"
+                style={{ flexDirection: "row", alignItems: "flex-start", gap: 12, padding: 20 }}
+              >
+                <span style={{ color: accent, flex: "none", marginTop: 2 }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path
+                      d="M3 8.5L6.2 11.5L13 4.5"
+                      stroke="currentColor"
+                      strokeWidth="2.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span style={{ fontSize: 14, lineHeight: 1.55 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {site.testimonials?.length > 0 && (
-        <Section className="border-t border-hairline">
-          <Container>
-            <Heading title="Testimonials" align="center" />
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {site.testimonials.map((t, i) => (
-                <Card key={i}>
-                  <p className="text-sm leading-relaxed text-cream">
-                    &ldquo;{t.review}&rdquo;
-                  </p>
-                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-muted">
-                    {t.name}
-                  </p>
-                </Card>
-              ))}
-            </div>
-          </Container>
-        </Section>
+        <section className="nb-edge" style={{ paddingBottom: 72 }}>
+          <h2 className="nb-h2">Testimonials</h2>
+          <div className="nb-grid-3" style={{ marginTop: 28 }}>
+            {site.testimonials.map((t, i) => (
+              <div key={i} className="card elev-sm" style={{ padding: 24 }}>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6 }}>
+                  &ldquo;{t.review}&rdquo;
+                </p>
+                <p className="nb-info-label" style={{ marginTop: 14 }}>
+                  {t.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {site.faq?.length > 0 && (
-        <Section className="border-t border-hairline">
-          <Container className="max-w-3xl">
-            <Heading title="FAQ" align="center" />
-            <div className="mt-8 space-y-4">
-              {site.faq.map((f, i) => (
-                <div
-                  key={i}
-                  className="rounded-md border border-hairline bg-surface/40 p-5"
+        <section className="nb-edge" style={{ paddingBottom: 72, maxWidth: 820 }}>
+          <h2 className="nb-h2">FAQ</h2>
+          <div style={{ marginTop: 28, display: "grid", gap: 12 }}>
+            {site.faq.map((f, i) => (
+              <div key={i} className="card elev-sm" style={{ padding: "20px 24px" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontFamily: "var(--font-heading)",
+                    fontSize: 18,
+                  }}
                 >
-                  <p className="font-display text-lg text-cream">
-                    {f.question}
-                  </p>
-                  <p className="mt-2 text-sm text-muted">{f.answer}</p>
-                </div>
-              ))}
-            </div>
-          </Container>
-        </Section>
+                  {f.question}
+                </p>
+                <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 14, lineHeight: 1.6 }}>
+                  {f.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
-      <div ref={contactRef} className="scroll-mt-20">
-      <Section className="border-t border-hairline">
-        <Container className="max-w-3xl text-center">
-          <Heading
-            title="Want to customize this further? Work with a developer"
-            align="center"
-          />
-          <p className="mx-auto mt-4 max-w-xl text-muted">
+      <div ref={contactRef} style={{ scrollMarginTop: 80 }}>
+        <section
+          className="nb-edge"
+          style={{ paddingBottom: 88, maxWidth: 820, textAlign: "center" }}
+        >
+          <h2 className="nb-h2" style={{ maxWidth: "24ch", margin: "0 auto" }}>
+            Want to customize this further? Work with a developer
+          </h2>
+          <p className="nb-sub" style={{ margin: "16px auto 0" }}>
             Get hands-on help tailoring your site — reach out to our developer
             directly on WhatsApp.
           </p>
-          <div className="mx-auto mt-10 max-w-sm">
-            <Card className="flex flex-col items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface/40 font-display text-lg text-cream">
-                P
-              </div>
-              <h3 className="font-display text-xl text-cream">Prateek</h3>
-              <a
-                href="https://wa.me/919142250799"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
-              >
-                WhatsApp
-              </a>
-            </Card>
+
+          <div
+            className="card elev-md"
+            style={{
+              maxWidth: 340,
+              margin: "32px auto 0",
+              alignItems: "center",
+              gap: 14,
+              padding: 28,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 52,
+                height: 52,
+                borderRadius: "50%",
+                background: "var(--color-accent-100)",
+                color: "var(--color-accent-800)",
+                fontFamily: "var(--font-heading)",
+                fontSize: 20,
+              }}
+            >
+              P
+            </div>
+            <h3 className="nb-h3">Prateek</h3>
+            <a
+              href="https://wa.me/919142250799"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+              style={{ padding: "12px 26px" }}
+            >
+              WhatsApp
+            </a>
           </div>
-        </Container>
-      </Section>
+        </section>
       </div>
 
-      <footer className="border-t border-hairline py-8 text-center text-xs text-muted">
+      <footer
+        className="nb-quiet"
+        style={{
+          borderTop: "1px solid var(--color-divider)",
+          padding: "28px 0",
+          textAlign: "center",
+          fontSize: 13,
+        }}
+      >
         Generated by Novable
       </footer>
     </main>

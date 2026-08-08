@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Logo from "@/components/ui/Logo";
+import BrandMark from "@/components/ui/BrandMark";
+import Field from "@/components/Onboarding/Field";
 import { saveBusinessOnly } from "@/lib/sites";
 
 const CATEGORIES = [
@@ -59,128 +60,126 @@ export default function ExistingBusinessPage() {
   }
 
   return (
-    <main className="min-h-screen bg-base text-cream bg-grain">
-      <header className="border-b border-hairline px-6 py-5">
-        <Link href="/" className="mx-auto flex max-w-2xl items-center gap-2.5">
-          <Logo className="h-5 w-5" />
-          <span className="font-mono text-sm text-cream">Novable</span>
-        </Link>
+    <main className="nb-onb-shell">
+      <header className="nb-onb-head">
+        <div className="nb-onb-head-inner">
+          <BrandMark size={20} />
+        </div>
       </header>
 
-      <section className="mx-auto max-w-2xl px-6 py-14">
-        <p className="eyebrow text-amber mb-3">Growth only</p>
-        <h1 className="font-display text-3xl leading-tight text-cream md:text-4xl">
-          Already have a website?
-        </h1>
-        <p className="mt-3 text-muted">
+      <section className="nb-onb-body">
+        <span className="nb-kicker">Growth only</span>
+        <h1 className="nb-h2">Already have a website?</h1>
+        <p className="nb-sub">
           Skip the site builder — just tell us about your business and put your
           AI growth agents to work.
         </p>
 
-        <div className="mt-10 grid gap-5">
-          <Field label="Business name">
-            <input
-              value={form.business_name}
-              onChange={(e) => set("business_name", e.target.value)}
-              placeholder="Lumière Salon"
-              className={inputCls}
-            />
-          </Field>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Business type">
-              <select
-                value={form.category}
-                onChange={(e) => set("category", e.target.value)}
-                className={inputCls}
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="City">
+        <div
+          className="card elev-sm"
+          style={{ marginTop: 36, padding: "clamp(22px, 4vw, 34px)" }}
+        >
+          <div className="nb-fields">
+            <Field label="Business name" htmlFor="business_name">
               <input
-                value={form.city}
-                onChange={(e) => set("city", e.target.value)}
-                placeholder="Bengaluru"
-                className={inputCls}
+                id="business_name"
+                value={form.business_name}
+                onChange={(e) => set("business_name", e.target.value)}
+                placeholder="Lumière Salon"
+                className="input"
+                style={{ minHeight: 44 }}
               />
             </Field>
+
+            <div className="nb-info-grid">
+              <Field label="Business type" htmlFor="category">
+                <select
+                  id="category"
+                  value={form.category}
+                  onChange={(e) => set("category", e.target.value)}
+                  className="input"
+                  style={{ minHeight: 44 }}
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+
+              <Field label="City" htmlFor="city">
+                <input
+                  id="city"
+                  value={form.city}
+                  onChange={(e) => set("city", e.target.value)}
+                  placeholder="Bengaluru"
+                  className="input"
+                  style={{ minHeight: 44 }}
+                />
+              </Field>
+            </div>
+
+            <Field label="Ideal customer" htmlFor="target_audience">
+              <input
+                id="target_audience"
+                value={form.target_audience}
+                onChange={(e) => set("target_audience", e.target.value)}
+                placeholder="Young professionals nearby"
+                className="input"
+                style={{ minHeight: 44 }}
+              />
+            </Field>
+
+            <div className="nb-info-grid">
+              <Field label="Phone" htmlFor="phone">
+                <input
+                  id="phone"
+                  value={form.phone}
+                  onChange={(e) => set("phone", e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="input"
+                  style={{ minHeight: 44 }}
+                />
+              </Field>
+
+              <Field label="Your website (optional)" htmlFor="existing_url">
+                <input
+                  id="existing_url"
+                  value={form.existing_url}
+                  onChange={(e) => set("existing_url", e.target.value)}
+                  placeholder="yourbusiness.com"
+                  className="input"
+                  style={{ minHeight: 44 }}
+                />
+              </Field>
+            </div>
+
+            {error && (
+              <p role="alert" className="nb-note nb-note-error" style={{ marginTop: 0 }}>
+                {error}
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={submit}
+              disabled={loading}
+              className="btn btn-primary btn-block"
+              style={{ marginTop: 4, padding: 13, fontSize: 15 }}
+            >
+              {loading ? "Setting up…" : "Start growing →"}
+            </button>
           </div>
-
-          <Field label="Ideal customer">
-            <input
-              value={form.target_audience}
-              onChange={(e) => set("target_audience", e.target.value)}
-              placeholder="Young professionals nearby"
-              className={inputCls}
-            />
-          </Field>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Phone">
-              <input
-                value={form.phone}
-                onChange={(e) => set("phone", e.target.value)}
-                placeholder="+91 98765 43210"
-                className={inputCls}
-              />
-            </Field>
-            <Field label="Your website (optional)">
-              <input
-                value={form.existing_url}
-                onChange={(e) => set("existing_url", e.target.value)}
-                placeholder="yourbusiness.com"
-                className={inputCls}
-              />
-            </Field>
-          </div>
-
-          {error && (
-            <p className="rounded-sm border border-amber/30 bg-amber/10 px-4 py-2.5 font-mono text-xs text-amber">
-              {error}
-            </p>
-          )}
-
-          <button
-            onClick={submit}
-            disabled={loading}
-            className="mt-2 w-full rounded-sm bg-amber px-6 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60"
-          >
-            {loading ? "Setting up…" : "Start growing →"}
-          </button>
-
-          <p className="text-center text-sm text-muted">
-            Want a website built too?{" "}
-            <Link href="/onboarding" className="text-amber hover:text-sage">
-              Generate one
-            </Link>
-          </p>
         </div>
+
+        <p
+          className="nb-quiet"
+          style={{ margin: "22px 0 0", textAlign: "center", fontSize: 14 }}
+        >
+          Want a website built too? <Link href="/onboarding">Generate one</Link>
+        </p>
       </section>
     </main>
-  );
-}
-
-const inputCls =
-  "w-full rounded-sm border border-hairline bg-surface/60 px-4 py-3 text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-amber";
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-        {label}
-      </span>
-      <div className="mt-2">{children}</div>
-    </label>
   );
 }

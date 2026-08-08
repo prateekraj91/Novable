@@ -25,32 +25,33 @@ export default async function SettingsPage() {
     : "—";
 
   return (
-    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
+    <div className="nb-app">
       <Sidebar />
-      <main className="flex-1">
-        <div className="px-6 pt-8 pb-16 md:px-10">
-          <div className="mx-auto max-w-5xl">
-            <p className="eyebrow text-amber mb-3">Settings</p>
-            <h1 className="font-display text-4xl text-cream">Account.</h1>
-            <p className="mt-3 max-w-xl text-muted">
-              Manage your Novable account.
-            </p>
+      <main className="nb-app-main">
+        <div className="nb-page">
+          <div className="nb-page-inner">
+            <span className="nb-kicker">Settings</span>
+            <h1 className="nb-h2">Account.</h1>
+            <p className="nb-sub">Manage your Novable account.</p>
 
-            <section className="mt-10 rounded-md border border-hairline bg-surface/40 p-7">
-              <h2 className="font-display text-2xl text-cream">Account</h2>
-              <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <section className="card elev-sm" style={{ marginTop: 36, padding: 28 }}>
+              <h2 className="nb-h3">Account</h2>
+              <div className="nb-info-grid" style={{ marginTop: 24 }}>
                 <Setting label="Email" value={user?.email ?? "—"} />
                 <Setting label="Workspace" value={business?.name ?? "—"} />
                 <Setting label="Member since" value={joined} />
               </div>
             </section>
 
-            <section className="mt-6 flex flex-col items-start gap-3 rounded-md border border-hairline bg-surface/40 p-7">
-              <h2 className="font-display text-2xl text-cream">Session</h2>
-              <p className="text-sm text-muted">
+            <section className="card elev-sm" style={{ marginTop: 16, padding: 28 }}>
+              <h2 className="nb-h3">Session</h2>
+              <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 15 }}>
                 Sign out of Novable on this device.
               </p>
-              <SignOutButton className="mt-1 rounded-sm border border-hairline px-5 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-muted transition hover:border-amber hover:text-amber" />
+              <SignOutButton
+                className="btn btn-secondary"
+                style={{ marginTop: 18, alignSelf: "flex-start", padding: "11px 22px" }}
+              />
             </section>
           </div>
         </div>
@@ -62,10 +63,8 @@ export default async function SettingsPage() {
 function Setting({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-        {label}
-      </p>
-      <p className="mt-2 break-all text-cream">{value}</p>
+      <p className="nb-info-label">{label}</p>
+      <p className="nb-info-value">{value}</p>
     </div>
   );
 }

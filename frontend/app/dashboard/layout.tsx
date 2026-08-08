@@ -17,5 +17,7 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  return <>{children}</>;
+  // `organic` scopes every dashboard page to the Organic design system
+  // (styles/organic.css), the same theme the landing and auth pages use.
+  return <div className="organic">{children}</div>;
 }

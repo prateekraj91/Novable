@@ -20,35 +20,33 @@ export default async function AgentsPage() {
     .maybeSingle<WorkforceBusiness>();
 
   return (
-    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
+    <div className="nb-app">
       <Sidebar />
-      <main className="flex-1">
-        <div className="px-6 pt-8 md:px-10">
-          <div className="mx-auto max-w-5xl">
-            <p className="eyebrow text-amber mb-2">AI Workforce</p>
-            <h1 className="font-display text-3xl leading-tight text-cream md:text-4xl">
-              Run your agents
-            </h1>
+      <main className="nb-app-main">
+        <div className="nb-page">
+          <div className="nb-page-inner">
+            <span className="nb-kicker">AI Workforce</span>
+            <h1 className="nb-h2">Run your agents</h1>
 
             {business ? (
               <>
-                <p className="mt-2 text-muted">
-                  Working for{" "}
-                  <span className="text-cream">{business.name}</span>.
+                <p className="nb-sub">
+                  Working for <strong>{business.name}</strong>.
                 </p>
-                <div className="mt-10 pb-16">
+                <div style={{ marginTop: 36 }}>
                   <AgentWorkforce business={business} />
                 </div>
               </>
             ) : (
-              <div className="mt-10 rounded-md border border-hairline bg-surface/40 p-8">
-                <p className="text-muted">
+              <div className="card elev-sm" style={{ marginTop: 36, padding: 30 }}>
+                <p className="nb-quiet" style={{ margin: 0, fontSize: 15 }}>
                   No business yet. Generate your website first, then your agents
                   can go to work.
                 </p>
                 <Link
                   href="/onboarding"
-                  className="mt-5 inline-block rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
+                  className="btn btn-primary"
+                  style={{ marginTop: 18, alignSelf: "flex-start", padding: "12px 22px" }}
                 >
                   Start onboarding
                 </Link>

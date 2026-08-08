@@ -8,6 +8,9 @@ import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signin" | "signup";
 
+// Pill inputs need room on the right for the show/hide control.
+const PASSWORD_INPUT_PADDING = 44;
+
 export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -102,16 +105,16 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
   if (forgot) {
     if (status === "reset-sent") {
       return (
-        <div className="w-full max-w-sm">
-          <p className="rounded-sm border border-sage/30 bg-sage/10 px-4 py-3 text-sm text-cream">
-            If an account exists for{" "}
-            <span className="text-sage">{email}</span>, we&apos;ve sent a
+        <div>
+          <p className="nb-note nb-note-ok" style={{ marginTop: 0 }}>
+            If an account exists for <strong>{email}</strong>, we&apos;ve sent a
             password reset link. Check your inbox.
           </p>
           <button
             type="button"
             onClick={backToSignIn}
-            className="mt-5 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-amber transition-colors hover:text-sage"
+            className="btn btn-ghost"
+            style={{ marginTop: 18 }}
           >
             ← Back to sign in
           </button>
@@ -120,19 +123,16 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
     }
 
     return (
-      <form onSubmit={handleReset} className="w-full max-w-sm">
-        <h2 className="font-display text-xl text-cream">Reset your password</h2>
-        <p className="mt-1 text-sm text-muted">
+      <form onSubmit={handleReset}>
+        <h2 style={{ fontFamily: "var(--font-heading)", fontSize: 22, margin: 0 }}>
+          Reset your password
+        </h2>
+        <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 14 }}>
           Enter your email and we&apos;ll send you a reset link.
         </p>
 
-        <div className="mt-5">
-          <label
-            htmlFor="reset-email"
-            className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted"
-          >
-            Email
-          </label>
+        <div className="field" style={{ marginTop: 24 }}>
+          <label htmlFor="reset-email">Email</label>
           <input
             id="reset-email"
             name="email"
@@ -141,15 +141,13 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@company.com"
-            className="mt-2 w-full rounded-sm border border-hairline bg-surface/60 px-4 py-3 text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-amber"
+            className="input"
+            style={{ minHeight: 44 }}
           />
         </div>
 
         {status === "error" && (
-          <p
-            role="alert"
-            className="mt-4 rounded-sm border border-amber/30 bg-amber/10 px-4 py-2.5 font-mono text-xs text-amber"
-          >
+          <p role="alert" className="nb-note nb-note-error">
             {errorMsg}
           </p>
         )}
@@ -157,7 +155,8 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-sm bg-amber px-6 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
+          className="btn btn-primary btn-block"
+          style={{ marginTop: 24, padding: 13 }}
         >
           {status === "loading" ? "Sending…" : "Send reset link"}
         </button>
@@ -165,7 +164,8 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
         <button
           type="button"
           onClick={backToSignIn}
-          className="mt-4 block w-full text-center font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted transition-colors hover:text-amber"
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 10 }}
         >
           ← Back to sign in
         </button>
@@ -175,28 +175,19 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
 
   if (status === "sent") {
     return (
-      <div className="w-full max-w-sm">
-        <p className="rounded-sm border border-sage/30 bg-sage/10 px-4 py-3 text-sm text-cream">
-          Almost there — we sent a confirmation link to{" "}
-          <span className="text-sage">{email}</span>. Confirm it, then{" "}
-          <Link href="/login" className="text-amber hover:text-sage">
-            sign in
-          </Link>
-          .
+      <div>
+        <p className="nb-note nb-note-ok" style={{ marginTop: 0 }}>
+          Almost there — we sent a confirmation link to <strong>{email}</strong>.
+          Confirm it, then <Link href="/login">sign in</Link>.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-sm">
-      <div>
-        <label
-          htmlFor="email"
-          className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted"
-        >
-          Email
-        </label>
+    <form onSubmit={handleSubmit}>
+      <div className="field">
+        <label htmlFor="email">Email</label>
         <input
           id="email"
           name="email"
@@ -205,16 +196,21 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@company.com"
-          className="mt-2 w-full rounded-sm border border-hairline bg-surface/60 px-4 py-3 text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-amber"
+          className="input"
+          style={{ minHeight: 44 }}
         />
       </div>
 
-      <div className="mt-5">
-        <div className="flex items-center justify-between">
-          <label
-            htmlFor="password"
-            className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted"
-          >
+      <div className="field" style={{ marginTop: 18 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}
+        >
+          <label htmlFor="password" style={{ marginBottom: 5 }}>
             Password
           </label>
           {mode === "signin" && (
@@ -225,14 +221,15 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
                 setStatus("idle");
                 setErrorMsg("");
               }}
-              className="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted transition-colors hover:text-amber"
+              className="btn btn-ghost"
+              style={{ fontSize: 12, marginBottom: 5, padding: "0 4px" }}
             >
               Forgot?
             </button>
           )}
         </div>
 
-        <div className="relative mt-2">
+        <div style={{ position: "relative" }}>
           <input
             id="password"
             name="password"
@@ -241,22 +238,32 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full rounded-sm border border-hairline bg-surface/60 px-4 py-3 pr-11 text-cream placeholder:text-muted/60 outline-none transition-colors focus:border-amber"
+            className="input"
+            style={{ minHeight: 44, paddingRight: PASSWORD_INPUT_PADDING }}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted transition-colors hover:text-cream"
+            className="btn btn-ghost"
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 4,
+              width: 36,
+              padding: 0,
+              color: "color-mix(in srgb, var(--color-text) 60%, transparent)",
+            }}
           >
             {showPassword ? (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 003 3M7.4 7.5C5.2 8.9 3.6 10.8 3 12c1.4 2.8 4.9 7 9 7 1.6 0 3.1-.4 4.4-1.2M16.7 16.8C18.7 15.4 20.4 13.4 21 12c-1-2-3.1-4.9-6-6.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 003 3M7.4 7.5C5.2 8.9 3.6 10.8 3 12c1.4 2.8 4.9 7 9 7 1.6 0 3.1-.4 4.4-1.2M16.7 16.8C18.7 15.4 20.4 13.4 21 12c-1-2-3.1-4.9-6-6.4" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             ) : (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M3 12c1.4-2.8 4.9-7 9-7s7.6 4.2 9 7c-1.4 2.8-4.9 7-9 7s-7.6-4.2-9-7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M3 12c1.4-2.8 4.9-7 9-7s7.6 4.2 9 7c-1.4 2.8-4.9 7-9 7s-7.6-4.2-9-7z" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="2.75" />
               </svg>
             )}
           </button>
@@ -264,22 +271,22 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
       </div>
 
       {mode === "signin" && (
-        <label className="mt-5 flex items-center gap-2.5 text-sm text-muted">
+        <label
+          className="radio"
+          style={{ marginTop: 18, color: "var(--color-text)" }}
+        >
           <input
             type="checkbox"
             checked={remember}
             onChange={(e) => setRemember(e.target.checked)}
-            className="h-4 w-4 rounded-sm border border-hairline bg-surface/60 accent-[#34d399]"
+            className="checkbox"
           />
           Remember this device
         </label>
       )}
 
       {status === "error" && (
-        <p
-          role="alert"
-          className="mt-4 rounded-sm border border-amber/30 bg-amber/10 px-4 py-2.5 font-mono text-xs text-amber"
-        >
+        <p role="alert" className="nb-note nb-note-error">
           {errorMsg}
         </p>
       )}
@@ -287,13 +294,14 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-sm bg-amber px-6 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
+        className="btn btn-primary btn-block"
+        style={{ marginTop: 24, padding: 13, fontSize: 15 }}
       >
         {status === "loading" ? (
           <>
-            <svg className="h-3.5 w-3.5 spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" strokeOpacity="0.25" />
-              <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            <svg className="nb-spin" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.75" strokeOpacity="0.3" />
+              <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" />
             </svg>
             {mode === "signup" ? "Creating account" : "Signing in"}
           </>
@@ -304,20 +312,17 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
         )}
       </button>
 
-      <p className="mt-7 text-center text-sm text-muted">
+      <p
+        className="nb-quiet"
+        style={{ margin: "26px 0 0", textAlign: "center", fontSize: 14 }}
+      >
         {mode === "signup" ? (
           <>
-            Already have an account?{" "}
-            <Link href="/login" className="text-amber transition-colors hover:text-sage">
-              Sign in
-            </Link>
+            Already have an account? <Link href="/login">Sign in</Link>
           </>
         ) : (
           <>
-            New to Novable?{" "}
-            <Link href="/signup" className="text-amber transition-colors hover:text-sage">
-              Start your trial
-            </Link>
+            New to Novable? <Link href="/signup">Start your trial</Link>
           </>
         )}
       </p>

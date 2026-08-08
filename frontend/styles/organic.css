@@ -138,6 +138,70 @@
 .organic .btn-icon { width: 36px; height: 36px; padding: 0; }
 .organic .btn-block { width: 100%; margin-top: var(--space-2); }
 
+/* ── forms ─────────────────────────────────────────────────────────────── */
+
+/* Descendant rather than the system's `>` so a label can sit inside a row
+   alongside a "Forgot?" action and still read as a field label. */
+.organic .field label:not(.radio) {
+  display: block; font-size: 12px; margin-bottom: 5px;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+.organic .input {
+  width: 100%; min-height: 36px; padding: 6px 14px; font: inherit;
+  font-size: 14px; color: var(--color-text); caret-color: var(--color-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider); border-radius: 999px;
+  transition: border-color 0.2s ease;
+}
+.organic .input::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.organic .input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.organic .input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+.organic .input:disabled { opacity: 0.55; cursor: not-allowed; }
+/* Multi-line and select controls need square-ish corners to stay legible. */
+.organic textarea.input { min-height: 90px; resize: vertical; border-radius: var(--radius-md); padding: 10px 14px; }
+.organic select.input { appearance: none; padding-right: 34px; }
+
+.organic .radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
+/* Only the radio itself is swapped for the .dot — a checkbox sharing the
+   row keeps its own (accent-tinted) native control. */
+.organic .radio input[type="radio"] {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+.organic .radio .dot {
+  width: 16px; height: 16px; flex: none; border-radius: 50%;
+  border: 1.5px solid var(--color-divider);
+}
+.organic .radio:hover .dot { border-color: var(--color-accent); }
+.organic .radio input:checked + .dot {
+  border-color: var(--color-accent); background: var(--color-accent);
+  box-shadow: inset 0 0 0 4px var(--color-bg);
+}
+.organic .radio input:focus-visible + .dot { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* Native checkbox tinted to the accent — the system has no checkbox class. */
+.organic .checkbox {
+  width: 16px; height: 16px; flex: none;
+  accent-color: var(--color-accent); cursor: pointer;
+}
+
+/* ── card parts ────────────────────────────────────────────────────────── */
+
+.organic .card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
+.organic .card-title {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 17px; line-height: 1.2;
+}
+.organic .card-body { margin: 0; font-size: 13px; opacity: 0.8; flex: 1; }
+.organic .card-meta {
+  display: flex; align-items: center; gap: 6px; font-size: 11px;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+}
+
+/* ── rules ─────────────────────────────────────────────────────────────── */
+
+/* Present, but this system prefers whitespace — reach for it sparingly. */
+.organic .hr { height: 1px; border: 0; margin: var(--space-4) 0; background: var(--color-divider); }
+
 /* ── segmented control (the agent filter) ──────────────────────────────── */
 
 .organic .seg {
@@ -292,17 +356,8 @@
   padding-top: 24px; padding-bottom: 24px;
 }
 
-.nb-brand {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-heading); font-weight: 400; font-size: 22px;
-  color: var(--color-text); text-decoration: none; margin-right: auto;
-}
-.nb-brand:hover { color: var(--color-text); }
-
-.nb-brand-mark {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--color-accent); display: inline-block; flex: none;
-}
+/* The lockup leads the nav row; everything after it is pushed right. */
+.nb-brand-lead { margin-right: auto; }
 
 .nb-navlink { font-size: 14px; text-decoration: none; }
 .nb-navlink[data-active="false"] { color: var(--color-text); font-weight: 400; }
@@ -343,6 +398,285 @@
   background: color-mix(in srgb, var(--color-bg) 16%, transparent);
   color: var(--color-bg);
 }
+
+/* ── brand lockup ──────────────────────────────────────────────────────── */
+
+/* Logo takes its box from the lockup so callers size the pair with one prop. */
+.nb-brand-lockup > span:first-child {
+  width: var(--nb-logo-size, 22px);
+  height: var(--nb-logo-size, 22px);
+}
+
+/* ── app shell (dashboard) ─────────────────────────────────────────────── */
+
+.nb-app { display: flex; flex-direction: column; min-height: 100vh; background: var(--color-bg); }
+.nb-app-main { flex: 1; min-width: 0; }
+
+.nb-page { padding: 40px clamp(20px, 4vw, 44px) 72px; }
+.nb-page-inner { max-width: 1000px; margin: 0 auto; }
+.nb-page-wide .nb-page-inner { max-width: 1240px; }
+
+/* Desktop rail */
+.nb-side {
+  display: none; width: 252px; flex: none;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-divider);
+}
+.nb-side-inner { display: flex; flex-direction: column; height: 100%; width: 100%; }
+
+/* Mobile bar */
+.nb-topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 14px clamp(16px, 4vw, 24px);
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+@media (min-width: 900px) {
+  .nb-app { flex-direction: row; }
+  .nb-side { display: flex; }
+  .nb-topbar { display: none; }
+}
+
+/* Sidebar navigation */
+.nb-side-section { margin-bottom: 26px; }
+.nb-side-label {
+  display: block; padding: 0 14px 8px;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+}
+.nb-navbtn {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 10px 14px; border: 0; border-radius: 999px;
+  background: transparent; cursor: pointer;
+  font-family: var(--font-body); font-size: 14px; text-align: left;
+  color: color-mix(in srgb, var(--color-text) 75%, transparent);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.nb-navbtn:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); color: var(--color-text); }
+.nb-navbtn[aria-current="page"] { background: var(--color-accent); color: var(--color-bg); font-weight: 600; }
+.nb-navbtn svg { flex: none; }
+
+/* Signed-in identity block at the foot of the rail */
+.nb-side-foot { border-top: 1px solid var(--color-divider); padding: 16px; }
+.nb-avatar {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex: none; border-radius: 50%;
+  background: var(--color-accent-2-200); color: var(--color-accent-2-800);
+  font-family: var(--font-heading); font-size: 12px; text-transform: uppercase;
+}
+
+/* Mobile drawer */
+.nb-scrim {
+  position: fixed; inset: 0; z-index: 50;
+  background: color-mix(in srgb, var(--color-neutral-900) 50%, transparent);
+}
+.nb-drawer {
+  position: fixed; inset-block: 0; left: 0; z-index: 51;
+  width: min(288px, 84vw); display: flex; flex-direction: column;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-lg);
+}
+@media (min-width: 900px) { .nb-scrim, .nb-drawer { display: none; } }
+
+/* ── dashboard content ─────────────────────────────────────────────────── */
+
+.nb-stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1000px) { .nb-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .nb-stat-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.nb-stat-label {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  margin: 0;
+}
+.nb-stat-value {
+  font-family: var(--font-heading); font-weight: 400; font-size: 28px;
+  line-height: 1.15; margin: 10px 0 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* A list row that wraps to a stack when it runs out of width. Scoped to
+   `.organic` so it can override `.card`'s column direction when an element
+   carries both classes. */
+.organic .nb-row {
+  display: flex; flex-direction: row; align-items: center;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.nb-row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.nb-list { list-style: none; margin: 0; padding: 0; }
+.nb-list > li + li { border-top: 1px solid var(--color-divider); }
+
+.nb-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.nb-h3 {
+  font-family: var(--font-heading); font-weight: 400; font-size: 22px;
+  line-height: 1.15; margin: 0;
+}
+
+/* Definition pairs on the profile / settings pages. */
+.nb-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 640px) { .nb-info-grid { grid-template-columns: minmax(0, 1fr); } }
+.nb-info-label {
+  margin: 0; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.nb-info-value { margin: 7px 0 0; font-size: 15px; overflow-wrap: anywhere; }
+
+/* Agent workforce metric inputs */
+.nb-metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .nb-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.nb-post-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 720px) { .nb-post-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Site editor: control panel beside the live preview. */
+.nb-edit-grid { display: grid; grid-template-columns: 370px minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 1000px) { .nb-edit-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── auth (login / signup) ─────────────────────────────────────────────── */
+
+.nb-auth { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); min-height: 100vh; }
+
+/* The brand panel: sand ground with soft circular decoration, per the
+   system's "lean into round shapes" direction. */
+.nb-auth-brand {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 40px; padding: clamp(32px, 4vw, 56px);
+  background: var(--color-surface);
+}
+/* Lift the real content above the decoration without dragging the
+   absolutely-positioned dots back into the flex flow. */
+.nb-auth-brand > *:not(.nb-dot) { position: relative; z-index: 1; }
+
+.nb-auth-form {
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(32px, 5vw, 64px) clamp(20px, 5vw, 56px);
+}
+.nb-auth-form > div { width: 100%; max-width: 400px; }
+
+.nb-auth-mobile-brand { display: none; margin-bottom: 32px; }
+
+@media (max-width: 860px) {
+  .nb-auth { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .nb-auth-brand { display: none; }
+  .nb-auth-form { min-height: 100vh; align-items: flex-start; padding-top: 48px; }
+  .nb-auth-mobile-brand { display: block; }
+}
+
+/* ── onboarding ────────────────────────────────────────────────────────── */
+
+.nb-onb-shell { min-height: 100vh; background: var(--color-bg); }
+.nb-onb-head {
+  border-bottom: 1px solid var(--color-divider);
+  padding: 18px clamp(20px, 5vw, 40px);
+}
+.nb-onb-head-inner { max-width: 720px; margin: 0 auto; }
+.nb-onb-body { max-width: 720px; margin: 0 auto; padding: 48px clamp(20px, 5vw, 40px) 80px; }
+
+/* Stepper */
+.nb-step-track {
+  height: 6px; border-radius: 999px; overflow: hidden;
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+  margin-top: 14px;
+}
+.nb-step-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--color-accent);
+  transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nb-steps { display: flex; justify-content: space-between; gap: 8px; margin-top: 20px; }
+.nb-step { display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center; }
+.nb-step-dot {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--color-divider);
+  background: var(--color-bg);
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  font-family: var(--font-heading); font-size: 13px;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.nb-step[data-state="active"] .nb-step-dot {
+  background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg);
+}
+.nb-step[data-state="complete"] .nb-step-dot {
+  background: var(--color-accent-2); border-color: var(--color-accent-2); color: var(--color-bg);
+}
+.nb-step-name {
+  max-width: 76px; font-size: 12px; line-height: 1.25;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.nb-step[data-state="active"] .nb-step-name { color: var(--color-text); font-weight: 700; }
+
+/* Field stack shared by every onboarding step */
+.nb-fields { display: flex; flex-direction: column; gap: 22px; }
+.nb-field-error { margin: 6px 0 0; font-size: 12px; color: var(--color-accent-700); }
+.organic .input[aria-invalid="true"] { border-color: var(--color-accent); }
+
+/* Reference-image uploader */
+.nb-upload-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.nb-thumb {
+  position: relative; width: 66px; height: 66px; overflow: hidden;
+  border-radius: var(--radius-md); border: 1px solid var(--color-divider);
+}
+.nb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.nb-thumb-remove {
+  position: absolute; top: 3px; right: 3px;
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%;
+  background: color-mix(in srgb, var(--color-neutral-900) 65%, transparent);
+  color: #fff; font-size: 13px; line-height: 1; cursor: pointer;
+}
+.nb-upload-add {
+  display: flex; align-items: center; justify-content: center;
+  width: 66px; height: 66px; cursor: pointer;
+  border: 1px dashed color-mix(in srgb, var(--color-text) 32%, transparent);
+  border-radius: var(--radius-md); font-size: 22px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.nb-upload-add:hover {
+  border-color: var(--color-accent); color: var(--color-accent);
+  background: var(--color-accent-100);
+}
+
+/* Review step */
+.nb-review-row {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 0; border-top: 1px solid var(--color-divider);
+}
+.nb-review-row:first-of-type { border-top: 0; }
+.nb-review-value { margin: 0; font-size: 15px; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (min-width: 640px) {
+  .nb-review-row { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 24px; }
+  .nb-review-value { max-width: 60%; text-align: right; }
+}
+
+.nb-onb-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 36px;
+}
+
+/* ── loading spinner ───────────────────────────────────────────────────── */
+
+@keyframes nb-spin { to { transform: rotate(360deg); } }
+.nb-spin { animation: nb-spin 0.8s linear infinite; }
+
+/* ── feedback notes (errors, confirmations) ────────────────────────────── */
+
+.nb-note {
+  margin: 16px 0 0; padding: 12px 18px;
+  border-radius: var(--radius-md); font-size: 13px; line-height: 1.5;
+}
+.nb-note-error { background: var(--color-accent-100); color: var(--color-accent-800); }
+.nb-note-ok { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
 
 /* ── freelancer figure ─────────────────────────────────────────────────── */
 

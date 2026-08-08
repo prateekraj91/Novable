@@ -1,12 +1,15 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignOutButton({
-  className = "",
+  className = "btn btn-secondary",
+  style,
 }: {
   className?: string;
+  style?: CSSProperties;
 }) {
   const router = useRouter();
 
@@ -18,13 +21,7 @@ export default function SignOutButton({
   }
 
   return (
-    <button
-      onClick={signOut}
-      className={
-        className ||
-        "font-mono text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:text-amber"
-      }
-    >
+    <button type="button" onClick={signOut} className={className} style={style}>
       Sign out
     </button>
   );

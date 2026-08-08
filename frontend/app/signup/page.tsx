@@ -1,47 +1,60 @@
 import LoginForm from "@/components/auth/LoginForm";
-import Logo from "@/components/ui/Logo";
+import BrandMark from "@/components/ui/BrandMark";
 
 export default function SignupPage() {
   return (
-    <main className="grid min-h-screen bg-base text-cream md:grid-cols-2">
+    <main className="organic nb-auth">
       {/* Branding panel — hidden on small screens */}
-      <div className="relative hidden flex-col justify-between overflow-hidden border-r border-hairline bg-surface/40 p-10 md:flex lg:p-14">
-        <a href="/" className="flex items-center gap-2.5">
-          <Logo className="h-6 w-6" />
-          <span className="font-mono text-sm tracking-wide text-cream">
-            Novable
-          </span>
-        </a>
+      <div className="nb-auth-brand">
+        <div
+          className="nb-dot"
+          style={{
+            width: 260,
+            height: 260,
+            background: "var(--color-accent-100)",
+            top: -80,
+            right: -70,
+          }}
+        />
+        <div
+          className="nb-dot"
+          style={{
+            width: 120,
+            height: 120,
+            background: "var(--color-accent-2-100)",
+            bottom: 90,
+            left: -40,
+          }}
+        />
+
+        <BrandMark size={24} />
 
         <div>
-          <p className="eyebrow text-amber mb-4">Get started</p>
-          <h2 className="font-display max-w-sm text-2xl leading-tight text-cream lg:text-[1.9rem]">
-            Five questions. Two minutes. A full AI growth team, running for you.
+          <span className="nb-kicker">Get started</span>
+          <h2 className="nb-h2" style={{ maxWidth: "18ch" }}>
+            Five questions. Two minutes. A full AI growth team.
           </h2>
         </div>
 
-        <p className="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">
+        <p className="nb-quiet" style={{ margin: 0, fontSize: 13 }}>
           Trusted by 400+ growth teams
         </p>
       </div>
 
       {/* Form panel */}
-      <div className="flex flex-col items-center justify-center px-6 py-16">
-        <div className="w-full max-w-sm">
-          <a href="/" className="mb-10 flex items-center gap-2.5 md:hidden">
-            <Logo className="h-5 w-5" />
-            <span className="font-mono text-sm text-cream">Novable</span>
-          </a>
+      <div className="nb-auth-form">
+        <div>
+          <div className="nb-auth-mobile-brand">
+            <BrandMark size={22} />
+          </div>
 
-          <p className="eyebrow text-amber mb-3">Create account</p>
-          <h1 className="font-display text-3xl leading-tight text-cream">
-            Start your trial.
-          </h1>
-          <p className="mt-3 text-sm text-muted">
+          <span className="nb-kicker">Create account</span>
+          <h1 className="nb-h2">Start your trial.</h1>
+          <p className="nb-sub" style={{ fontSize: 15 }}>
             Create your Novable account — no card required.
           </p>
 
-          <div className="mt-8">
+          <div style={{ marginTop: 32 }}>
             <LoginForm mode="signup" />
           </div>
         </div>

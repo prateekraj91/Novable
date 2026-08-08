@@ -1,26 +1,13 @@
 "use client";
 
-import {
-  OnboardingData,
-  OnboardingErrors,
-} from "@/types/onboarding";
+import { OnboardingData, OnboardingErrors } from "@/types/onboarding";
+import Field from "./Field";
 
 type Props = {
-  data: Pick<
-    OnboardingData,
-    "description" | "target_audience" | "tone"
-  >;
-
-  errors: Pick<
-    OnboardingErrors,
-    "description" | "target_audience" | "tone"
-  >;
-
+  data: Pick<OnboardingData, "description" | "target_audience" | "tone">;
+  errors: Pick<OnboardingErrors, "description" | "target_audience" | "tone">;
   update: (
-    field:
-      | "description"
-      | "target_audience"
-      | "tone",
+    field: "description" | "target_audience" | "tone",
     value: string
   ) => void;
 };
@@ -38,127 +25,79 @@ const tones = [
 
 const DESCRIPTION_LIMIT = 400;
 
-export default function Step2({
-  data,
-  update,
-  errors,
-}: Props) {
-
+export default function Step2({ data, update, errors }: Props) {
   const remaining = DESCRIPTION_LIMIT - data.description.length;
 
   return (
-    <div className="space-y-7">
-
-      {/* Business Description */}
-
-      <div>
-        <div className="flex items-center justify-between">
-          <label className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-            Business Description *
-          </label>
-
+    <div className="nb-fields">
+      <Field
+        label="Business Description *"
+        htmlFor="description"
+        error={errors.description}
+        trailing={
           <span
-            className={`font-mono text-xs ${
-              remaining < 0 ? "text-amber" : "text-muted"
-            }`}
+            className="nb-quiet"
+            style={{
+              fontSize: 12,
+              color: remaining < 40 ? "var(--color-accent-700)" : undefined,
+            }}
           >
             {remaining}
           </span>
-        </div>
-
+        }
+      >
         <textarea
+          id="description"
           rows={6}
           value={data.description}
           maxLength={DESCRIPTION_LIMIT}
-          onChange={(e) =>
-            update("description", e.target.value)
-          }
+          onChange={(e) => update("description", e.target.value)}
           placeholder="Tell us what your business does, the products or services you offer, and what makes you different."
-          className={`mt-2 w-full resize-none rounded-md border bg-surface/60 px-4 py-3 text-cream outline-none transition-colors focus:border-amber ${
-            errors.description
-              ? "border-amber"
-              : "border-hairline"
-          }`}
+          className="input"
+          style={{ resize: "none" }}
+          aria-invalid={!!errors.description}
         />
+      </Field>
 
-        {errors.description && (
-          <p className="mt-2 text-xs text-amber">
-            {errors.description}
-          </p>
-        )}
-      </div>
-
-      {/* Target Audience */}
-
-      <div>
-        <label className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-          Target Audience *
-        </label>
-
+      <Field
+        label="Target Audience *"
+        htmlFor="target_audience"
+        error={errors.target_audience}
+      >
         <input
+          id="target_audience"
           type="text"
           value={data.target_audience}
-          onChange={(e) =>
-            update("target_audience", e.target.value)
-          }
+          onChange={(e) => update("target_audience", e.target.value)}
           placeholder="College students, working professionals, pet owners..."
-          className={`mt-2 w-full rounded-md border bg-surface/60 px-4 py-3 text-cream outline-none transition-colors focus:border-amber ${
-            errors.target_audience
-              ? "border-amber"
-              : "border-hairline"
-          }`}
+          className="input"
+          style={{ minHeight: 44 }}
+          aria-invalid={!!errors.target_audience}
         />
+      </Field>
 
-        {errors.target_audience && (
-          <p className="mt-2 text-xs text-amber">
-            {errors.target_audience}
-          </p>
-        )}
-      </div>
-
-      {/* Brand Tone */}
-
-      <div>
-        <label className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-          Brand Tone *
-        </label>
-
+      <Field
+        label="Brand Tone *"
+        htmlFor="tone"
+        error={errors.tone}
+        hint="Novable uses this to generate marketing content, customer communication, and recommendations that match your brand."
+      >
         <select
+          id="tone"
           value={data.tone}
-          onChange={(e) =>
-            update("tone", e.target.value)
-          }
-          className={`mt-2 w-full rounded-md border bg-surface/60 px-4 py-3 text-cream outline-none focus:border-amber ${
-            errors.tone
-              ? "border-amber"
-              : "border-hairline"
-          }`}
+          onChange={(e) => update("tone", e.target.value)}
+          className="input"
+          style={{ minHeight: 44 }}
+          aria-invalid={!!errors.tone}
         >
           <option value="">Select Tone</option>
-
           {tones.map((tone) => (
-            <option
-              key={tone}
-              value={tone}
-              className="bg-surface"
-            >
+            <option key={tone} value={tone}>
               {tone}
             </option>
           ))}
         </select>
-
-        {errors.tone && (
-          <p className="mt-2 text-xs text-amber">
-            {errors.tone}
-          </p>
-        )}
-
-        <p className="mt-3 text-sm text-muted">
-          Novable uses this to generate marketing content, customer
-          communication, and recommendations that match your brand.
-        </p>
-      </div>
-
+      </Field>
     </div>
   );
 }

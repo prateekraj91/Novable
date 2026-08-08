@@ -64,12 +64,12 @@ export default function SiteEditManager({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+    <div className="nb-edit-grid">
       {/* Editor */}
-      <div className="glass h-fit rounded-md p-6">
-        <p className="eyebrow text-amber mb-2">Refine with AI</p>
-        <h2 className="font-display text-xl text-cream">Describe a change</h2>
-        <p className="mt-1 text-sm text-muted">
+      <div className="card elev-sm" style={{ padding: 26 }}>
+        <span className="nb-kicker">Refine with AI</span>
+        <h2 className="nb-h3">Describe a change</h2>
+        <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 14 }}>
           Tell Novable what to change and it rewrites your site.
         </p>
 
@@ -78,15 +78,18 @@ export default function SiteEditManager({
           onChange={(e) => setInstruction(e.target.value)}
           rows={3}
           placeholder="e.g. Make it more premium and change the colour to navy"
-          className="mt-4 w-full rounded-sm border border-hairline bg-base/60 px-4 py-3 text-sm text-cream placeholder:text-muted/60 outline-none focus:border-amber"
+          className="input"
+          style={{ marginTop: 18, background: "var(--color-bg)" }}
         />
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 12 }}>
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
+              type="button"
               onClick={() => setInstruction(s)}
-              className="rounded-full border border-hairline px-3 py-1 text-xs text-muted transition hover:border-amber hover:text-amber"
+              className="btn btn-secondary"
+              style={{ fontSize: 12, padding: "5px 12px" }}
             >
               {s}
             </button>
@@ -94,15 +97,17 @@ export default function SiteEditManager({
         </div>
 
         <button
+          type="button"
           onClick={apply}
           disabled={loading || !instruction.trim()}
-          className="mt-4 w-full rounded-sm bg-amber px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+          className="btn btn-primary btn-block"
+          style={{ marginTop: 18, padding: 12 }}
         >
           {loading ? "Applying…" : "Apply change"}
         </button>
 
         {error && (
-          <p className="mt-3 rounded-sm border border-amber/30 bg-amber/10 px-4 py-2.5 font-mono text-xs text-amber">
+          <p role="alert" className="nb-note nb-note-error">
             {error}
           </p>
         )}
@@ -111,19 +116,28 @@ export default function SiteEditManager({
           href={`/site/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 block text-center font-mono text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:text-amber"
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 12 }}
         >
           Open live site →
         </a>
       </div>
 
-      {/* Live preview */}
-      <div className="overflow-hidden rounded-md border border-hairline bg-white">
+      {/* Live preview — the customer's own site, rendered in its own design */}
+      <div
+        style={{
+          overflow: "hidden",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid var(--color-divider)",
+          background: "#fff",
+          boxShadow: "var(--shadow-sm)",
+        }}
+      >
         <iframe
           key={previewKey}
           src={`/site/${slug}`}
           title="Live preview"
-          className="h-[70vh] w-full"
+          style={{ height: "70vh", width: "100%", border: 0, display: "block" }}
         />
       </div>
     </div>

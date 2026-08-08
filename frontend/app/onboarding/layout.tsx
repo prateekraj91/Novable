@@ -17,5 +17,7 @@ export default async function OnboardingLayout({
     redirect("/login");
   }
 
-  return <>{children}</>;
+  // `organic` scopes both onboarding routes to the Organic design system,
+  // matching the landing, auth and dashboard pages.
+  return <div className="organic">{children}</div>;
 }

@@ -26,25 +26,22 @@ export default async function EditSitePage({
   if (!site) notFound();
 
   return (
-    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
+    <div className="nb-app">
       <Sidebar />
-      <main className="flex-1">
-        <div className="px-6 pt-8 pb-16 md:px-10">
-          <div className="mx-auto max-w-6xl">
-            <Link
-              href="/dashboard"
-              className="font-mono text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:text-amber"
-            >
+      <main className="nb-app-main">
+        <div className="nb-page nb-page-wide">
+          <div className="nb-page-inner">
+            <Link href="/dashboard" className="btn btn-ghost" style={{ marginLeft: -4 }}>
               ← Dashboard
             </Link>
-            <h1 className="mt-3 font-display text-3xl leading-tight text-cream md:text-4xl">
+            <h1 className="nb-h2" style={{ marginTop: 10 }}>
               Edit your site
             </h1>
-            <p className="mt-2 text-muted">
+            <p className="nb-sub">
               Describe changes in plain English — the AI rewrites your site, live.
             </p>
 
-            <div className="mt-8">
+            <div style={{ marginTop: 32 }}>
               <SiteEditManager
                 slug={site.slug}
                 initialContent={site.content as GeneratedWebsite}

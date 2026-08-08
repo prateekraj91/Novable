@@ -1,3 +1,5 @@
+import BrandMark from "@/components/ui/BrandMark";
+
 const columns = [
   {
     title: "Product",
@@ -24,27 +26,7 @@ export default function LandingFooter() {
     <footer style={{ background: "var(--color-surface)", padding: "56px 0" }}>
       <div className="nb-edge nb-footer-grid">
         <div>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              fontFamily: "var(--font-heading)",
-              fontWeight: 400,
-              fontSize: 19,
-            }}
-          >
-            <span
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: "50%",
-                background: "var(--color-accent)",
-                display: "inline-block",
-              }}
-            />
-            Novable
-          </span>
+          <BrandMark size={22} />
 
           <p
             className="nb-quiet"

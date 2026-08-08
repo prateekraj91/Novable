@@ -76,18 +76,17 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-base text-cream md:flex-row">
+    <div className="nb-app">
       <Sidebar />
-      <main className="flex-1">
-        <div className="px-6 pt-8 pb-16 md:px-10">
-          <div className="mx-auto max-w-5xl">
+      <main className="nb-app-main">
+        <div className="nb-page">
+          <div className="nb-page-inner">
             {/* Header */}
-            <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="nb-row" style={{ alignItems: "flex-start" }}>
               <div>
-                <h1 className="font-display text-4xl leading-tight text-cream md:text-5xl">
-                  Welcome back.
-                </h1>
-                <p className="mt-2 max-w-lg text-muted">
+                <span className="nb-kicker">Overview</span>
+                <h1 className="nb-h2">Welcome back.</h1>
+                <p className="nb-sub">
                   {businessName
                     ? `Here's how ${businessName} is doing. Run your agents any time.`
                     : "Generate your website to get started, then your agents can go to work."}
@@ -95,61 +94,72 @@ export default async function DashboardPage() {
               </div>
               <Link
                 href="/dashboard/agents"
-                className="rounded-sm bg-amber px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-base transition-transform hover:-translate-y-0.5"
+                className="btn btn-primary"
+                style={{ padding: "12px 22px" }}
               >
                 Run agents →
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="nb-stat-grid" style={{ marginTop: 36 }}>
               {stats.map((s) => (
-                <div key={s.label} className="glass rounded-md p-6">
-                  <p className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted">
-                    {s.label}
+                <div key={s.label} className="card elev-sm" style={{ padding: 22 }}>
+                  <p className="nb-stat-label">{s.label}</p>
+                  <p className="nb-stat-value">{s.value}</p>
+                  <p
+                    style={{
+                      margin: "4px 0 0",
+                      fontSize: 13,
+                      color: "var(--color-accent-2-700)",
+                    }}
+                  >
+                    {s.sub}
                   </p>
-                  <p className="mt-3 truncate font-display text-3xl text-cream">
-                    {s.value}
-                  </p>
-                  <p className="mt-1 text-sm text-sage">{s.sub}</p>
                 </div>
               ))}
             </div>
 
             {/* Your sites */}
-            <div className="mt-10">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-display text-xl text-cream">Your sites</h2>
-                <Link
-                  href="/onboarding"
-                  className="font-mono text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:text-amber"
-                >
+            <div style={{ marginTop: 44 }}>
+              <div className="nb-section-head">
+                <h2 className="nb-h3">Your sites</h2>
+                <Link href="/onboarding" className="btn btn-secondary">
                   + New site
                 </Link>
               </div>
+
               {sites.length > 0 ? (
-                <div className="grid gap-4">
+                <div style={{ display: "grid", gap: 12 }}>
                   {sites.map((s) => (
                     <div
                       key={s.id}
-                      className="flex flex-col items-start gap-3 rounded-md border border-hairline bg-surface/40 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                      className="card elev-sm nb-row"
+                      style={{ padding: "18px 22px" }}
                     >
-                      <div className="w-full min-w-0 sm:w-auto">
-                        <p className="truncate text-cream">
+                      <div style={{ minWidth: 0 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontFamily: "var(--font-heading)",
+                            fontSize: 16,
+                          }}
+                        >
                           {s.content?.hero_title ?? "Generated site"}
                         </p>
-                        <p className="mt-1 font-mono text-[0.65rem] text-muted">
+                        <p className="nb-quiet" style={{ margin: "4px 0 0", fontSize: 13 }}>
                           /site/{s.slug} · {timeAgo(s.created_at)}
                         </p>
                       </div>
-                      <div className="flex flex-wrap gap-2 sm:shrink-0">
+
+                      <div className="nb-row-actions">
                         <CopyButton
                           path={`/site/${s.slug}`}
-                          className="rounded-sm border border-hairline px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-muted transition hover:border-amber hover:text-amber"
+                          className="btn btn-secondary"
                         />
                         <Link
                           href={`/dashboard/edit/${s.slug}`}
-                          className="rounded-sm border border-hairline px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-cream transition hover:border-amber hover:text-amber"
+                          className="btn btn-secondary"
                         >
                           Edit
                         </Link>
@@ -157,7 +167,7 @@ export default async function DashboardPage() {
                           href={`/site/${s.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="rounded-sm border border-hairline px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-cream transition hover:border-amber hover:text-amber"
+                          className="btn btn-secondary"
                         >
                           View live →
                         </a>
@@ -166,47 +176,46 @@ export default async function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-md border border-hairline bg-surface/40 p-6 text-sm text-muted">
-                  No sites yet.{" "}
-                  <Link href="/onboarding" className="text-amber hover:text-sage">
-                    Generate your first one
-                  </Link>
-                  .
+                <div className="card elev-sm" style={{ padding: 26 }}>
+                  <p className="nb-quiet" style={{ margin: 0, fontSize: 15 }}>
+                    No sites yet.{" "}
+                    <Link href="/onboarding">Generate your first one</Link>.
+                  </p>
                 </div>
               )}
             </div>
 
             {/* Recent activity */}
-            <div className="mt-10">
-              <h2 className="mb-4 font-display text-xl text-cream">
-                Recent activity
-              </h2>
+            <div style={{ marginTop: 44 }}>
+              <div className="nb-section-head">
+                <h2 className="nb-h3">Recent activity</h2>
+              </div>
+
               {outputs.length > 0 ? (
-                <ul className="divide-y divide-hairline rounded-md border border-hairline bg-surface/40">
-                  {outputs.map((o, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center justify-between px-5 py-4"
-                    >
-                      <span className="text-sm text-cream">
-                        {AGENT_LABEL[o.agent_type] ?? o.agent_type} ran
-                      </span>
-                      <span className="font-mono text-[0.65rem] text-muted">
-                        {timeAgo(o.created_at)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="card elev-sm" style={{ padding: "6px 22px" }}>
+                  <ul className="nb-list">
+                    {outputs.map((o, i) => (
+                      <li
+                        key={i}
+                        className="nb-row"
+                        style={{ padding: "14px 0", gap: 12 }}
+                      >
+                        <span style={{ fontSize: 15 }}>
+                          {AGENT_LABEL[o.agent_type] ?? o.agent_type} ran
+                        </span>
+                        <span className="nb-quiet" style={{ fontSize: 13 }}>
+                          {timeAgo(o.created_at)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : (
-                <div className="rounded-md border border-hairline bg-surface/40 p-6 text-sm text-muted">
-                  No agent activity yet.{" "}
-                  <Link
-                    href="/dashboard/agents"
-                    className="text-amber hover:text-sage"
-                  >
-                    Run an agent
-                  </Link>
-                  .
+                <div className="card elev-sm" style={{ padding: 26 }}>
+                  <p className="nb-quiet" style={{ margin: 0, fontSize: 15 }}>
+                    No agent activity yet.{" "}
+                    <Link href="/dashboard/agents">Run an agent</Link>.
+                  </p>
                 </div>
               )}
             </div>

@@ -1,37 +1,39 @@
+import Link from "next/link";
 import OnboardingForm from "@/components/Onboarding/OnboardingForm";
-import Logo from "@/components/ui/Logo";
+import BrandMark from "@/components/ui/BrandMark";
 
 export default function OnboardingPage() {
   return (
-    <main className="min-h-screen bg-base text-cream bg-grain">
-      <header className="border-b border-hairline px-6 py-5">
-        <a href="/" className="mx-auto flex max-w-2xl items-center gap-2.5">
-          <Logo className="h-5 w-5" />
-          <span className="font-mono text-sm text-cream">
-            Novable
-          </span>
-        </a>
+    <main className="nb-onb-shell">
+      <header className="nb-onb-head">
+        <div className="nb-onb-head-inner">
+          <BrandMark size={20} />
+        </div>
       </header>
 
-      <div className="mx-auto max-w-2xl px-6 py-16">
-        <p className="eyebrow text-amber mb-3">Pre-flight checklist</p>
-        <h1 className="font-display text-3xl leading-tight text-cream md:text-4xl">
-          Tell us about your business.
-        </h1>
-        <p className="mt-3 max-w-md text-muted">
+      <div className="nb-onb-body">
+        <span className="nb-kicker">Pre-flight checklist</span>
+        <h1 className="nb-h2">Tell us about your business.</h1>
+        <p className="nb-sub">
           This sets up your workspace and lets Novable tailor its first
           recommendations to your business.
         </p>
 
-        <div className="mt-10 rounded-md border border-hairline bg-surface/40 p-6 md:p-8">
+        <div
+          className="card elev-sm"
+          style={{ marginTop: 36, padding: "clamp(22px, 4vw, 34px)" }}
+        >
           <OnboardingForm />
         </div>
 
-        <p className="mt-6 text-center text-sm text-muted">
+        <p
+          className="nb-quiet"
+          style={{ margin: "22px 0 0", textAlign: "center", fontSize: 14 }}
+        >
           Already have a website?{" "}
-          <a href="/onboarding/existing" className="text-amber hover:text-sage">
+          <Link href="/onboarding/existing">
             Skip the builder and just grow →
-          </a>
+          </Link>
         </p>
       </div>
     </main>

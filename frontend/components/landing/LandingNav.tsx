@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import BrandMark from "@/components/ui/BrandMark";
 
 const links = [
   { label: "How it Works", id: "how" },
@@ -38,10 +39,7 @@ export default function LandingNav() {
   return (
     <header className="nb-header">
       <nav className="nb-edge nb-nav">
-        <a href="#" className="nb-brand">
-          <span className="nb-brand-mark" />
-          Novable
-        </a>
+        <BrandMark size={26} className="nb-brand-lead" />
 
         {links.map((l) => (
           <a
