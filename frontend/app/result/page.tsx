@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import BrandMark from "@/components/ui/BrandMark";
 import CopyButton from "@/components/ui/CopyButton";
+import QrCodeButton from "@/components/ui/QrCodeButton";
 import { GeneratedWebsite } from "@/types/website";
 
 export default function ResultPage() {
@@ -124,6 +125,11 @@ export default function ResultPage() {
 
             <div className="nb-row-actions">
               <CopyButton path={`/site/${slug}`} className="btn btn-secondary" />
+              <QrCodeButton
+                path={`/site/${slug}`}
+                title={slug}
+                className="btn btn-secondary"
+              />
               <Link href={`/dashboard/edit/${slug}`} className="btn btn-secondary">
                 Refine with AI
               </Link>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import CopyButton from "@/components/ui/CopyButton";
+import QrCodeButton from "@/components/ui/QrCodeButton";
 import { createClient } from "@/lib/supabase/server";
 
 const AGENT_LABEL: Record<string, string> = {
@@ -155,6 +156,11 @@ export default async function DashboardPage() {
                       <div className="nb-row-actions">
                         <CopyButton
                           path={`/site/${s.slug}`}
+                          className="btn btn-secondary"
+                        />
+                        <QrCodeButton
+                          path={`/site/${s.slug}`}
+                          title={s.slug}
                           className="btn btn-secondary"
                         />
                         <Link
