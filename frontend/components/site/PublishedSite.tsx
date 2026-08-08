@@ -7,6 +7,8 @@ type Business = {
   email?: string | null;
   address?: string | null;
   city?: string | null;
+  /** Owner-written blurb. Optional — older sites were saved without it. */
+  description?: string | null;
 };
 
 export type PublishedContent = GeneratedWebsite & {

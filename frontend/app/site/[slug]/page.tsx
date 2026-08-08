@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { requestOrigin, siteMetadata } from "@/lib/seo";
 import PublishedSite, {
   type PublishedContent,
 } from "@/components/site/PublishedSite";
@@ -24,10 +25,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const content = await getSite(slug);
   if (!content) return { title: "Site not found" };
-  return {
-    title: content.meta_title || content.hero_title,
-    description: content.meta_description || content.hero_subtitle,
-  };
+  return siteMetadata(content, slug, await requestOrigin());
 }
 
 export default async function SitePage({

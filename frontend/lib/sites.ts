@@ -97,6 +97,9 @@ export async function saveGeneratedSite(
       email: input.email,
       address: input.address,
       city: input.city,
+      // Used as a fallback for the social share description; sites saved
+      // before this field existed simply fall back to the generated copy.
+      description: input.description,
     },
     _images: input.reference_images ?? [],
   };
