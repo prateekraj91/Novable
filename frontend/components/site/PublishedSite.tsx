@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 
+import CenteredTemplate from "./templates/CenteredTemplate";
 import ClassicTemplate from "./templates/ClassicTemplate";
 import { resolveTemplateKey, type SiteTemplateKey } from "./themes";
 import type { PublishedContent, TemplateProps } from "./shared";
@@ -15,6 +16,7 @@ const TEMPLATES: Partial<
   Record<SiteTemplateKey, ComponentType<TemplateProps>>
 > = {
   classic: ClassicTemplate,
+  centered: CenteredTemplate,
 };
 
 /**
