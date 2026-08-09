@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import CenteredTemplate from "./templates/CenteredTemplate";
 import ClassicTemplate from "./templates/ClassicTemplate";
 import EditorialTemplate from "./templates/EditorialTemplate";
+import MinimalTemplate from "./templates/MinimalTemplate";
 import { resolveTemplateKey, type SiteTemplateKey } from "./themes";
 import type { PublishedContent, TemplateProps } from "./shared";
 
@@ -19,6 +20,7 @@ const TEMPLATES: Partial<
   classic: ClassicTemplate,
   centered: CenteredTemplate,
   editorial: EditorialTemplate,
+  minimal: MinimalTemplate,
 };
 
 /**
