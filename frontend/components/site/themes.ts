@@ -181,6 +181,39 @@ const minimal: SiteThemeTokens = {
   fallbackAccent: "#111111",
 };
 
+/**
+ * A template is a whole layout — hero shape, section order, grid structure —
+ * together with its own palette and font pairing. `classic` is the original
+ * design and the default.
+ */
+export type SiteTemplateKey = "classic" | "centered" | "editorial" | "minimal";
+
+export const DEFAULT_SITE_TEMPLATE: SiteTemplateKey = "classic";
+
+/**
+ * Keys stored before templates existed, when the choice was palette-only.
+ * Nothing in production uses them — the picker never shipped — but a stored
+ * value must never fall off a cliff, so each maps to its nearest template.
+ */
+const TEMPLATE_ALIASES: Record<string, SiteTemplateKey> = {
+  modern: "centered",
+  elegant: "centered",
+  bold: "editorial",
+};
+
+/**
+ * Maps a stored key to a template. Anything missing or unrecognised —
+ * including every site generated before templates existed — resolves to
+ * `classic`, which is the original layout.
+ */
+export function resolveTemplateKey(key?: string | null): SiteTemplateKey {
+  const k = (key ?? "").trim().toLowerCase();
+  if (k === "classic" || k === "centered" || k === "editorial" || k === "minimal") {
+    return k;
+  }
+  return TEMPLATE_ALIASES[k] ?? DEFAULT_SITE_TEMPLATE;
+}
+
 export const SITE_THEMES: Record<SiteThemeKey, SiteThemeTokens> = {
   classic,
   modern,
