@@ -1,5 +1,5 @@
 import type { GeneratedWebsite } from "@/types/website";
-import type { SiteThemeKey } from "./themes";
+import type { SiteTemplateKey } from "./themes";
 
 export type Business = {
   name?: string;
@@ -18,7 +18,7 @@ export type PublishedContent = GeneratedWebsite & {
    * Template picked during onboarding. Absent on every site generated before
    * templates existed, which resolves to the original "classic" layout.
    */
-  _theme?: SiteThemeKey | string;
+  _theme?: SiteTemplateKey | string;
 };
 
 /** Every template receives exactly this. */

@@ -1,6 +1,6 @@
 // types/onboarding.ts
 
-import { DEFAULT_SITE_THEME } from "@/components/site/themes";
+import { DEFAULT_SITE_TEMPLATE } from "@/components/site/themes";
 
 export type OnboardingData = {
   business_name: string;
@@ -33,7 +33,7 @@ export const initialOnboardingData: OnboardingData = {
   description: "",
   target_audience: "",
   tone: "",
-  theme: DEFAULT_SITE_THEME,
+  theme: DEFAULT_SITE_TEMPLATE,
 
   email: "",
   phone: "",

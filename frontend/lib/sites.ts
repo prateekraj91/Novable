@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 import type { GenerateWebsitePayload, GeneratedWebsite } from "@/types/website";
-import { DEFAULT_SITE_THEME } from "@/components/site/themes";
+import { DEFAULT_SITE_TEMPLATE } from "@/components/site/themes";
 
 export type BusinessInput = {
   business_name: string;
@@ -108,7 +108,7 @@ export async function saveGeneratedSite(
       description: input.description,
     },
     _images: input.reference_images ?? [],
-    _theme: theme || DEFAULT_SITE_THEME,
+    _theme: theme || DEFAULT_SITE_TEMPLATE,
   };
 
   const { data: site, error: siteErr } = await supabase
