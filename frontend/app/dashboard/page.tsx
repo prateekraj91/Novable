@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
-import CopyButton from "@/components/ui/CopyButton";
-import QrCodeButton from "@/components/ui/QrCodeButton";
+import SiteList, { type DashboardSite } from "@/components/dashboard/SiteList";
 import { createClient } from "@/lib/supabase/server";
+import { timeAgo } from "@/lib/time";
 
 const AGENT_LABEL: Record<string, string> = {
   chat: "Ask Novable",
@@ -12,16 +12,6 @@ const AGENT_LABEL: Record<string, string> = {
   analytics: "Analytics report",
   website: "Website",
 };
-
-function timeAgo(iso: string): string {
-  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (s < 60) return "just now";
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
-}
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -52,12 +42,7 @@ export default async function DashboardPage() {
   ]);
 
   const businessName = businessRes.data?.name ?? null;
-  const sites = (sitesRes.data ?? []) as {
-    id: string;
-    slug: string;
-    content: { hero_title?: string };
-    created_at: string;
-  }[];
+  const sites = (sitesRes.data ?? []) as DashboardSite[];
   const siteCount = sitesRes.count ?? sites.length;
   const outputs = (outputsRes.data ?? []) as {
     agent_type: string;
@@ -130,65 +115,7 @@ export default async function DashboardPage() {
                 </Link>
               </div>
 
-              {sites.length > 0 ? (
-                <div style={{ display: "grid", gap: 12 }}>
-                  {sites.map((s) => (
-                    <div
-                      key={s.id}
-                      className="card elev-sm nb-row"
-                      style={{ padding: "18px 22px" }}
-                    >
-                      <div style={{ minWidth: 0 }}>
-                        <p
-                          style={{
-                            margin: 0,
-                            fontFamily: "var(--font-heading)",
-                            fontSize: 16,
-                          }}
-                        >
-                          {s.content?.hero_title ?? "Generated site"}
-                        </p>
-                        <p className="nb-quiet" style={{ margin: "4px 0 0", fontSize: 13 }}>
-                          /site/{s.slug} · {timeAgo(s.created_at)}
-                        </p>
-                      </div>
-
-                      <div className="nb-row-actions">
-                        <CopyButton
-                          path={`/site/${s.slug}`}
-                          className="btn btn-secondary"
-                        />
-                        <QrCodeButton
-                          path={`/site/${s.slug}`}
-                          title={s.slug}
-                          className="btn btn-secondary"
-                        />
-                        <Link
-                          href={`/dashboard/edit/${s.slug}`}
-                          className="btn btn-secondary"
-                        >
-                          Edit
-                        </Link>
-                        <a
-                          href={`/site/${s.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-secondary"
-                        >
-                          View live →
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="card elev-sm" style={{ padding: 26 }}>
-                  <p className="nb-quiet" style={{ margin: 0, fontSize: 15 }}>
-                    No sites yet.{" "}
-                    <Link href="/onboarding">Generate your first one</Link>.
-                  </p>
-                </div>
-              )}
+              <SiteList sites={sites} />
             </div>
 
             {/* Recent activity */}

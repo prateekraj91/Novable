@@ -41,6 +41,15 @@
   --color-accent-800: #643312;
   --color-accent-900: #402310;
 
+  /* Destructive actions. A warm red so it belongs to this palette, but far
+     enough from the terracotta accent that "delete" never reads as "confirm". */
+  --color-danger: #c43d2e;
+  --color-danger-100: #fdece9;
+  --color-danger-200: #f8d3cd;
+  --color-danger-600: #a83124;
+  --color-danger-700: #85261c;
+  --color-danger-800: #5e1b14;
+
   --color-accent-2-100: #f0fae1;
   --color-accent-2-200: #e1eecc;
   --color-accent-2-300: #ccdbb2;
@@ -132,6 +141,14 @@
 .organic .btn-secondary { border-color: var(--color-divider); color: var(--color-text); }
 .organic .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); color: var(--color-text); }
 .organic .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.organic .btn-danger { background: var(--color-danger); color: var(--color-bg); }
+.organic .btn-danger:hover { background: var(--color-danger-600); color: var(--color-bg); }
+.organic .btn-danger:active { background: var(--color-danger-700); }
+/* Quiet destructive action — sits in a row of secondary buttons without
+   shouting, but is unmistakably not one of them. */
+.organic .btn-danger-quiet { border-color: var(--color-divider); color: var(--color-danger-700); }
+.organic .btn-danger-quiet:hover { background: var(--color-danger-100); border-color: var(--color-danger-200); color: var(--color-danger-800); }
+.organic .btn-danger-quiet:active { background: var(--color-danger-200); }
 .organic .btn-ghost { color: var(--color-accent); padding-inline: var(--space-1); }
 .organic .btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
 .organic .btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
