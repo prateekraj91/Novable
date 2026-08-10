@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import CopyButton from "@/components/ui/CopyButton";
 import QrCodeButton from "@/components/ui/QrCodeButton";
+import UpgradeButton from "@/components/billing/UpgradeButton";
 import { createClient } from "@/lib/supabase/client";
 import { timeAgo } from "@/lib/time";
 
@@ -13,6 +14,7 @@ export type DashboardSite = {
   id: string;
   slug: string;
   content: { hero_title?: string };
+  published: boolean;
   created_at: string;
 };
 
@@ -20,17 +22,24 @@ export type DashboardSite = {
  * The dashboard's "Your sites" list. The rows are fetched by the server
  * component and handed down; this component owns them from there so a deleted
  * site can leave the list without a full page reload.
+ *
+ * On the free plan every site is unpublished — the database forces it — so the
+ * rows offer a private preview and an upgrade instead of a live link.
  */
 export default function SiteList({
   sites: initialSites,
+  canPublish,
 }: {
   sites: DashboardSite[];
+  canPublish: boolean;
 }) {
   const router = useRouter();
   const [sites, setSites] = useState(initialSites);
   const [pending, setPending] = useState<DashboardSite | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [publishing, setPublishing] = useState<string | null>(null);
+  const [publishError, setPublishError] = useState("");
 
   // The server stays the source of truth: whenever the page re-renders with
   // fresh rows (including after the router.refresh() below), adopt them.
@@ -51,6 +60,49 @@ export default function SiteList({
   function closeDialog() {
     setPending(null);
     setError("");
+  }
+
+  /**
+   * Paid-only. The publish trigger in Postgres silently forces `published` back
+   * to false for free accounts, so we read the row back and trust what the
+   * database says rather than what we asked for.
+   */
+  async function togglePublished(site: DashboardSite) {
+    setPublishing(site.id);
+    setPublishError("");
+
+    try {
+      const supabase = createClient();
+      const { data, error: upErr } = await supabase
+        .from("sites")
+        .update({
+          published: !site.published,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", site.id)
+        .select("published")
+        .single();
+
+      if (upErr) throw upErr;
+
+      if (data.published !== !site.published) {
+        setPublishError(
+          "Publishing is part of the Standard plan — upgrade to take this site live."
+        );
+        return;
+      }
+
+      setSites((prev) =>
+        prev.map((s) =>
+          s.id === site.id ? { ...s, published: data.published } : s
+        )
+      );
+      router.refresh();
+    } catch {
+      setPublishError("Couldn't update that site. Try again.");
+    } finally {
+      setPublishing(null);
+    }
   }
 
   async function confirmDelete() {
@@ -128,18 +180,28 @@ export default function SiteList({
               <p className="nb-quiet" style={{ margin: "4px 0 0", fontSize: 13 }}>
                 /site/{s.slug} · {timeAgo(s.created_at)}
               </p>
+              <span
+                className={s.published ? "tag tag-accent-2" : "tag tag-outline"}
+                style={{ marginTop: 8 }}
+              >
+                {s.published ? "Live" : "Not live"}
+              </span>
             </div>
 
             <div className="nb-row-actions">
-              <CopyButton
-                path={`/site/${s.slug}`}
-                className="btn btn-secondary"
-              />
-              <QrCodeButton
-                path={`/site/${s.slug}`}
-                title={s.slug}
-                className="btn btn-secondary"
-              />
+              {s.published && (
+                <>
+                  <CopyButton
+                    path={`/site/${s.slug}`}
+                    className="btn btn-secondary"
+                  />
+                  <QrCodeButton
+                    path={`/site/${s.slug}`}
+                    title={s.slug}
+                    className="btn btn-secondary"
+                  />
+                </>
+              )}
               <Link
                 href={`/dashboard/edit/${s.slug}`}
                 className="btn btn-secondary"
@@ -152,8 +214,26 @@ export default function SiteList({
                 rel="noopener noreferrer"
                 className="btn btn-secondary"
               >
-                View live →
+                {s.published ? "View live →" : "Preview →"}
               </a>
+
+              {canPublish ? (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={publishing === s.id}
+                  onClick={() => togglePublished(s)}
+                >
+                  {publishing === s.id
+                    ? "Saving…"
+                    : s.published
+                      ? "Unpublish"
+                      : "Publish"}
+                </button>
+              ) : (
+                <UpgradeButton label="Upgrade to publish" />
+              )}
+
               <button
                 type="button"
                 className="btn btn-danger-quiet"
@@ -165,6 +245,12 @@ export default function SiteList({
           </div>
         ))}
       </div>
+
+      {publishError && (
+        <p role="alert" className="nb-note nb-note-error">
+          {publishError}
+        </p>
+      )}
 
       {pending && (
         <div

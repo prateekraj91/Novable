@@ -6,13 +6,19 @@ import PublishedSite, {
   type PublishedContent,
 } from "@/components/site/PublishedSite";
 
+/**
+ * Row-level security decides who sees what here, which is what makes the
+ * private preview work: the "public read published sites" policy only exposes
+ * published rows to visitors, while "own sites" lets the owner open their own
+ * unpublished draft. A free user can preview their site; nobody else can find
+ * it until they upgrade and it goes live.
+ */
 async function getSite(slug: string): Promise<PublishedContent | null> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("sites")
     .select("content")
     .eq("slug", slug)
-    .eq("published", true)
     .maybeSingle();
   return (data?.content as PublishedContent) ?? null;
 }

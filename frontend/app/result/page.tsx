@@ -7,6 +7,8 @@ import Link from "next/link";
 import BrandMark from "@/components/ui/BrandMark";
 import CopyButton from "@/components/ui/CopyButton";
 import QrCodeButton from "@/components/ui/QrCodeButton";
+import UpgradeButton from "@/components/billing/UpgradeButton";
+import { createClient } from "@/lib/supabase/client";
 import { GeneratedWebsite } from "@/types/website";
 
 export default function ResultPage() {
@@ -14,10 +16,24 @@ export default function ResultPage() {
   const [site, setSite] = useState<GeneratedWebsite | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [slug, setSlug] = useState<string | null>(null);
+  // null until we've asked the database — the banner shouldn't promise the
+  // site is live before we know that it is.
+  const [published, setPublished] = useState<boolean | null>(null);
   const contactRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setSlug(new URLSearchParams(window.location.search).get("slug"));
+    const found = new URLSearchParams(window.location.search).get("slug");
+    setSlug(found);
+
+    if (found) {
+      createClient()
+        .from("sites")
+        .select("published")
+        .eq("slug", found)
+        .maybeSingle()
+        .then(({ data }) => setPublished(data?.published ?? false));
+    }
+
     const raw = sessionStorage.getItem("growthpilot_site");
 
     if (!raw) {
@@ -107,40 +123,70 @@ export default function ResultPage() {
       {slug && (
         <div
           style={{
-            background: "var(--color-accent-2-100)",
+            background:
+              published === false
+                ? "var(--color-accent-100)"
+                : "var(--color-accent-2-100)",
             borderBottom: "1px solid var(--color-divider)",
             padding: "16px clamp(20px, 5vw, 40px)",
           }}
         >
           <div className="nb-row" style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <p style={{ margin: 0, fontSize: 14 }}>
-              <strong style={{ color: "var(--color-accent-2-800)" }}>
-                ✓ Saved &amp; published.
-              </strong>{" "}
-              Your live site:{" "}
-              <a href={`/site/${slug}`} target="_blank" rel="noopener noreferrer">
-                /site/{slug}
-              </a>
-            </p>
+            {published === false ? (
+              <p style={{ margin: 0, fontSize: 14 }}>
+                <strong style={{ color: "var(--color-accent-800)" }}>
+                  ✓ Saved — not live yet.
+                </strong>{" "}
+                Only you can see it. Publishing is part of Standard.
+              </p>
+            ) : (
+              <p style={{ margin: 0, fontSize: 14 }}>
+                <strong style={{ color: "var(--color-accent-2-800)" }}>
+                  ✓ Saved &amp; published.
+                </strong>{" "}
+                Your live site:{" "}
+                <a href={`/site/${slug}`} target="_blank" rel="noopener noreferrer">
+                  /site/{slug}
+                </a>
+              </p>
+            )}
 
             <div className="nb-row-actions">
-              <CopyButton path={`/site/${slug}`} className="btn btn-secondary" />
-              <QrCodeButton
-                path={`/site/${slug}`}
-                title={slug}
-                className="btn btn-secondary"
-              />
+              {published !== false && (
+                <>
+                  <CopyButton path={`/site/${slug}`} className="btn btn-secondary" />
+                  <QrCodeButton
+                    path={`/site/${slug}`}
+                    title={slug}
+                    className="btn btn-secondary"
+                  />
+                </>
+              )}
               <Link href={`/dashboard/edit/${slug}`} className="btn btn-secondary">
                 Refine with AI
               </Link>
-              <a
-                href={`/site/${slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary"
-              >
-                View live site →
-              </a>
+              {published === false ? (
+                <>
+                  <a
+                    href={`/site/${slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-secondary"
+                  >
+                    Preview →
+                  </a>
+                  <UpgradeButton label="Upgrade to publish" />
+                </>
+              ) : (
+                <a
+                  href={`/site/${slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                >
+                  View live site →
+                </a>
+              )}
             </div>
           </div>
         </div>

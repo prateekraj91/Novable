@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import Step1 from "./step1";
 import Step2 from "./step2";
@@ -19,6 +20,8 @@ import { GenerateWebsitePayload, GeneratedWebsite } from "@/types/website";
 import { API_BASE_URL } from "@/lib/config";
 import { saveGeneratedSite } from "@/lib/sites";
 import { createClient } from "@/lib/supabase/client";
+import UpgradeButton from "@/components/billing/UpgradeButton";
+import { FREE_PLAN_SITE_LIMIT, isPlanLimitError } from "@/lib/plan-errors";
 
 const TOTAL_STEPS = 4;
 
@@ -51,6 +54,10 @@ export default function OnboardingForm() {
 
   const [submitError, setSubmitError] =
     useState<string | null>(null);
+
+  // Set when the database turns the save down because the free plan's one
+  // site is already used — the page becomes an upgrade prompt.
+  const [limitReached, setLimitReached] = useState(false);
 
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -234,6 +241,13 @@ export default function OnboardingForm() {
         }
       } catch (saveErr) {
         console.error("Could not save generated site:", saveErr);
+
+        // The one-site rule lives in a Postgres trigger, so it can fire even
+        // though the page let the form through — a second tab, a stale page.
+        if (isPlanLimitError(saveErr, FREE_PLAN_SITE_LIMIT)) {
+          setLimitReached(true);
+          return;
+        }
       }
 
       router.push("/result");
@@ -249,6 +263,42 @@ export default function OnboardingForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (limitReached) {
+    return (
+      <div style={{ textAlign: "center", padding: "18px 0" }}>
+        <span className="nb-kicker">Free plan</span>
+        <h2 className="nb-h3" style={{ marginTop: 4 }}>
+          You&apos;ve used your free website.
+        </h2>
+        <p
+          className="nb-quiet"
+          style={{ margin: "10px auto 0", fontSize: 14, lineHeight: 1.6, maxWidth: "46ch" }}
+        >
+          The free plan includes one website. Upgrade to Standard to build as
+          many as you like, publish them live, and unlock every marketing agent.
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+            justifyContent: "center",
+            marginTop: 22,
+          }}
+        >
+          <UpgradeButton
+            label="Upgrade — ₹500"
+            style={{ padding: "12px 24px" }}
+          />
+          <Link href="/dashboard" className="btn btn-secondary" style={{ padding: "12px 24px" }}>
+            Back to dashboard
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (loading) {

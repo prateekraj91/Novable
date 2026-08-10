@@ -1,8 +1,12 @@
+import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import SignOutButton from "@/components/auth/SignOutButton";
+import UpgradeButton from "@/components/billing/UpgradeButton";
 import { createClient } from "@/lib/supabase/server";
+import { getEntitlements } from "@/lib/entitlements";
 
 export default async function SettingsPage() {
+  const { isPaid } = await getEntitlements();
   const supabase = await createClient();
   const {
     data: { user },
@@ -40,7 +44,35 @@ export default async function SettingsPage() {
                 <Setting label="Email" value={user?.email ?? "—"} />
                 <Setting label="Workspace" value={business?.name ?? "—"} />
                 <Setting label="Member since" value={joined} />
+                <Setting label="Plan" value={isPaid ? "Standard" : "Free"} />
               </div>
+            </section>
+
+            <section className="card elev-sm" style={{ marginTop: 16, padding: 28 }}>
+              <h2 className="nb-h3">Plan</h2>
+              {isPaid ? (
+                <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 15 }}>
+                  You&apos;re on <strong>Standard</strong> — unlimited sites,
+                  live publishing, and every marketing agent are unlocked.
+                </p>
+              ) : (
+                <>
+                  <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 15, lineHeight: 1.6 }}>
+                    You&apos;re on the <strong>free plan</strong>: one AI
+                    website with AI restyling. Publishing live and the marketing
+                    agents are part of Standard — ₹500, once.
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
+                    <UpgradeButton
+                      label="Upgrade — ₹500"
+                      style={{ padding: "11px 22px" }}
+                    />
+                    <Link href="/pricing" className="btn btn-secondary">
+                      See plans
+                    </Link>
+                  </div>
+                </>
+              )}
             </section>
 
             <section className="card elev-sm" style={{ marginTop: 16, padding: 28 }}>

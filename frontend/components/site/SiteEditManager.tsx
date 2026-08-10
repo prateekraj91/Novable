@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import UpgradeButton from "@/components/billing/UpgradeButton";
 import { API_BASE_URL } from "@/lib/config";
 import type { GeneratedWebsite } from "@/types/website";
 
@@ -12,18 +13,62 @@ const SUGGESTIONS = [
   "Add more detail to the About section",
 ];
 
+/**
+ * Restyling with AI is included in the free plan; taking the result live is
+ * not. Both states are shown side by side so the free plan feels like a real
+ * plan with one thing left to unlock.
+ */
 export default function SiteEditManager({
   slug,
   initialContent,
+  initialPublished,
+  canPublish,
 }: {
   slug: string;
   initialContent: GeneratedWebsite;
+  initialPublished: boolean;
+  canPublish: boolean;
 }) {
   const [content, setContent] = useState<GeneratedWebsite>(initialContent);
   const [instruction, setInstruction] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [previewKey, setPreviewKey] = useState(0);
+  const [published, setPublished] = useState(initialPublished);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState("");
+
+  async function togglePublished() {
+    setPublishing(true);
+    setPublishError("");
+
+    try {
+      const supabase = createClient();
+      const { data, error: upErr } = await supabase
+        .from("sites")
+        .update({ published: !published, updated_at: new Date().toISOString() })
+        .eq("slug", slug)
+        .select("published")
+        .single();
+
+      if (upErr) throw upErr;
+
+      // The database has the final say — a free account's row comes back
+      // unpublished no matter what we asked for.
+      if (data.published !== !published) {
+        setPublishError(
+          "Publishing is part of the Standard plan — upgrade to take this site live."
+        );
+        return;
+      }
+
+      setPublished(data.published);
+    } catch {
+      setPublishError("Couldn't update that. Try again.");
+    } finally {
+      setPublishing(false);
+    }
+  }
 
   async function apply() {
     if (!instruction.trim()) return;
@@ -119,8 +164,65 @@ export default function SiteEditManager({
           className="btn btn-ghost btn-block"
           style={{ marginTop: 12 }}
         >
-          Open live site →
+          {published ? "Open live site →" : "Open private preview →"}
         </a>
+
+        {/* Publishing */}
+        <div
+          style={{
+            marginTop: 22,
+            paddingTop: 20,
+            borderTop: "1px solid var(--color-divider)",
+          }}
+        >
+          <div className="nb-row" style={{ gap: 10 }}>
+            <span className="nb-info-label">Live status</span>
+            <span className={published ? "tag tag-accent-2" : "tag tag-outline"}>
+              {published ? "Live" : "Not live"}
+            </span>
+          </div>
+
+          {canPublish ? (
+            <>
+              <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 13, lineHeight: 1.55 }}>
+                {published
+                  ? "Anyone with the link can see this site."
+                  : "Only you can see this site right now."}
+              </p>
+              <button
+                type="button"
+                onClick={togglePublished}
+                disabled={publishing}
+                className="btn btn-secondary btn-block"
+                style={{ marginTop: 12, padding: 11 }}
+              >
+                {publishing
+                  ? "Saving…"
+                  : published
+                    ? "Unpublish"
+                    : "Publish live"}
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 13, lineHeight: 1.55 }}>
+                Your site is saved and only you can see it. Publishing it to a
+                public link is part of the Standard plan — ₹500, once.
+              </p>
+              <UpgradeButton
+                label="Upgrade to publish"
+                className="btn btn-primary btn-block"
+                style={{ marginTop: 12, padding: 11 }}
+              />
+            </>
+          )}
+
+          {publishError && (
+            <p role="alert" className="nb-note nb-note-error">
+              {publishError}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Live preview — the customer's own site, rendered in its own design */}

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import type { GenerateWebsitePayload, GeneratedWebsite } from "@/types/website";
 import { DEFAULT_SITE_TEMPLATE } from "@/components/site/themes";
+import { FREE_PLAN_SITE_LIMIT } from "@/lib/plan-errors";
 
 export type BusinessInput = {
   business_name: string;
@@ -69,6 +70,22 @@ export async function saveGeneratedSite(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
+
+  // The one-site rule is enforced by a trigger on public.sites, but the site
+  // row is only written after the business row. Asking first means a blocked
+  // save doesn't leave an orphaned business behind — and the caller gets the
+  // same marker either way.
+  const [{ data: profile }, { count: siteCount }] = await Promise.all([
+    supabase.from("profiles").select("is_paid").eq("id", user.id).maybeSingle(),
+    supabase
+      .from("sites")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+  ]);
+
+  if (profile?.is_paid !== true && (siteCount ?? 0) >= 1) {
+    throw new Error(`${FREE_PLAN_SITE_LIMIT}: the free plan includes one website`);
+  }
 
   const { data: business, error: bizErr } = await supabase
     .from("businesses")

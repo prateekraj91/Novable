@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import { createClient } from "@/lib/supabase/server";
+import { getEntitlements } from "@/lib/entitlements";
 import SiteEditManager from "@/components/site/SiteEditManager";
 import type { GeneratedWebsite } from "@/types/website";
 
@@ -16,12 +17,15 @@ export default async function EditSitePage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: site } = await supabase
-    .from("sites")
-    .select("slug, content")
-    .eq("slug", slug)
-    .eq("user_id", user!.id)
-    .maybeSingle();
+  const [{ data: site }, { canPublish }] = await Promise.all([
+    supabase
+      .from("sites")
+      .select("slug, content, published")
+      .eq("slug", slug)
+      .eq("user_id", user!.id)
+      .maybeSingle(),
+    getEntitlements(),
+  ]);
 
   if (!site) notFound();
 
@@ -45,6 +49,8 @@ export default async function EditSitePage({
               <SiteEditManager
                 slug={site.slug}
                 initialContent={site.content as GeneratedWebsite}
+                initialPublished={site.published as boolean}
+                canPublish={canPublish}
               />
             </div>
           </div>

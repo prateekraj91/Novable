@@ -18,6 +18,7 @@ const navItems = [
   {
     section: "Platform",
     items: [
+      { label: "Plan & pricing", icon: "tag", href: "/pricing" },
       { label: "Marketplace (soon)", icon: "store", href: "/dashboard/marketplace" },
       { label: "Settings", icon: "gear", href: "/dashboard/settings" },
     ],
@@ -65,6 +66,13 @@ function NavIcon({ name }: { name: string }) {
       return (
         <svg {...common}>
           <path d="M4 8l1-3h14l1 3v2a2 2 0 01-2 2H6a2 2 0 01-2-2V8zm1 4h14v8H5v-8z" />
+        </svg>
+      );
+    case "tag":
+      return (
+        <svg {...common}>
+          <path d="M4 11.5V5a1 1 0 011-1h6.5L20 12.5 12.5 20 4 11.5z" />
+          <circle cx="8.2" cy="8.2" r="1.1" />
         </svg>
       );
     case "gear":
