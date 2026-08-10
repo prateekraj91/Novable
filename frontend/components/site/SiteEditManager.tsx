@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import UpgradeButton from "@/components/billing/UpgradeButton";
+import DeviceViewportBar, { type ViewportMode } from "./DeviceViewportBar";
 import { API_BASE_URL } from "@/lib/config";
 import type { GeneratedWebsite } from "@/types/website";
 
@@ -21,11 +22,13 @@ const LANGUAGES = [
   { label: "🌐 Spanish", prompt: "Translate all website text and copy into natural, fluent Spanish." },
 ];
 
-/**
- * Restyling with AI is included in the free plan; taking the result live is
- * not. Both states are shown side by side so the free plan feels like a real
- * plan with one thing left to unlock.
- */
+const THEMES = [
+  { key: "classic", label: "Classic" },
+  { key: "centered", label: "Centered" },
+  { key: "editorial", label: "Editorial" },
+  { key: "minimal", label: "Minimal" },
+];
+
 export default function SiteEditManager({
   slug,
   initialContent,
@@ -45,6 +48,41 @@ export default function SiteEditManager({
   const [published, setPublished] = useState(initialPublished);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState("");
+  const [viewport, setViewport] = useState<ViewportMode>("desktop");
+  const [chatHistory, setChatHistory] = useState<Array<{ role: "user" | "ai"; text: string }>>([
+    { role: "ai", text: "Welcome to Novable Studio! Tell me what you'd like to update on your site." },
+  ]);
+
+  async function updateTheme(themeKey: string) {
+    try {
+      const supabase = createClient();
+      const { data: row } = await supabase
+        .from("sites")
+        .select("content")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      const prev = (row?.content ?? {}) as Record<string, unknown>;
+      const merged = { ...prev, _theme: themeKey };
+
+      const { error: upErr } = await supabase
+        .from("sites")
+        .update({ content: merged, updated_at: new Date().toISOString() })
+        .eq("slug", slug);
+
+      if (upErr) throw upErr;
+
+      setContent((c) => ({ ...c, _theme: themeKey }));
+      setPreviewKey((k) => k + 1);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "user", text: `Switched template theme to ${themeKey}` },
+        { role: "ai", text: `Updated layout template to ${themeKey}.` },
+      ]);
+    } catch {
+      setError("Couldn't update theme.");
+    }
+  }
 
   async function togglePublished() {
     setPublishing(true);
@@ -61,8 +99,6 @@ export default function SiteEditManager({
 
       if (upErr) throw upErr;
 
-      // The database has the final say — a free account's row comes back
-      // unpublished no matter what we asked for.
       if (data.published !== !published) {
         setPublishError(
           "Publishing is part of the Standard plan — upgrade to take this site live."
@@ -80,18 +116,21 @@ export default function SiteEditManager({
 
   async function apply() {
     if (!instruction.trim()) return;
+    const userPrompt = instruction;
     setLoading(true);
     setError("");
+    setInstruction("");
+    setChatHistory((prev) => [...prev, { role: "user", text: userPrompt }]);
+
     try {
       const res = await fetch(`${API_BASE_URL}/edit-website`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ current: content, instruction }),
+        body: JSON.stringify({ current: content, instruction: userPrompt }),
       });
       if (!res.ok) throw new Error(String(res.status));
       const updated = (await res.json()) as GeneratedWebsite;
 
-      // Save, preserving the stored _business / _images extras.
       const supabase = createClient();
       const { data: row } = await supabase
         .from("sites")
@@ -107,62 +146,135 @@ export default function SiteEditManager({
       if (upErr) throw upErr;
 
       setContent(updated);
-      setInstruction("");
-      setPreviewKey((k) => k + 1); // reload the preview iframe
+      setPreviewKey((k) => k + 1);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "ai", text: `Applied changes for: "${userPrompt}"` },
+      ]);
     } catch {
       setError("Couldn't apply that edit. Try again.");
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "ai", text: "⚠️ Error applying edit. Please try again." },
+      ]);
     } finally {
       setLoading(false);
     }
   }
 
+  const canvasWidth = viewport === "mobile" ? 375 : viewport === "tablet" ? 768 : "100%";
+
   return (
-    <div className="nb-edit-grid">
-      {/* Editor */}
-      <div className="card elev-sm" style={{ padding: 26 }}>
-        <span className="nb-kicker">Refine with AI</span>
-        <h2 className="nb-h3">Describe a change</h2>
-        <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 14 }}>
-          Tell Novable what to change and it rewrites your site.
-        </p>
+    <div className="nb-edit-grid" style={{ gridTemplateColumns: "390px minmax(0, 1fr)" }}>
+      {/* Left Control Panel: AI Assistant Workbench */}
+      <div className="card elev-sm" style={{ padding: 22, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div>
+          <span className="nb-kicker" style={{ color: "var(--color-accent-700)" }}>
+            Novable Studio Workbench
+          </span>
+          <h2 className="nb-h3" style={{ fontSize: 20 }}>
+            AI Co-pilot Chat
+          </h2>
+        </div>
 
-        <textarea
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          rows={3}
-          placeholder="e.g. Make it more premium and change the colour to navy"
-          className="input"
-          style={{ marginTop: 18, background: "var(--color-bg)" }}
-        />
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 12 }}>
-          {SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setInstruction(s)}
-              className="btn btn-secondary"
-              style={{ fontSize: 12, padding: "5px 12px" }}
+        {/* AI Assistant Chat Log */}
+        <div
+          style={{
+            maxHeight: 200,
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            padding: 12,
+            background: "var(--color-bg)",
+            borderRadius: "var(--radius-md)",
+            border: "1px solid var(--color-divider)",
+          }}
+        >
+          {chatHistory.map((chat, i) => (
+            <div
+              key={i}
+              style={{
+                alignSelf: chat.role === "user" ? "flex-end" : "flex-start",
+                background: chat.role === "user" ? "var(--color-accent)" : "var(--color-surface)",
+                color: chat.role === "user" ? "var(--color-bg)" : "var(--color-text)",
+                padding: "8px 12px",
+                borderRadius: "var(--radius-sm)",
+                fontSize: 13,
+                maxWidth: "88%",
+              }}
             >
-              {s}
-            </button>
+              {chat.text}
+            </div>
           ))}
         </div>
 
-        <div style={{ marginTop: 14 }}>
-          <span style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--color-accent-700)", fontWeight: 600, display: "block", marginBottom: 6 }}>
+        {/* Text Instruction Input */}
+        <div>
+          <textarea
+            value={instruction}
+            onChange={(e) => setInstruction(e.target.value)}
+            rows={2}
+            placeholder="Describe a change (e.g. Make headline warmer, change color to navy...)"
+            className="input"
+            style={{ background: "var(--color-bg)" }}
+          />
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
+            {SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setInstruction(s)}
+                className="btn btn-secondary"
+                style={{ fontSize: 11, padding: "3px 8px" }}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Multi-Language Pills */}
+        <div>
+          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--color-accent-700)", fontWeight: 600, display: "block", marginBottom: 4 }}>
             Multi-Language Translator
           </span>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.label}
                 type="button"
                 onClick={() => setInstruction(lang.prompt)}
                 className="btn btn-secondary"
-                style={{ fontSize: 12, padding: "4px 10px" }}
+                style={{ fontSize: 11, padding: "3px 8px" }}
               >
                 {lang.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Template Switcher */}
+        <div>
+          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--color-accent-700)", fontWeight: 600, display: "block", marginBottom: 4 }}>
+            Layout Template
+          </span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+            {THEMES.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => updateTheme(t.key)}
+                className="btn btn-secondary"
+                style={{
+                  fontSize: 11,
+                  padding: "3px 10px",
+                  background: ((content as Record<string, unknown>)._theme || "classic") === t.key ? "var(--color-accent)" : undefined,
+                  color: ((content as Record<string, unknown>)._theme || "classic") === t.key ? "var(--color-bg)" : undefined,
+                }}
+              >
+                {t.label}
               </button>
             ))}
           </div>
@@ -173,35 +285,25 @@ export default function SiteEditManager({
           onClick={apply}
           disabled={loading || !instruction.trim()}
           className="btn btn-primary btn-block"
-          style={{ marginTop: 18, padding: 12 }}
+          style={{ padding: 11 }}
         >
-          {loading ? "Applying…" : "Apply change"}
+          {loading ? "Applying AI Edit…" : "Apply change"}
         </button>
 
-        {error && (
-          <p role="alert" className="nb-note nb-note-error">
-            {error}
-          </p>
-        )}
+        {error && <p role="alert" className="nb-note nb-note-error">{error}</p>}
 
         <a
           href={`/site/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-ghost btn-block"
-          style={{ marginTop: 12 }}
+          style={{ marginTop: 2 }}
         >
           {published ? "Open live site →" : "Open private preview →"}
         </a>
 
-        {/* Publishing */}
-        <div
-          style={{
-            marginTop: 22,
-            paddingTop: 20,
-            borderTop: "1px solid var(--color-divider)",
-          }}
-        >
+        {/* Publishing & Plan Status */}
+        <div style={{ paddingTop: 14, borderTop: "1px solid var(--color-divider)" }}>
           <div className="nb-row" style={{ gap: 10 }}>
             <span className="nb-info-label">Live status</span>
             <span className={published ? "tag tag-accent-2" : "tag tag-outline"}>
@@ -210,64 +312,73 @@ export default function SiteEditManager({
           </div>
 
           {canPublish ? (
-            <>
-              <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 13, lineHeight: 1.55 }}>
-                {published
-                  ? "Anyone with the link can see this site."
-                  : "Only you can see this site right now."}
-              </p>
-              <button
-                type="button"
-                onClick={togglePublished}
-                disabled={publishing}
-                className="btn btn-secondary btn-block"
-                style={{ marginTop: 12, padding: 11 }}
-              >
-                {publishing
-                  ? "Saving…"
-                  : published
-                    ? "Unpublish"
-                    : "Publish live"}
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={togglePublished}
+              disabled={publishing}
+              className="btn btn-secondary btn-block"
+              style={{ marginTop: 10, padding: 10 }}
+            >
+              {publishing ? "Saving…" : published ? "Unpublish" : "Publish live"}
+            </button>
           ) : (
-            <>
-              <p className="nb-quiet" style={{ margin: "10px 0 0", fontSize: 13, lineHeight: 1.55 }}>
-                Your site is saved and only you can see it. Publishing it to a
-                public link is part of the Standard plan — ₹500, once.
-              </p>
-              <UpgradeButton
-                label="Upgrade to publish"
-                className="btn btn-primary btn-block"
-                style={{ marginTop: 12, padding: 11 }}
-              />
-            </>
+            <UpgradeButton
+              label="Upgrade to publish"
+              className="btn btn-primary btn-block"
+              style={{ marginTop: 10, padding: 10 }}
+            />
           )}
 
-          {publishError && (
-            <p role="alert" className="nb-note nb-note-error">
-              {publishError}
-            </p>
-          )}
+          {publishError && <p role="alert" className="nb-note nb-note-error">{publishError}</p>}
         </div>
       </div>
 
-      {/* Live preview — the customer's own site, rendered in its own design */}
+      {/* Right Sandbox Canvas Preview: Multi-Device Canvas */}
       <div
         style={{
-          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
           borderRadius: "var(--radius-lg)",
           border: "1px solid var(--color-divider)",
-          background: "#fff",
-          boxShadow: "var(--shadow-sm)",
+          background: "var(--color-bg)",
+          overflow: "hidden",
+          boxShadow: "var(--shadow-md)",
         }}
       >
-        <iframe
-          key={previewKey}
-          src={`/site/${slug}`}
-          title="Live preview"
-          style={{ height: "70vh", width: "100%", border: 0, display: "block" }}
-        />
+        {/* Device Viewport Bar */}
+        <DeviceViewportBar mode={viewport} onModeChange={setViewport} />
+
+        {/* Sandbox Canvas Iframe Container */}
+        <div
+          style={{
+            flex: 1,
+            padding: viewport === "desktop" ? 0 : "24px 0",
+            display: "flex",
+            justifyContent: "center",
+            background: viewport === "desktop" ? "#fff" : "color-mix(in srgb, var(--color-text) 6%, transparent)",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            style={{
+              width: canvasWidth,
+              maxWidth: "100%",
+              height: "75vh",
+              transition: "width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
+              borderRadius: viewport === "desktop" ? 0 : 20,
+              boxShadow: viewport === "desktop" ? "none" : "0 12px 32px rgba(0,0,0,0.18)",
+              overflow: "hidden",
+              border: viewport === "desktop" ? 0 : "8px solid #201e1d",
+            }}
+          >
+            <iframe
+              key={previewKey}
+              src={`/site/${slug}`}
+              title="Emergent Interactive Sandbox Preview"
+              style={{ height: "100%", width: "100%", border: 0, display: "block" }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
