@@ -1,9 +1,10 @@
-from google import genai
-from google.genai import types
-import utils.logger_config
 import os
 import logging
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 from tenacity import retry, stop_after_attempt, wait_fixed, before_sleep_log
+load_dotenv()
 
 logger=logging.getLogger(__name__)
 

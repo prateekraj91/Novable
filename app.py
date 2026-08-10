@@ -95,10 +95,12 @@ def payment_link(data:PaymentLinkInput):
 
     return create_payment_link(data.amount, data.business_name, data.phone)
 
-# --- Novable 12-Month Emergent Engine Endpoints ---
-from schemas.fullstack_app_schema import AppIdeaInput, AppPlanOutput, FullstackAppCode
+# --- Novable Autonomous AI Software Engineer Endpoints ---
+from schemas.fullstack_app_schema import AppIdeaInput, AppPlanOutput, FullstackAppCode, ProjectState
 from agents.engine.planner_agent import PlannerAgent
 from agents.engine.fullstack_generator_agent import FullstackGeneratorAgent
+from agents.engine.project_manager import ProjectManager
+from fastapi import HTTPException
 
 @app.post("/generate-fullstack-plan", response_model=AppPlanOutput)
 def generate_fullstack_plan(data: AppIdeaInput):
@@ -109,4 +111,18 @@ def generate_fullstack_plan(data: AppIdeaInput):
 def generate_fullstack_app(plan: AppPlanOutput):
     logger.info(f"Fullstack app generation requested for {plan.app_name}")
     return FullstackGeneratorAgent.generate_app(plan)
+
+@app.post("/api/build-app")
+def start_autonomous_build(data: AppIdeaInput):
+    logger.info(f"Starting autonomous pipeline for {data.app_name}")
+    project_id = ProjectManager.start_pipeline(data)
+    return {"project_id": project_id, "status": "started"}
+
+@app.get("/api/project-status/{project_id}", response_model=ProjectState)
+def get_project_status(project_id: str):
+    state = ProjectManager.get_project_state(project_id)
+    if not state:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return state
+
 

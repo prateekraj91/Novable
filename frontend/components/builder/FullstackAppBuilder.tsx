@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "@/lib/config";
 
 type GeneratedFile = {
@@ -17,32 +17,50 @@ type AppPlan = {
   implementation_steps: string[];
 };
 
-type GeneratedCode = {
+type ProjectState = {
+  project_id: string;
   app_name: string;
-  summary: string;
-  database_sql: string;
-  files: GeneratedFile[];
+  description: string;
+  stage: string; // planning | generating | workspace | dependencies | building | testing | repairing | ready | failed
+  plan?: AppPlan | null;
+  code?: { files: GeneratedFile[] } | null;
+  running_url?: string | null;
+  completed: boolean;
+  repair_attempts: number;
+  error_log: string[];
 };
 
-export default function FullstackAppBuilder() {
-  const [appName, setAppName] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [stage, setStage] = useState<"idle" | "planning" | "generating" | "complete">("idle");
-  const [error, setError] = useState("");
-  const [plan, setPlan] = useState<AppPlan | null>(null);
-  const [code, setCode] = useState<GeneratedCode | null>(null);
-  const [selectedFileIdx, setSelectedFileIdx] = useState(0);
+const STAGES = [
+  { key: "planning", label: "Understanding & Planning Architecture" },
+  { key: "generating", label: "Generating Application Code" },
+  { key: "workspace", label: "Creating Project Workspace" },
+  { key: "building", label: "Installing Dependencies & Building" },
+  { key: "testing", label: "Running Automated Test Suite" },
+  { key: "repairing", label: "Repairing & Patching Failures" },
+  { key: "ready", label: "Application Ready" },
+];
 
-  async function handleBuild() {
+export default function FullstackAppBuilder() {
+  const [appName, setAppName] = useState("TaskMaster SaaS");
+  const [prompt, setPrompt] = useState(
+    "Build a task management SaaS with email/password authentication, projects, tasks, task status, priorities, a dashboard, PostgreSQL database, and CRUD operations."
+  );
+  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectState, setProjectState] = useState<ProjectState | null>(null);
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedFileIdx, setSelectedFileIdx] = useState(0);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  async function handleStartBuild() {
     if (!prompt.trim() || !appName.trim()) return;
-    setStage("planning");
+    setIsBuilding(true);
     setError("");
-    setPlan(null);
-    setCode(null);
+    setProjectState(null);
+    setProjectId(null);
 
     try {
-      // Step 1: Planning
-      const planRes = await fetch(`${API_BASE_URL}/generate-fullstack-plan`, {
+      const res = await fetch(`${API_BASE_URL}/api/build-app`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,38 +71,53 @@ export default function FullstackAppBuilder() {
         }),
       });
 
-      if (!planRes.ok) throw new Error("Planning failed");
-      const planData = (await planRes.json()) as AppPlan;
-      setPlan(planData);
-
-      // Step 2: Full-Stack Code Generation
-      setStage("generating");
-      const codeRes = await fetch(`${API_BASE_URL}/generate-fullstack-app`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(planData),
-      });
-
-      if (!codeRes.ok) throw new Error("Code generation failed");
-      const codeData = (await codeRes.json()) as GeneratedCode;
-      setCode(codeData);
-      setStage("complete");
+      if (!res.ok) throw new Error("Failed to start autonomous build");
+      const data = await res.json();
+      setProjectId(data.project_id);
     } catch {
-      setError("Couldn't complete full-stack generation. Is the backend running?");
-      setStage("idle");
+      setError("Couldn't start autonomous build pipeline. Is backend running?");
+      setIsBuilding(false);
     }
   }
+
+  // Poll real backend project state
+  useEffect(() => {
+    if (!projectId || !isBuilding) return;
+
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/project-status/${projectId}`);
+        if (!res.ok) return;
+        const state = (await res.json()) as ProjectState;
+        setProjectState(state);
+
+        if (state.completed || state.stage === "ready" || state.stage === "failed") {
+          setIsBuilding(false);
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        }
+      } catch {
+        // Silently retry polling
+      }
+    }, 1500);
+
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, [projectId, isBuilding]);
+
+  const currentStageKey = projectState?.stage || "idle";
+  const files = projectState?.code?.files || [];
 
   return (
     <section className="card elev-sm" style={{ padding: 28, marginTop: 24 }}>
       <span className="nb-kicker" style={{ color: "var(--color-accent-700)" }}>
-        Novable Engine 2.0 (12-Month Vision)
+        Autonomous AI Software Engineer
       </span>
       <h2 className="nb-h2" style={{ fontSize: 24 }}>
-        Full-Stack App Generator
+        Novable App Engine
       </h2>
       <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 14 }}>
-        Transform natural language app ideas into complete SaaS applications (Frontend + Backend + Database SQL).
+        Prompt → Plan → Architect → Generate → Workspace → Build → Test → Repair → Deploy.
       </p>
 
       <div style={{ marginTop: 20, display: "grid", gap: 14 }}>
@@ -96,7 +129,7 @@ export default function FullstackAppBuilder() {
             type="text"
             value={appName}
             onChange={(e) => setAppName(e.target.value)}
-            placeholder="e.g. DentCare Pro SaaS"
+            disabled={isBuilding}
             className="input"
             style={{ background: "var(--color-bg)" }}
           />
@@ -109,8 +142,8 @@ export default function FullstackAppBuilder() {
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
+            disabled={isBuilding}
             rows={3}
-            placeholder="e.g. Build an appointment booking SaaS for dental clinics with patient medical records, doctor scheduling, and UPI payment receipt tracking."
             className="input"
             style={{ background: "var(--color-bg)" }}
           />
@@ -118,52 +151,111 @@ export default function FullstackAppBuilder() {
 
         <button
           type="button"
-          onClick={handleBuild}
-          disabled={stage === "planning" || stage === "generating" || !prompt.trim() || !appName.trim()}
+          onClick={handleStartBuild}
+          disabled={isBuilding || !prompt.trim() || !appName.trim()}
           className="btn btn-primary"
           style={{ padding: "12px 24px", alignSelf: "flex-start" }}
         >
-          {stage === "planning"
-            ? "🤖 Step 1/2: Architecting Plan…"
-            : stage === "generating"
-            ? "⚡ Step 2/2: Generating Full-Stack Code…"
-            : "🚀 Build Full-Stack Application"}
+          {isBuilding ? "⚡ Autonomous Engineering Pipeline Running…" : "🚀 Run Autonomous App Builder"}
         </button>
       </div>
 
       {error && <p role="alert" className="nb-note nb-note-error" style={{ marginTop: 14 }}>{error}</p>}
 
-      {/* Output Stage Results */}
-      {plan && (
+      {/* Real Pipeline Execution Tracker */}
+      {projectState && (
         <div style={{ marginTop: 24, padding: 20, borderRadius: "var(--radius-lg)", background: "var(--color-surface)", border: "1px solid var(--color-divider)" }}>
-          <div className="nb-row">
-            <span className="tag tag-accent">Plan Ready</span>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>{plan.tech_stack?.join(" • ")}</span>
+          <div className="nb-row" style={{ marginBottom: 14 }}>
+            <span className="nb-kicker" style={{ margin: 0 }}>
+              Project ID: {projectState.project_id}
+            </span>
+            <span className={projectState.stage === "ready" ? "tag tag-accent-2" : "tag tag-accent"}>
+              {projectState.stage.toUpperCase()}
+            </span>
           </div>
 
-          <h3 className="nb-h3" style={{ marginTop: 10, fontSize: 18 }}>{plan.app_name}</h3>
-          <p className="nb-quiet" style={{ margin: "4px 0 0", fontSize: 14 }}>{plan.architecture_overview}</p>
+          {/* Real Backend Stage Checklist */}
+          <div style={{ display: "grid", gap: 8, marginTop: 12 }}>
+            {STAGES.map((s, idx) => {
+              const isPast = STAGES.findIndex((st) => st.key === currentStageKey) > idx;
+              const isCurrent = currentStageKey === s.key;
+              const isDone = projectState.stage === "ready" || isPast;
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
-            {plan.features?.map((f, i) => (
-              <span key={i} className="tag tag-neutral" style={{ fontSize: 11 }}>✓ {f}</span>
-            ))}
+              return (
+                <div
+                  key={s.key}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    fontSize: 13,
+                    opacity: isDone || isCurrent ? 1 : 0.45,
+                    fontWeight: isCurrent ? 700 : 400,
+                  }}
+                >
+                  <span style={{ fontSize: 14 }}>
+                    {isDone ? "✓" : isCurrent ? "↻" : "○"}
+                  </span>
+                  <span>{s.label}</span>
+                  {isCurrent && s.key === "repairing" && (
+                    <span className="tag tag-outline" style={{ fontSize: 10 }}>
+                      Attempt {projectState.repair_attempts}/5
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
+
+          {/* Final Successful State */}
+          {projectState.stage === "ready" && (
+            <div style={{ marginTop: 18, padding: 16, borderRadius: "var(--radius-md)", background: "var(--color-accent-2-100)", border: "1px solid var(--color-accent-2-300)" }}>
+              <h4 style={{ margin: 0, color: "var(--color-accent-2-800)", fontSize: 16 }}>
+                🎉 Your application is ready.
+              </h4>
+              <p style={{ margin: "6px 0 0", fontSize: 13, color: "var(--color-text)" }}>
+                The application was generated, written to an isolated workspace, built, tested, and verified successfully!
+              </p>
+              {projectState.running_url && (
+                <a
+                  href={projectState.running_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                  style={{ marginTop: 12, display: "inline-block", padding: "8px 18px", fontSize: 13 }}
+                >
+                  Open Running Application →
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* System Log */}
+          {projectState.error_log?.length > 0 && (
+            <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--color-divider)", fontSize: 12, fontFamily: "monospace", opacity: 0.8 }}>
+              <strong>Execution Log:</strong>
+              <div style={{ maxHeight: 100, overflowY: "auto", marginTop: 4 }}>
+                {projectState.error_log.map((log, i) => (
+                  <div key={i}>{log}</div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* Code Explorer */}
-      {code && code.files?.length > 0 && (
+      {files.length > 0 && (
         <div style={{ marginTop: 20, borderRadius: "var(--radius-lg)", overflow: "hidden", border: "1px solid var(--color-divider)", background: "#1e1b18", color: "#f5ead8" }}>
           <div style={{ padding: "12px 18px", background: "#2e2b25", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Generated Code Files</span>
-            <span style={{ fontSize: 12, opacity: 0.6 }}>{code.files.length} Files Generated</span>
+            <span style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Workspace Code Explorer</span>
+            <span style={{ fontSize: 12, opacity: 0.6 }}>{files.length} Files Written</span>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", minHeight: 320 }}>
             {/* Sidebar File Tree */}
             <div style={{ borderRight: "1px solid rgba(255,255,255,0.1)", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
-              {code.files.map((file, idx) => (
+              {files.map((file, idx) => (
                 <button
                   key={file.filepath}
                   type="button"
@@ -191,10 +283,10 @@ export default function FullstackAppBuilder() {
             {/* Code Viewport */}
             <div style={{ padding: 16, overflowX: "auto" }}>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 8 }}>
-                {code.files[selectedFileIdx]?.filepath} ({code.files[selectedFileIdx]?.language})
+                {files[selectedFileIdx]?.filepath} ({files[selectedFileIdx]?.language})
               </div>
               <pre style={{ margin: 0, fontSize: 12, fontFamily: "monospace", lineHeight: 1.5, color: "#dcd3c4", whiteSpace: "pre-wrap" }}>
-                {code.files[selectedFileIdx]?.content}
+                {files[selectedFileIdx]?.content}
               </pre>
             </div>
           </div>
