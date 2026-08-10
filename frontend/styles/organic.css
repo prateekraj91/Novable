@@ -338,6 +338,15 @@
 .nb-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
 .nb-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
 
+/* Two plans read as a choice, not a leftover third column — so they sit
+   centred at a narrower measure than the general grids. */
+.nb-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px; align-items: stretch;
+  max-width: 760px;
+}
+
 @media (max-width: 1000px) {
   .nb-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nb-grid-3 { grid-template-columns: minmax(0, 1fr); }
@@ -351,6 +360,10 @@
 
 @media (max-width: 700px) {
   .nb-footer-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
+
+@media (max-width: 780px) {
+  .nb-plan-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 620px) {
