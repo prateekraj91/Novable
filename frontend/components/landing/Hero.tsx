@@ -67,19 +67,22 @@ export default function Hero() {
               flexWrap: "wrap",
             }}
           >
+            {/* Both routes sign the visitor in first; they differ in where
+                they land. Get started → the paywall. Try for free → the
+                builder, on the one-site free plan. */}
             <Link
-              href="/signup"
+              href="/signup?next=/pricing"
               className="btn btn-primary"
               style={{ padding: "14px 28px", fontSize: 15 }}
             >
               Get started
             </Link>
             <Link
-              href="/onboarding"
+              href="/signup?next=/onboarding"
               className="btn btn-secondary"
               style={{ padding: "14px 28px", fontSize: 15 }}
             >
-              Try it free
+              Try for free
             </Link>
           </div>
         </div>

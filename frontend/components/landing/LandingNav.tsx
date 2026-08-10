@@ -61,7 +61,7 @@ export default function LandingNav() {
           >
             Sign In
           </Link>
-          <Link href="/signup" className="btn btn-primary">
+          <Link href="/signup?next=/pricing" className="btn btn-primary">
             Get started
           </Link>
         </div>
@@ -102,7 +102,7 @@ export default function LandingNav() {
               Sign In
             </Link>
             <Link
-              href="/signup"
+              href="/signup?next=/pricing"
               className="btn btn-primary"
               style={{ alignSelf: "flex-start", padding: "12px 24px" }}
               onClick={() => setOpen(false)}

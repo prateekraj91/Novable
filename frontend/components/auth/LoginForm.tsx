@@ -11,7 +11,17 @@ type Mode = "signin" | "signup";
 // Pill inputs need room on the right for the show/hide control.
 const PASSWORD_INPUT_PADDING = 44;
 
-export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
+export default function LoginForm({
+  mode = "signin",
+  /**
+   * Where to land once authenticated — /pricing for "Get Started", /onboarding
+   * for "Try for free". Already validated as a local path by the page.
+   */
+  next = "/dashboard",
+}: {
+  mode?: Mode;
+  next?: string;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -84,7 +94,7 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
         setStatus("sent");
         return;
       }
-      router.push("/dashboard");
+      router.push(next);
       router.refresh();
       return;
     }
@@ -98,9 +108,14 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
       setErrorMsg(error.message);
       return;
     }
-    router.push("/dashboard");
+    router.push(next);
     router.refresh();
   }
+
+  // Keep the destination attached when someone crosses between sign in and
+  // sign up, so the intent they arrived with survives the detour.
+  const withNext = (path: string) =>
+    next === "/dashboard" ? path : `${path}?next=${encodeURIComponent(next)}`;
 
   if (forgot) {
     if (status === "reset-sent") {
@@ -178,7 +193,7 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
       <div>
         <p className="nb-note nb-note-ok" style={{ marginTop: 0 }}>
           Almost there — we sent a confirmation link to <strong>{email}</strong>.
-          Confirm it, then <Link href="/login">sign in</Link>.
+          Confirm it, then <Link href={withNext("/login")}>sign in</Link>.
         </p>
       </div>
     );
@@ -318,11 +333,13 @@ export default function LoginForm({ mode = "signin" }: { mode?: Mode }) {
       >
         {mode === "signup" ? (
           <>
-            Already have an account? <Link href="/login">Sign in</Link>
+            Already have an account?{" "}
+            <Link href={withNext("/login")}>Sign in</Link>
           </>
         ) : (
           <>
-            New to Novable? <Link href="/signup">Start your trial</Link>
+            New to Novable?{" "}
+            <Link href={withNext("/signup")}>Create an account</Link>
           </>
         )}
       </p>

@@ -14,7 +14,9 @@ const columns = [
   {
     title: "Get started",
     links: [
-      { label: "Start free", href: "/onboarding" },
+      { label: "Get started", href: "/signup?next=/pricing" },
+      { label: "Try for free", href: "/signup?next=/onboarding" },
+      { label: "Pricing", href: "/pricing" },
       { label: "Sign in", href: "/login" },
       { label: "Dashboard", href: "/dashboard" },
     ],

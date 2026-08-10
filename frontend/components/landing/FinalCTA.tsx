@@ -47,18 +47,18 @@ export default function FinalCTA() {
           }}
         >
           <Link
-            href="/onboarding"
+            href="/signup?next=/pricing"
             className="btn btn-primary"
             style={{ padding: "14px 28px", fontSize: 15 }}
           >
-            Start free →
+            Get started →
           </Link>
           <Link
-            href="/dashboard"
+            href="/signup?next=/onboarding"
             className="btn btn-secondary"
             style={{ padding: "14px 28px", fontSize: 15 }}
           >
-            See the dashboard
+            Try for free
           </Link>
         </div>
       </div>

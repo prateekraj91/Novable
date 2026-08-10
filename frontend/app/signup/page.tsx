@@ -1,7 +1,26 @@
+import { redirect } from "next/navigation";
 import LoginForm from "@/components/auth/LoginForm";
 import BrandMark from "@/components/ui/BrandMark";
+import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/nav";
 
-export default function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const next = safeNext((await searchParams).next);
+
+  // "Get Started" (next=/pricing) and "Try for free" (next=/onboarding) both
+  // land here first; the promise on the page should match the one they clicked.
+  const wantsPaidPlan = next.startsWith("/pricing");
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) redirect(next);
+
   return (
     <main className="organic nb-auth">
       {/* Branding panel — hidden on small screens */}
@@ -49,13 +68,17 @@ export default function SignupPage() {
           </div>
 
           <span className="nb-kicker">Create account</span>
-          <h1 className="nb-h2">Start your trial.</h1>
+          <h1 className="nb-h2">
+            {wantsPaidPlan ? "Create your account." : "Start building free."}
+          </h1>
           <p className="nb-sub" style={{ fontSize: 15 }}>
-            Create your Novable account — no card required.
+            {wantsPaidPlan
+              ? "Set up your login first — you'll pick your plan on the next step."
+              : "Build one AI website free — no card required."}
           </p>
 
           <div style={{ marginTop: 32 }}>
-            <LoginForm mode="signup" />
+            <LoginForm mode="signup" next={next} />
           </div>
         </div>
       </div>

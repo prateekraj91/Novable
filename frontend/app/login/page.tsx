@@ -1,7 +1,24 @@
+import { redirect } from "next/navigation";
 import LoginForm from "@/components/auth/LoginForm";
 import BrandMark from "@/components/ui/BrandMark";
+import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/nav";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const next = safeNext((await searchParams).next);
+
+  // Someone who's already signed in shouldn't have to sign in again just
+  // because they clicked a CTA — send them straight where they were headed.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) redirect(next);
+
   return (
     <main className="organic nb-auth">
       {/* Branding panel — hidden on small screens */}
@@ -55,7 +72,7 @@ export default function LoginPage() {
           </p>
 
           <div style={{ marginTop: 32 }}>
-            <LoginForm />
+            <LoginForm next={next} />
           </div>
         </div>
       </div>
