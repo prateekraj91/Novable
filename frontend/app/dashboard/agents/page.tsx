@@ -38,6 +38,8 @@ const LOCKED_AGENTS = [
   },
 ];
 
+import FullstackAppBuilder from "@/components/builder/FullstackAppBuilder";
+
 export default async function AgentsPage() {
   const supabase = await createClient();
   const {
@@ -61,8 +63,8 @@ export default async function AgentsPage() {
       <main className="nb-app-main">
         <div className="nb-page">
           <div className="nb-page-inner">
-            <span className="nb-kicker">AI Workforce</span>
-            <h1 className="nb-h2">Run your agents</h1>
+            <span className="nb-kicker">AI Workforce & App Engine</span>
+            <h1 className="nb-h2">Run your agents & app engine</h1>
 
             {!canUseAgents ? (
               <>
@@ -85,6 +87,7 @@ export default async function AgentsPage() {
                 </p>
                 <div style={{ marginTop: 36 }}>
                   <AgentWorkforce business={business} />
+                  <FullstackAppBuilder />
                 </div>
               </>
             ) : (

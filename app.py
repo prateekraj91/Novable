@@ -94,3 +94,19 @@ def payment_link(data:PaymentLinkInput):
     logger.info(f"Payment link requested for {data.business_name}")
 
     return create_payment_link(data.amount, data.business_name, data.phone)
+
+# --- Novable 12-Month Emergent Engine Endpoints ---
+from schemas.fullstack_app_schema import AppIdeaInput, AppPlanOutput, FullstackAppCode
+from agents.engine.planner_agent import PlannerAgent
+from agents.engine.fullstack_generator_agent import FullstackGeneratorAgent
+
+@app.post("/generate-fullstack-plan", response_model=AppPlanOutput)
+def generate_fullstack_plan(data: AppIdeaInput):
+    logger.info(f"Fullstack plan requested for {data.app_name}")
+    return PlannerAgent.plan_app(data)
+
+@app.post("/generate-fullstack-app", response_model=FullstackAppCode)
+def generate_fullstack_app(plan: AppPlanOutput):
+    logger.info(f"Fullstack app generation requested for {plan.app_name}")
+    return FullstackGeneratorAgent.generate_app(plan)
+
