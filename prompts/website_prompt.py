@@ -94,71 +94,29 @@ def build_prompt(business: BusinessInput) -> str:
 
 def build_edit_prompt(current_json: str, instruction: str) -> str:
     return f"""
-You are editing an existing small-business website. Here is the current website
-content as JSON:
+You are an expert AI Web Designer and Copywriter performing high-impact refinements on a business website.
 
+Current Website Content (JSON):
 {current_json}
 
-The business owner has requested this change:
-
+User Refinement Request:
 "{instruction}"
 
-Apply ONLY the requested change and return the COMPLETE updated website as JSON
-with exactly the same fields and structure as the input. Preserve every field the
-instruction does not touch, unchanged. Do not add, rename, or drop fields. Return
-only the website JSON — no markdown, no explanations.
+CRITICAL INSTRUCTION:
+DO NOT make minor, timid token tweaks. Apply a BOLD, SUBSTANTIAL, and HIGH-IMPACT change across all affected fields in the JSON so the website undergoes a clear, noticeable transformation!
 
-GROUNDING (always applies):
-- Never invent business facts that are not already present in the current
-  content: no new hours, prices, phone numbers, addresses, awards, credentials,
-  named real people, or statistics. You may only rephrase, restructure, or
-  restyle information that is already there.
-- If a request would require a fact you don't have, make the smallest truthful
-  change you can and leave the rest untouched.
+REFINEMENT EXECUTION RULES:
+1. Copy & Tone Edits ("make headline punchier", "make tone warmer", "rephrase about section"):
+   - Substantially rewrite `hero_title`, `hero_subtitle`, `about`, `why_choose_us`, and `services` descriptions to reflect the new tone completely.
+   - Use engaging, persuasive, high-converting language.
 
-HOW TO HANDLE EACH KIND OF REQUEST:
+2. Visual & Theme Edits ("make it blue", "use dark luxury theme", "make it modern and minimal"):
+   - Update `primary_color` to a vibrant, matching hex code (e.g. "#1E88E5", "#0F766E", "#B91C1C", "#18181B").
+   - Set `_theme` to the matching template key ("classic", "centered", "editorial", or "minimal").
 
-1. Text / copy edits ("change the hero heading", "rewrite the about section",
-   "make the CTA say Book Now"):
-   - Edit only the specific field named: hero_title, hero_subtitle, about, cta,
-     a service's title/description, a faq question/answer, etc.
-   - Respect the original length guidance: hero_title under 8 words,
-     hero_subtitle under 20 words, about 80-120 words.
-   - Leave every other field unchanged.
+3. Section & Feature Edits ("add testimonials", "add more services", "translate to Hindi"):
+   - Populate `services`, `faq`, `testimonials`, or `why_choose_us` with rich, high-quality content derived from the business context.
+   - If translating into a new language, translate ALL text strings in the JSON schema completely into natural, fluent text.
 
-2. Tone changes ("make it more professional", "sound more casual and friendly"):
-   - Rewrite the wording of the text fields (hero_title, hero_subtitle, about,
-     service descriptions, why_choose_us, cta, faq answers, meta_description) to
-     match the new tone.
-   - Keep the same underlying facts and meaning — only the voice changes.
-   - Do not change primary_color unless the instruction also asks for it.
-
-3. Adding a section ("add testimonials", "add a few FAQs", "add more services"):
-   - Populate the matching array: testimonials, faq, services, why_choose_us.
-   - Testimonials are illustrative and fictional: they must read as plausible
-     customer sentiment and must NOT reference specific facts (real names,
-     prices, hours, locations) that are not already in the content.
-   - FAQs and services must be grounded only in facts already present; do not
-     invent new offerings, pricing, or policies.
-
-4. Removing a section ("remove the FAQ", "drop the testimonials"):
-   - Set that field to an empty list ([]) — the site hides any section whose
-     list is empty. Applies to: services, faq, testimonials, why_choose_us.
-   - Never blank out hero_title, hero_subtitle, cta, about, meta_title,
-     meta_description, or primary_color — those are required and always shown.
-
-5. Theme / colour changes ("make it blue", "use a warmer colour"):
-   - Update primary_color to a single valid hex code (e.g. "#1E88E5"). Never
-     return a colour name. Change nothing else.
-
-WHAT YOU CANNOT DO (return the content unchanged rather than guess):
-- The available fields are fixed: hero_title, hero_subtitle, about, services,
-  faq, testimonials, cta, primary_color, why_choose_us, meta_title,
-  meta_description. You cannot reorder sections or create section types that are
-  not fields in this schema (for example a pricing table or a contact form). If
-  the instruction asks for something outside these fields, apply the closest
-  valid change if one clearly exists; otherwise return the content exactly as
-  given.
-
-Return only the updated website JSON.
+Return ONLY the updated website JSON matching the exact input schema — no markdown formatting, no commentary.
 """

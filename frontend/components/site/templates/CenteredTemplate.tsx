@@ -37,9 +37,17 @@ export default function CenteredTemplate({ content }: TemplateProps) {
     >
       {/* Header — centred wordmark over a centred nav, no button */}
       <header className="border-b border-stone-200/80 py-7 text-center">
-        <span className={`${DISPLAY} text-lg font-medium tracking-[0.22em] uppercase`}>
-          {name}
-        </span>
+        <div className="inline-flex items-center gap-2.5">
+          <span
+            className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm"
+            style={{ backgroundColor: accent }}
+          >
+            {initials}
+          </span>
+          <span className={`${DISPLAY} text-lg font-medium tracking-[0.22em] uppercase`}>
+            {name}
+          </span>
+        </div>
         <nav className={`mt-3 flex justify-center gap-7 text-xs uppercase tracking-[0.18em] ${MUTED}`}>
           {content.services?.length > 0 && (
             <a href="#services" className="transition-colors hover:text-stone-900">

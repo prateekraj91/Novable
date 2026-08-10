@@ -1,0 +1,1 @@
+from fastapi import APIRouter, Depends, status, HTTPExceptionfrom sqlalchemy.ext.asyncio import AsyncSessionimport crud, schemas, authfrom database import get_dbfrom models import Userrouter = APIRouter(prefix="/users", tags=["Users"])@router.get("/me", response_model=schemas.User)async def read_users_me(current_user: User = Depends(auth.get_current_user)):    return current_user

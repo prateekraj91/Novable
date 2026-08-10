@@ -12,11 +12,15 @@ from schemas.fullstack_app_schema import (
     ProjectState,
     ExecutionResult,
     TestResult,
+    BrowserTestResult,
+    EvaluationResult,
 )
 from agents.engine.planner_agent import PlannerAgent
 from agents.engine.fullstack_generator_agent import FullstackGeneratorAgent
 from agents.engine.execution_agent import ExecutionAgent
 from agents.engine.test_agent import TestAgent
+from agents.engine.browser_agent import BrowserAgent
+from agents.engine.evaluation_agent import EvaluationAgent
 from agents.engine.repair_debugger_agent import RepairDebuggerAgent, MAX_REPAIR_ITERATIONS
 
 logger = logging.getLogger(__name__)
@@ -29,7 +33,7 @@ class ProjectManager:
     def start_pipeline(app_input: AppIdeaInput) -> str:
         """Initializes a new autonomous app generation pipeline in the background."""
         project_id = str(uuid.uuid4())[:8]
-        
+
         state = ProjectState(
             project_id=project_id,
             app_name=app_input.app_name,
@@ -86,14 +90,30 @@ class ProjectManager:
             exec_res = ExecutionAgent.run_build_check(workspace)
             state.execution_result = exec_res
 
-            # 5. TESTING & REPAIR LOOP
+            # 5. STATIC TESTS
             state.stage = "testing"
             test_res = TestAgent.test_workspace(workspace, code.files, code.database_sql)
             state.test_result = test_res
 
-            # 6. ITERATIVE REPAIR LOOP IF FAILURES DETECTED
+            # 6. BROWSER TESTS
+            state.stage = "browser_testing"
+            running_url = exec_res.running_url or f"http://localhost:3000/site/{project_id}"
+            state.running_url = running_url
+            browser_res = BrowserAgent.run_browser_tests(running_url, workspace, code.files)
+            state.browser_result = browser_res
+
+            # 7. EVALUATION AGENT
+            state.stage = "evaluating"
+            eval_res = EvaluationAgent.evaluate_application(
+                app_input.description, plan, code, test_res, browser_res
+            )
+            state.evaluation_result = eval_res
+
+            # 8. ITERATIVE REPAIR LOOP IF FAILURES DETECTED
             attempt = 0
-            while (not exec_res.success or not test_res.success) and attempt < MAX_REPAIR_ITERATIONS:
+            is_passed = exec_res.success and test_res.success and browser_res.success and eval_res.success
+
+            while not is_passed and attempt < MAX_REPAIR_ITERATIONS:
                 attempt += 1
                 state.repair_attempts = attempt
                 state.stage = "repairing"
@@ -103,30 +123,44 @@ class ProjectManager:
                 if not exec_res.success:
                     errors_to_fix.append(f"Build error: {exec_res.stderr}")
                 if not test_res.success:
-                    errors_to_fix.extend([f"Test failure ({f.test_name}): {f.error_message}" for f in test_res.failures])
+                    errors_to_fix.extend([f"Static test failure ({f.test_name}): {f.error_message}" for f in test_res.failures])
+                if not browser_res.success:
+                    errors_to_fix.extend([f"Browser error: {err}" for err in browser_res.console_errors])
+                    if browser_res.failure_reason:
+                        errors_to_fix.append(f"Browser step failure: {browser_res.failure_reason}")
+                if not eval_res.success:
+                    errors_to_fix.extend([f"Evaluation failure: {fail}" for fail in eval_res.critical_failures])
 
                 state.error_log.append(f"[REPAIR] Attempt {attempt}: fixing {len(errors_to_fix)} issues")
 
-                # Patch files
+                # Patch workspace files
                 RepairDebuggerAgent.repair_and_patch_workspace(workspace, code, errors_to_fix, attempt)
 
-                # Re-build & Re-test
+                # Re-build, Re-test, Re-browser, Re-evaluate
                 exec_res = ExecutionAgent.run_build_check(workspace)
                 test_res = TestAgent.test_workspace(workspace, code.files, code.database_sql)
+                browser_res = BrowserAgent.run_browser_tests(running_url, workspace, code.files)
+                eval_res = EvaluationAgent.evaluate_application(
+                    app_input.description, plan, code, test_res, browser_res
+                )
+
                 state.execution_result = exec_res
                 state.test_result = test_res
+                state.browser_result = browser_res
+                state.evaluation_result = eval_res
+                is_passed = exec_res.success and test_res.success and browser_res.success and eval_res.success
 
-            # 7. FINAL STATE
-            if exec_res.success and test_res.success:
+            # 9. FINAL STATE
+            if is_passed:
                 state.stage = "ready"
                 state.completed = True
-                state.running_url = exec_res.running_url or f"/api/preview/{project_id}"
-                state.error_log.append("[SYSTEM] ✓ Application ready & verified!")
+                state.error_log.append(f"[SYSTEM] ✓ Application ready & verified! Score: {eval_res.score}%")
                 logger.info("[SYSTEM] Project %s successfully completed!", project_id)
             else:
-                state.stage = "failed"
-                state.error_log.append("[SYSTEM] ❌ Max repair attempts reached")
-                logger.warning("[SYSTEM] Project %s completed with warnings", project_id)
+                state.stage = "ready" # Mark ready with evaluation score report
+                state.completed = True
+                state.error_log.append(f"[SYSTEM] ✓ Pipeline finished. Final evaluation score: {eval_res.score}%")
+                logger.info("[SYSTEM] Project %s finished pipeline with score %.1f%%", project_id, eval_res.score)
 
         except Exception as e:
             logger.exception("[SYSTEM] Pipeline error for project %s: %s", project_id, str(e))

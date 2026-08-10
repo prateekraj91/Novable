@@ -17,13 +17,49 @@ type AppPlan = {
   implementation_steps: string[];
 };
 
+type RequirementCheck = {
+  requirement_name: string;
+  status: string;
+  details: string;
+};
+
+type EvaluationResult = {
+  success: boolean;
+  requirements_checked: number;
+  requirements_passed: number;
+  requirements_failed: number;
+  requirement_checks: RequirementCheck[];
+  user_journeys: string[];
+  score: number;
+};
+
+type BrowserStepResult = {
+  step_name: string;
+  action: string;
+  target_element: string;
+  status: string;
+  details: string;
+};
+
+type BrowserTestResult = {
+  success: boolean;
+  steps: number;
+  passed_steps: number;
+  failed_steps: number;
+  step_details: BrowserStepResult[];
+  console_errors: string[];
+  network_errors: string[];
+};
+
 type ProjectState = {
   project_id: string;
   app_name: string;
   description: string;
-  stage: string; // planning | generating | workspace | dependencies | building | testing | repairing | ready | failed
+  stage: string; // planning | generating | workspace | building | testing | browser_testing | evaluating | repairing | ready | failed
   plan?: AppPlan | null;
   code?: { files: GeneratedFile[] } | null;
+  browser_result?: BrowserTestResult | null;
+  evaluation_result?: EvaluationResult | null;
   running_url?: string | null;
   completed: boolean;
   repair_attempts: number;
@@ -35,20 +71,23 @@ const STAGES = [
   { key: "generating", label: "Generating Application Code" },
   { key: "workspace", label: "Creating Project Workspace" },
   { key: "building", label: "Installing Dependencies & Building" },
-  { key: "testing", label: "Running Automated Test Suite" },
+  { key: "testing", label: "Running Static & API Tests" },
+  { key: "browser_testing", label: "Running Headless Browser Tests (Playwright)" },
+  { key: "evaluating", label: "Evaluating Requirement Satisfaction" },
   { key: "repairing", label: "Repairing & Patching Failures" },
-  { key: "ready", label: "Application Ready" },
+  { key: "ready", label: "Application Verified & Ready" },
 ];
 
 export default function FullstackAppBuilder() {
-  const [appName, setAppName] = useState("TaskMaster SaaS");
+  const [appName, setAppName] = useState("ExpensePulse SaaS");
   const [prompt, setPrompt] = useState(
-    "Build a task management SaaS with email/password authentication, projects, tasks, task status, priorities, a dashboard, PostgreSQL database, and CRUD operations."
+    "Build an expense tracking SaaS where users can register, create income and expense entries, categorize transactions, filter transactions by date/category, and see a dashboard showing total income, total expenses, and balance."
   );
   const [projectId, setProjectId] = useState<string | null>(null);
   const [projectState, setProjectState] = useState<ProjectState | null>(null);
   const [isBuilding, setIsBuilding] = useState(false);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState<"code" | "browser" | "eval" | "logs">("code");
   const [selectedFileIdx, setSelectedFileIdx] = useState(0);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -111,13 +150,13 @@ export default function FullstackAppBuilder() {
   return (
     <section className="card elev-sm" style={{ padding: 28, marginTop: 24 }}>
       <span className="nb-kicker" style={{ color: "var(--color-accent-700)" }}>
-        Autonomous AI Software Engineer
+        Novable AI Software Engineer & Evaluation Engine
       </span>
       <h2 className="nb-h2" style={{ fontSize: 24 }}>
-        Novable App Engine
+        Full-Stack App Generator & Browser Tester
       </h2>
       <p className="nb-quiet" style={{ margin: "6px 0 0", fontSize: 14 }}>
-        Prompt → Plan → Architect → Generate → Workspace → Build → Test → Repair → Deploy.
+        Plan → Generate → Workspace → Build → Static Tests → Browser Testing → Evaluate → Repair → Ready.
       </p>
 
       <div style={{ marginTop: 20, display: "grid", gap: 14 }}>
@@ -156,7 +195,7 @@ export default function FullstackAppBuilder() {
           className="btn btn-primary"
           style={{ padding: "12px 24px", alignSelf: "flex-start" }}
         >
-          {isBuilding ? "⚡ Autonomous Engineering Pipeline Running…" : "🚀 Run Autonomous App Builder"}
+          {isBuilding ? "⚡ Engineering & Browser Evaluation Pipeline Running…" : "🚀 Run Full-Stack App Builder & Browser Evaluator"}
         </button>
       </div>
 
@@ -210,11 +249,13 @@ export default function FullstackAppBuilder() {
           {/* Final Successful State */}
           {projectState.stage === "ready" && (
             <div style={{ marginTop: 18, padding: 16, borderRadius: "var(--radius-md)", background: "var(--color-accent-2-100)", border: "1px solid var(--color-accent-2-300)" }}>
-              <h4 style={{ margin: 0, color: "var(--color-accent-2-800)", fontSize: 16 }}>
-                🎉 Your application is ready.
-              </h4>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <h4 style={{ margin: 0, color: "var(--color-accent-2-800)", fontSize: 16 }}>
+                  🎉 Application Ready & Verified (Score: {projectState.evaluation_result?.score ?? 100}%)
+                </h4>
+              </div>
               <p style={{ margin: "6px 0 0", fontSize: 13, color: "var(--color-text)" }}>
-                The application was generated, written to an isolated workspace, built, tested, and verified successfully!
+                The application was generated, written to an isolated workspace, built, static-tested, browser-tested (Playwright), evaluated, and verified!
               </p>
               {projectState.running_url && (
                 <a
@@ -230,66 +271,112 @@ export default function FullstackAppBuilder() {
             </div>
           )}
 
-          {/* System Log */}
-          {projectState.error_log?.length > 0 && (
-            <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--color-divider)", fontSize: 12, fontFamily: "monospace", opacity: 0.8 }}>
-              <strong>Execution Log:</strong>
-              <div style={{ maxHeight: 100, overflowY: "auto", marginTop: 4 }}>
-                {projectState.error_log.map((log, i) => (
-                  <div key={i}>{log}</div>
-                ))}
+          {/* Result View Tabs */}
+          <div style={{ display: "flex", gap: 8, marginTop: 18, borderBottom: "1px solid var(--color-divider)", paddingBottom: 8 }}>
+            <button
+              type="button"
+              onClick={() => setActiveTab("code")}
+              className="btn btn-secondary"
+              style={{ fontSize: 12, background: activeTab === "code" ? "var(--color-accent)" : undefined, color: activeTab === "code" ? "#fff" : undefined }}
+            >
+              📄 Code Files ({files.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("browser")}
+              className="btn btn-secondary"
+              style={{ fontSize: 12, background: activeTab === "browser" ? "var(--color-accent)" : undefined, color: activeTab === "browser" ? "#fff" : undefined }}
+            >
+              🌐 Browser Tests ({projectState.browser_result?.passed_steps ?? 0}/{projectState.browser_result?.steps ?? 0})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("eval")}
+              className="btn btn-secondary"
+              style={{ fontSize: 12, background: activeTab === "eval" ? "var(--color-accent)" : undefined, color: activeTab === "eval" ? "#fff" : undefined }}
+            >
+              📊 Requirements ({projectState.evaluation_result?.requirements_passed ?? 0}/{projectState.evaluation_result?.requirements_checked ?? 0})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("logs")}
+              className="btn btn-secondary"
+              style={{ fontSize: 12, background: activeTab === "logs" ? "var(--color-accent)" : undefined, color: activeTab === "logs" ? "#fff" : undefined }}
+            >
+              📜 Pipeline Logs & Repairs ({projectState.repair_attempts})
+            </button>
+          </div>
+
+          {/* Tab 1: Code Explorer */}
+          {activeTab === "code" && files.length > 0 && (
+            <div style={{ marginTop: 14, borderRadius: "var(--radius-md)", overflow: "hidden", border: "1px solid var(--color-divider)", background: "#1e1b18", color: "#f5ead8" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", minHeight: 280 }}>
+                <div style={{ borderRight: "1px solid rgba(255,255,255,0.1)", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+                  {files.map((file, idx) => (
+                    <button
+                      key={file.filepath}
+                      type="button"
+                      onClick={() => setSelectedFileIdx(idx)}
+                      style={{
+                        textAlign: "left",
+                        padding: "5px 8px",
+                        borderRadius: 6,
+                        border: 0,
+                        background: idx === selectedFileIdx ? "var(--color-accent)" : "transparent",
+                        color: idx === selectedFileIdx ? "#fff" : "#eee7db",
+                        fontSize: 11,
+                        fontFamily: "monospace",
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      📄 {file.filepath}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ padding: 14, overflowX: "auto" }}>
+                  <pre style={{ margin: 0, fontSize: 12, fontFamily: "monospace", color: "#dcd3c4", whiteSpace: "pre-wrap" }}>
+                    {files[selectedFileIdx]?.content}
+                  </pre>
+                </div>
               </div>
             </div>
           )}
-        </div>
-      )}
 
-      {/* Code Explorer */}
-      {files.length > 0 && (
-        <div style={{ marginTop: 20, borderRadius: "var(--radius-lg)", overflow: "hidden", border: "1px solid var(--color-divider)", background: "#1e1b18", color: "#f5ead8" }}>
-          <div style={{ padding: "12px 18px", background: "#2e2b25", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Workspace Code Explorer</span>
-            <span style={{ fontSize: 12, opacity: 0.6 }}>{files.length} Files Written</span>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", minHeight: 320 }}>
-            {/* Sidebar File Tree */}
-            <div style={{ borderRight: "1px solid rgba(255,255,255,0.1)", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
-              {files.map((file, idx) => (
-                <button
-                  key={file.filepath}
-                  type="button"
-                  onClick={() => setSelectedFileIdx(idx)}
-                  style={{
-                    textAlign: "left",
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: 0,
-                    background: idx === selectedFileIdx ? "var(--color-accent)" : "transparent",
-                    color: idx === selectedFileIdx ? "#fff" : "#eee7db",
-                    fontSize: 12,
-                    fontFamily: "monospace",
-                    cursor: "pointer",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  📄 {file.filepath}
-                </button>
+          {/* Tab 2: Browser Tests */}
+          {activeTab === "browser" && projectState.browser_result && (
+            <div style={{ marginTop: 14, display: "grid", gap: 8 }}>
+              {projectState.browser_result.step_details.map((st, i) => (
+                <div key={i} style={{ padding: 10, borderRadius: "var(--radius-sm)", background: "var(--color-bg)", border: "1px solid var(--color-divider)", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                  <span>✓ {st.step_name} ({st.action})</span>
+                  <span style={{ fontSize: 12, opacity: 0.7 }}>{st.details}</span>
+                </div>
               ))}
             </div>
+          )}
 
-            {/* Code Viewport */}
-            <div style={{ padding: 16, overflowX: "auto" }}>
-              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 8 }}>
-                {files[selectedFileIdx]?.filepath} ({files[selectedFileIdx]?.language})
-              </div>
-              <pre style={{ margin: 0, fontSize: 12, fontFamily: "monospace", lineHeight: 1.5, color: "#dcd3c4", whiteSpace: "pre-wrap" }}>
-                {files[selectedFileIdx]?.content}
-              </pre>
+          {/* Tab 3: Evaluation Requirements */}
+          {activeTab === "eval" && projectState.evaluation_result && (
+            <div style={{ marginTop: 14, display: "grid", gap: 8 }}>
+              {projectState.evaluation_result.requirement_checks.map((r, i) => (
+                <div key={i} style={{ padding: 10, borderRadius: "var(--radius-sm)", background: "var(--color-bg)", border: "1px solid var(--color-divider)", fontSize: 13, display: "flex", justifyContent: "space-between" }}>
+                  <span>✓ {r.requirement_name}</span>
+                  <span style={{ fontSize: 12, opacity: 0.7 }}>{r.details}</span>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+
+          {/* Tab 4: Logs */}
+          {activeTab === "logs" && (
+            <div style={{ marginTop: 14, fontSize: 12, fontFamily: "monospace", background: "var(--color-bg)", padding: 12, borderRadius: "var(--radius-sm)", border: "1px solid var(--color-divider)" }}>
+              {projectState.error_log.map((log, i) => (
+                <div key={i}>{log}</div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>

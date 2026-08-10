@@ -59,7 +59,15 @@ export default function EditorialTemplate({ content }: TemplateProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-[#0b0b0c]/55 to-[#0b0b0c]/25" />
 
         <header className="relative z-10 flex items-center justify-between px-6 py-7 md:px-12">
-          <span className={`${DISPLAY} text-lg tracking-tight md:text-xl`}>{name}</span>
+          <div className="flex items-center gap-2.5">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm"
+              style={{ backgroundColor: accent }}
+            >
+              {initials}
+            </span>
+            <span className={`${DISPLAY} text-lg tracking-tight md:text-xl`}>{name}</span>
+          </div>
           <a
             href="#contact"
             className="border-b pb-1 text-xs uppercase tracking-[0.22em] transition-colors hover:text-white"

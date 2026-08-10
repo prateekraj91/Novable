@@ -37,9 +37,17 @@ export default function ClassicTemplate({ content }: TemplateProps) {
       {/* Header */}
       <header className={cx("sticky top-0 z-40", t.header)}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className={cx(t.heading, "text-xl", t.headingWeight, "tracking-tight")}>
-            {name}
-          </span>
+          <div className="flex items-center gap-2.5">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm"
+              style={{ backgroundColor: accent }}
+            >
+              {initials}
+            </span>
+            <span className={cx(t.heading, "text-xl", t.headingWeight, "tracking-tight")}>
+              {name}
+            </span>
+          </div>
           <a
             href="#contact"
             className={cx(

@@ -66,6 +66,39 @@ class TestResult(BaseModel):
     failures: List[TestFailure] = []
     logs: List[str] = []
 
+class BrowserStepResult(BaseModel):
+    step_name: str
+    action: str
+    target_element: str
+    status: str  # passed | failed
+    details: str
+
+class BrowserTestResult(BaseModel):
+    success: bool
+    steps: int
+    passed_steps: int
+    failed_steps: int
+    step_details: List[BrowserStepResult] = []
+    screenshots: List[str] = []
+    console_errors: List[str] = []
+    network_errors: List[str] = []
+    failure_reason: Optional[str] = None
+
+class RequirementCheck(BaseModel):
+    requirement_name: str
+    status: str  # passed | failed
+    details: str
+
+class EvaluationResult(BaseModel):
+    success: bool
+    requirements_checked: int
+    requirements_passed: int
+    requirements_failed: int
+    requirement_checks: List[RequirementCheck] = []
+    user_journeys: List[str] = []
+    critical_failures: List[str] = []
+    score: float = 0.0  # 0 to 100 percentage
+
 class RepairOutput(BaseModel):
     fixed_files: List[GeneratedFile]
     summary_of_fixes: str
@@ -75,11 +108,13 @@ class ProjectState(BaseModel):
     project_id: str
     app_name: str
     description: str
-    stage: str  # planning | generating | workspace | dependencies | building | testing | repairing | ready | failed
+    stage: str  # planning | generating | workspace | building | testing | browser_testing | evaluating | repairing | ready | failed
     plan: Optional[AppPlanOutput] = None
     code: Optional[FullstackAppCode] = None
     execution_result: Optional[ExecutionResult] = None
     test_result: Optional[TestResult] = None
+    browser_result: Optional[BrowserTestResult] = None
+    evaluation_result: Optional[EvaluationResult] = None
     repair_attempts: int = 0
     running_url: Optional[str] = None
     completed: bool = False

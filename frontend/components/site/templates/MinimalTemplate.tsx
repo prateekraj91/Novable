@@ -17,7 +17,7 @@ const MUTED = "text-neutral-500";
 const FALLBACK_ACCENT = "#171717";
 
 export default function MinimalTemplate({ content }: TemplateProps) {
-  const { accent, biz, name, images, whatsapp, mapAddress, waMessage } =
+  const { accent, biz, name, initials, images, whatsapp, mapAddress, waMessage } =
     siteBasics(content, FALLBACK_ACCENT);
 
   return (
@@ -25,9 +25,15 @@ export default function MinimalTemplate({ content }: TemplateProps) {
       className={`min-h-screen ${PAGE} antialiased [font-feature-settings:'ss01'] [font-family:var(--font-inter)]`}
     >
       {/* Header — a name, nothing else. Not sticky. */}
-      <header className={`${COL} pt-14`}>
+      <header className={`${COL} flex items-center gap-2.5 pt-14`}>
+        <span
+          className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm"
+          style={{ backgroundColor: accent }}
+        >
+          {initials}
+        </span>
         <span className="text-sm font-medium tracking-tight">{name}</span>
-        {biz.city && <span className={`ml-3 text-sm ${MUTED}`}>{biz.city}</span>}
+        {biz.city && <span className={`ml-2 text-sm ${MUTED}`}>· {biz.city}</span>}
       </header>
 
       {/* Hero — modest type, a text link instead of a button */}

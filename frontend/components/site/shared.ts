@@ -59,7 +59,7 @@ export function siteBasics(content: PublishedContent, fallbackAccent: string) {
     : fallbackAccent;
   const biz = content._business ?? {};
   const images = content._images ?? [];
-  const name = biz.name || content.hero_title;
+  const name = (biz.name || (content as unknown as Record<string, string>).name || content.hero_title || "Website").trim();
   const hero = images[0];
   const gallery = images.slice(hero ? 1 : 0);
   const initials = (name || "?").slice(0, 2).toUpperCase();

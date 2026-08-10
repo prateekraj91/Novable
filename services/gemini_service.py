@@ -13,8 +13,8 @@ client = genai.Client(
 )
 
 @retry(
-    stop=stop_after_attempt(3),
-    wait=wait_fixed(2),
+    stop=stop_after_attempt(5),
+    wait=wait_fixed(25),
     before_sleep=before_sleep_log(logger, logging.WARNING),
     reraise=True,
 )
