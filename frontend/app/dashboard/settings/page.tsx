@@ -5,6 +5,8 @@ import UpgradeButton from "@/components/billing/UpgradeButton";
 import { createClient } from "@/lib/supabase/server";
 import { getEntitlements } from "@/lib/entitlements";
 
+import CustomDomainSettings from "@/components/dashboard/CustomDomainSettings";
+
 export default async function SettingsPage() {
   const { isPaid } = await getEntitlements();
   const supabase = await createClient();
@@ -47,6 +49,8 @@ export default async function SettingsPage() {
                 <Setting label="Plan" value={isPaid ? "Standard" : "Free"} />
               </div>
             </section>
+
+            <CustomDomainSettings isPaid={isPaid} />
 
             <section className="card elev-sm" style={{ marginTop: 16, padding: 28 }}>
               <h2 className="nb-h3">Plan</h2>

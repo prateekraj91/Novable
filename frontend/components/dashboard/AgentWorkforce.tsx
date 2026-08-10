@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { runAgent } from "@/lib/agents";
+import QrPosterGenerator from "./QrPosterGenerator";
 
 export type WorkforceBusiness = {
   id: string;
@@ -154,6 +155,7 @@ export default function AgentWorkforce({
   return (
     <div style={{ display: "grid", gap: 16 }}>
       <AskCatalyst business={business} />
+      <QrPosterGenerator businessName={business.name} />
       <SocialAgent business={business} />
       <CampaignAgent business={business} />
       <ReviewAgent business={business} />

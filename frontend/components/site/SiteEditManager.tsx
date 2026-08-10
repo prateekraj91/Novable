@@ -13,6 +13,14 @@ const SUGGESTIONS = [
   "Add more detail to the About section",
 ];
 
+const LANGUAGES = [
+  { label: "🌐 Hindi", prompt: "Translate all website text and copy into natural, fluent Hindi." },
+  { label: "🌐 Tamil", prompt: "Translate all website text and copy into natural, fluent Tamil." },
+  { label: "🌐 Kannada", prompt: "Translate all website text and copy into natural, fluent Kannada." },
+  { label: "🌐 Marathi", prompt: "Translate all website text and copy into natural, fluent Marathi." },
+  { label: "🌐 Spanish", prompt: "Translate all website text and copy into natural, fluent Spanish." },
+];
+
 /**
  * Restyling with AI is included in the free plan; taking the result live is
  * not. Both states are shown side by side so the free plan feels like a real
@@ -139,6 +147,25 @@ export default function SiteEditManager({
               {s}
             </button>
           ))}
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <span style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--color-accent-700)", fontWeight: 600, display: "block", marginBottom: 6 }}>
+            Multi-Language Translator
+          </span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {LANGUAGES.map((lang) => (
+              <button
+                key={lang.label}
+                type="button"
+                onClick={() => setInstruction(lang.prompt)}
+                className="btn btn-secondary"
+                style={{ fontSize: 12, padding: "4px 10px" }}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <button

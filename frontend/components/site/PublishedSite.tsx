@@ -6,6 +6,7 @@ import EditorialTemplate from "./templates/EditorialTemplate";
 import MinimalTemplate from "./templates/MinimalTemplate";
 import { resolveTemplateKey, type SiteTemplateKey } from "./themes";
 import type { PublishedContent, TemplateProps } from "./shared";
+import FloatingWhatsAppButton from "./FloatingWhatsAppButton";
 
 export type { PublishedContent } from "./shared";
 
@@ -34,5 +35,10 @@ export default function PublishedSite({
   content: PublishedContent;
 }) {
   const Template = TEMPLATES[resolveTemplateKey(content._theme)] ?? ClassicTemplate;
-  return <Template content={content} />;
+  return (
+    <>
+      <Template content={content} />
+      <FloatingWhatsAppButton content={content} />
+    </>
+  );
 }
