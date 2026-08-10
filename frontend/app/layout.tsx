@@ -3,6 +3,7 @@ import { Caprasimo, Figtree, Fraunces, Inter, JetBrains_Mono } from "next/font/g
 import "./globals.css";
 import Ambient from "@/components/layout/Ambient";
 
+
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
@@ -39,7 +40,27 @@ const figtree = Figtree({
 export const metadata: Metadata = {
   title: "Novable — Your AI Co-pilot for Growth",
   description:
-    "Novable reads your funnel, finds your highest-leverage growth moves, and automates them across every channel — so your team flies, not guesses.",
+    "Generate a professional website and AI marketing agents for your business in under 60 seconds.",
+  openGraph: {
+    title: "Novable — AI Website & Growth Engine for ₹500",
+    description:
+      "Turn your business info into a live website and AI marketing agents in under 60 seconds.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Novable — Your AI Co-pilot for Growth",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Novable — AI Website & Growth Engine for ₹500",
+    description:
+      "Turn your business info into a live website and AI marketing agents in under 60 seconds.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
