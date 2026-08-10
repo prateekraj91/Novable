@@ -38,6 +38,9 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://novable.vercel.app"
+  ),
   title: "Novable — Your AI Co-pilot for Growth",
   description:
     "Generate a professional website and AI marketing agents for your business in under 60 seconds.",
