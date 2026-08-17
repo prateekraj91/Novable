@@ -1,4 +1,4 @@
-# GrowthPilot 🚀
+# Novable 🚀
 
 GrowthPilot is an AI-powered platform that helps businesses generate professional websites and digital content using Google Vertex AI.
 
