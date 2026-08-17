@@ -1,0 +1,31 @@
+{
+  "8_template_layouts": {
+    "classic": {
+      "error": "Page.eval_on_selector: Failed to find element matching selector \"header\""
+    },
+    "centered": {
+      "error": "Page.eval_on_selector: Failed to find element matching selector \"header\""
+    },
+    "editorial": {
+      "error": "Page.eval_on_selector: Failed to find element matching selector \"header\""
+    },
+    "minimal": {
+      "error": "Page.eval_on_selector: Failed to find element matching selector \"header\""
+    }
+  },
+  "9_refine_prompt": {
+    "has_substantial_instructions": true,
+    "prompt_length": 1539
+  },
+  "11_published_site_links": {
+    "whatsapp_button_found": false,
+    "whatsapp_href": null,
+    "has_country_code": false
+  },
+  "backend_agent_health": {
+    "api_url": "http://localhost:8000",
+    "status": "Error: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "latency_seconds": 0.01,
+    "cold_start_note": "Render backend may take 30-50s on cold start if spun down"
+  }
+}

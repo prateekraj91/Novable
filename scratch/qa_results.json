@@ -1,0 +1,35 @@
+{
+  "1_landing_page": {
+    "status": "PASS",
+    "load_time_sec": 1.34,
+    "desktop_http_code": 200,
+    "mobile_http_code": 200
+  },
+  "4_button_destinations": {
+    "get_started_target": "/signup?next=/pricing",
+    "try_free_target": "/signup?next=/onboarding",
+    "behave_differently": true
+  },
+  "5_pricing_whatsapp": {
+    "http_status": 200,
+    "wa_links_found": [
+      "https://wa.me/919142250799?text=Hi%2C%20I%20want%20the%20Novable%20Standard%20plan%20(%E2%82%B9500).",
+      "https://wa.me/919142250799?text=Hi%2C%20I'm%20interested%20in%20a%20custom%20Novable%20plan."
+    ],
+    "has_correct_phone_919142250799": true
+  },
+  "2_signup_page": {
+    "http_status": 200
+  },
+  "3_login_page": {
+    "http_status": 200
+  },
+  "6_website_generation": {
+    "success": false,
+    "error": "Timeout 45000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/result**\" until 'load'\n============================================================"
+  },
+  "10_header_full_name": {
+    "success": false,
+    "error": "Page.eval_on_selector: Failed to find element matching selector \"header\""
+  }
+}

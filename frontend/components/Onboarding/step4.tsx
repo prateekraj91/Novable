@@ -114,8 +114,8 @@ export default function Step4({ data }: Props) {
         style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}
       >
         By creating your workspace, Novable will use this information to
-        personalize your dashboard, generate AI recommendations, and connect
-        future integrations. You can edit everything later from Settings.
+        personalize your dashboard, generate AI recommendations, and unlock
+        new features as they launch. You can edit everything later from Settings.
       </p>
     </div>
   );

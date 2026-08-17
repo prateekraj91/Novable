@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "What does pricing look like?",
-    a: "It's a one-time fee — ₹1,500 for Basic and ₹3,000 for Pro. No subscription and no lock-in, and everything we build for you is yours to keep.",
+    a: "It's a one-time ₹500 — no subscription, no lock-in. That covers your AI website, live publishing, and every growth agent. Everything we build for you is yours to keep.",
   },
   {
     q: "Do I own my site and content?",

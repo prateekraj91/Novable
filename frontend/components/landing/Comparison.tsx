@@ -6,7 +6,7 @@ const rows = [
   { cap: "WhatsApp campaigns", wix: "Not included", agency: "Extra service", novable: "AI generated" },
   { cap: "Social content", wix: "Not included", agency: "Extra service", novable: "AI generated" },
   { cap: "Performance reports", wix: "Basic", agency: "Monthly PDF", novable: "AI summaries" },
-  { cap: "Cost", wix: "₹500–2,000/mo", agency: "₹10,000–50,000/mo", novable: "₹1,500–3,000 one-time" },
+  { cap: "Cost", wix: "₹500–2,000/mo", agency: "₹10,000–50,000/mo", novable: "₹500 one-time" },
 ];
 
 export default function Comparison() {

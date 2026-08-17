@@ -1,0 +1,18 @@
+{
+  "id": "demo-123",
+  "slug": "quantum-cafe",
+  "name": "Quantum Café",
+  "category": "Specialty Coffee & Bakery",
+  "tagline": "Small-batch coffee and fresh bakes in the heart of Patna.",
+  "about": "A cozy neighbourhood café serving single-origin coffee, house cupcakes, and all-day breakfast.",
+  "phone": "+91 91422 50799",
+  "whatsapp": "919142250799",
+  "address": "Boring Road, Patna",
+  "maps_url": "https://maps.google.com/?q=Quantum+Cafe+Patna",
+  "services": [
+    { "name": "Cupcakes", "desc": "Baked fresh daily", "price": "₹80" },
+    { "name": "Cold Brew", "desc": "18-hour steep", "price": "₹150" },
+    { "name": "All-day Breakfast", "desc": "Served till 4pm", "price": "₹220" }
+  ],
+  "primary_color": "#b5502e"
+}

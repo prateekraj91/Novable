@@ -1,23 +1,23 @@
 const steps = [
   {
     n: 1,
-    title: "Connect your business in minutes",
-    desc: "Securely connect your CRM, website, payment platform, analytics, and marketing tools. Novable automatically builds a unified view of your business.",
+    title: "Answer 5 quick questions",
+    desc: "Business name, type, location, services, and phone number — that's all Novable needs. No technical setup, no forms to fill.",
   },
   {
     n: 2,
-    title: "Discover your biggest growth opportunities",
-    desc: "Novable continuously analyzes your business to identify bottlenecks, drop-offs, underperforming campaigns, and hidden opportunities ranked by impact.",
+    title: "Get a live website in 2 minutes",
+    desc: "Our AI builds a complete site — hero copy, services, FAQs, testimonials, SEO metadata, and branding — and publishes it on a live URL.",
   },
   {
     n: 3,
-    title: "Turn insights into action",
-    desc: "Approve AI-powered recommendations with a click. Whether it's retention, marketing, or operations, Novable helps you execute faster.",
+    title: "Receive ready-to-use marketing drafts",
+    desc: "AI agents draft WhatsApp campaigns, social posts, review replies, and weekly performance summaries — you review and post.",
   },
   {
     n: 4,
-    title: "Keep improving while you focus on growth",
-    desc: "Monitor performance through a live dashboard while Novable tracks results, refines strategies, and automates repetitive workflows.",
+    title: "Grow week over week",
+    desc: "Keep restyling your site, generating fresh campaigns, and tracking what works — all from one dashboard, no agency needed.",
   },
 ];
 
@@ -27,13 +27,13 @@ export default function Features() {
       <span className="nb-kicker">How Novable Works</span>
 
       <h2 className="nb-h2" style={{ maxWidth: "26ch" }}>
-        Connect once. Grow continuously.
+        Enter 5 details. Get a live site &amp; marketing drafts.
       </h2>
 
       <p className="nb-sub">
-        Novable brings together your business data, identifies what matters
-        most, recommends high-impact actions, and helps you automate the work
-        that drives sustainable growth.
+        No tech skills, no agency, no waiting. Novable turns your business
+        basics into a published website and ready-to-send marketing — in
+        minutes, not weeks.
       </p>
 
       <div className="nb-grid-4" style={{ marginTop: 36 }}>
